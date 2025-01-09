@@ -1,0 +1,63 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 24 nov. 2024, 8:29:42 a. m.
+    Author     : Jesusecm
+*/
+
+* {
+    -fx-primarybg: #A1A7B1 ;
+
+    -fx-secondarybg:#A1A7B1; /*#E8FFFF;#C2FFFF;*/
+
+    -fx-thirdbg : #C8CFDB;
+
+    -fx-nodesbg:#24385C;
+
+    -fx-text1:#FFF;
+
+    -fx-text2:#4F4F4F;
+
+    -fx-f-size:15em;
+}
+
+.root{
+    -fx-font-family: "Lucida Fax";
+    -fx-font-size:15;
+
+}
+.dialog-pane {
+    -fx-background-color: -fx-primarybg;
+
+
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: -fx-thirdbg;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-style: italic;
+    -fx-font-size: 2em;
+}
+
+.button{
+        -fx-background-color: -fx-nodesbg;
+        -fx-text-fill: -fx-text1;
+
+}
+
+.button:hover{
+    -fx-scale-y:1.2;
+    -fx-scale-x:1.2;
+    -fx-cursor:hand;
+    
+}
+
+
