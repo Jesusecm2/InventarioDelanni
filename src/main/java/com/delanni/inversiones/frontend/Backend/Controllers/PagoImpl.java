@@ -125,10 +125,10 @@ public class PagoImpl implements PagoBackend {
 
     @Override
     public List<TP_Ingreso> obtenerIngreso(String tipo) {
-              try {
-                  pet.addParameter("tipo", tipo);
-                  trans.HttpGetObject("/api/inventario/pago/obtener/tingreso", pet);
-            
+        try {
+            pet.addParameter("tipo", tipo);
+            trans.HttpGetObject("/api/inventario/pago/obtener/tingreso", pet);
+
             if (pet.getCabecera().get("resp_cod").equals("200")) {
                 return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), TP_Ingreso[].class)));
             } else {
@@ -142,7 +142,7 @@ public class PagoImpl implements PagoBackend {
 
     @Override
     public Pago guardarPagoIngreso(TP_Ingreso ingreso, Pago pago) {
-          Map<String, String> valores = new HashMap<>();
+        Map<String, String> valores = new HashMap<>();
 
         try {
             valores.put("ingreso", mapeo.writeValueAsString(ingreso));

@@ -7,6 +7,7 @@ package com.delanni.inversiones.frontend.ViewController.Ingresos;
 import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
@@ -197,7 +198,9 @@ public class EgresoFormController implements Initializable {
 
         if (file != null) {
             ImageConverter convertidor = new ImageConverter(file);
-            pago.setComprobante(convertidor.getbase64img());
+            ComprobantePago comprobante = new ComprobantePago();
+            comprobante.setImagen(convertidor.getbase64img());
+            pago.setComprobante(comprobante);
             file = null;
         }
         PagoBackend bcl = new PagoImpl();

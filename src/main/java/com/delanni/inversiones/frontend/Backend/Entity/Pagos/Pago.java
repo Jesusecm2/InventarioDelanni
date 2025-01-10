@@ -24,7 +24,7 @@ public class Pago {
 
     private Double monto;
 
-    private String comprobante;
+    private ComprobantePago comprobante;
 
     private TipodePago tipo;
 
@@ -80,11 +80,11 @@ public class Pago {
         this.monto = monto;
     }
 
-    public String getComprobante() {
+    public ComprobantePago getComprobante() {
         return comprobante;
     }
 
-    public void setComprobante(String comprobante) {
+    public void setComprobante(ComprobantePago comprobante) {
         this.comprobante = comprobante;
     }
 
@@ -114,8 +114,7 @@ public class Pago {
 
     @Override
     public String toString() {
-    return tipo.getTipo();
+        return tipo.getTipo();
     }
-    
-    
+
 }

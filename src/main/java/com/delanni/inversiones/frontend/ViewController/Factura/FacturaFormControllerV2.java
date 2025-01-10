@@ -11,6 +11,7 @@ import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.ImagenProducto;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
@@ -287,8 +288,6 @@ public class FacturaFormControllerV2 implements Initializable {
                 nxt_btn.fire();
             }
         });
-        
-        
 
         elim_prod.setOnAction((e) -> {
             eliminarProducto();
@@ -443,7 +442,9 @@ public class FacturaFormControllerV2 implements Initializable {
             }
             if (file != null) {
                 ImageConverter convertidor = new ImageConverter(file);
-                pago.setComprobante(convertidor.getbase64img());
+                ComprobantePago comprobante = new ComprobantePago();
+                comprobante.setImagen(convertidor.getbase64img());
+                pago.setComprobante(comprobante);
                 file = null;
             }
 
@@ -452,10 +453,8 @@ public class FacturaFormControllerV2 implements Initializable {
             pago_lbl_restante.setText(String.format("%.2f / %.2f", montoPagado(), calcularTotal()));
             clearPagoForm();
         }
-        
-    }
 
-    
+    }
 
     private void clearPagoForm() {
         valor = null;
