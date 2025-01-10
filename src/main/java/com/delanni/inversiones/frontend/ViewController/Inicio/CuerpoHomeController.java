@@ -88,7 +88,7 @@ public class CuerpoHomeController implements Controladores {
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });
-        rest_btn.setOnAction(e ->{
+        rest_btn.setOnAction(e -> {
             EgresoFormController control = App.cargarVentanaModal("Agregar Egreso", "fxml/EgresoForm", true);
         });
         ingresos_pagination.setPageFactory(new Callback<Integer, Node>() {
@@ -133,15 +133,6 @@ public class CuerpoHomeController implements Controladores {
     @Override
     public void setRollovers1600() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    private void loadIngresoForm() {
-        App.bodycenter.cargarBody("fxml/IngresoForm");
-    }
-
-    private void loadEgresoForm() {
-        App.bodycenter.cargarBody("fxml/EgresoForm");
-
     }
 
     public Parent getLastRoot() {
