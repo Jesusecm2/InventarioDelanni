@@ -86,9 +86,11 @@ public class CuerpoHomeController implements Controladores {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
         add_btn.setOnAction(e -> {
-            App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
+            IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });
-
+        rest_btn.setOnAction(e ->{
+            EgresoFormController control = App.cargarVentanaModal("Agregar Egreso", "fxml/EgresoForm", true);
+        });
         ingresos_pagination.setPageFactory(new Callback<Integer, Node>() {
             @Override
             public Node call(Integer param) {
