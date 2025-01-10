@@ -193,7 +193,7 @@
                            </rowConstraints>
                            <children>
                               <Label text="Tipo:" />
-                              <ComboBox fx:id="moneda_Combo1" maxWidth="1.7976931348623157E308" promptText="Egreso" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="egreso_comb" maxWidth="1.7976931348623157E308" promptText="Egreso" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                      </children>

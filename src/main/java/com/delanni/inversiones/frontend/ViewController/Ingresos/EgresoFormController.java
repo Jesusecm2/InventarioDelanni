@@ -11,6 +11,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
+import com.delanni.inversiones.frontend.Backend.Entity.TP_Ingreso;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
@@ -82,6 +83,9 @@ public class EgresoFormController implements Initializable {
     private ComboBox<TipodePago> combo_pagos;
 
     @FXML
+    private ComboBox<TP_Ingreso> egreso_comb;
+
+    @FXML
     private TextField cod_tf;
 
     @FXML
@@ -128,6 +132,11 @@ public class EgresoFormController implements Initializable {
         if (moneda != null) {
             moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
         }
+        List<TP_Ingreso> egresos = bck.obtenerIngreso("E");
+        if (egresos != null) {
+            egreso_comb.setItems(FXCollections.observableArrayList(egresos));
+        }
+
         cargarTiposPago();
         moneda_Combo.setOnAction((e) -> {
             Moneda mon = moneda_Combo.getValue();
@@ -271,7 +280,8 @@ public class EgresoFormController implements Initializable {
     }
 
     private void calcularValorTotal() {
-        if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
+        return;
+        /*if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
             if (valor.getMoneda().getConverted().equals("1")) {
                 Double temp = valor.getValor() * (calcularTotal() - montoPagado());
                 mto_pagado.getValueFactory().setValue(temp);
@@ -279,7 +289,7 @@ public class EgresoFormController implements Initializable {
             }
         }
         Double temp = valor.getValor() * (calcularTotal() - montoPagado());
-        mto_pagado.getValueFactory().setValue(temp);
+        mto_pagado.getValueFactory().setValue(temp);*/
     }
 
 }
