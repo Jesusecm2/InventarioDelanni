@@ -140,4 +140,25 @@ public class PagoImpl implements PagoBackend {
         return null;
     }
 
+    @Override
+    public Pago guardarPagoIngreso(TP_Ingreso ingreso, Pago pago) {
+          Map<String, String> valores = new HashMap<>();
+
+        try {
+            valores.put("ingreso", mapeo.writeValueAsString(ingreso));
+            valores.put("pago", mapeo.writeValueAsString(pago));
+            pet.addBody("request", mapeo.writeValueAsString(valores));
+
+            trans.HttpPostObject("/api/inventario/pago/guardar/pagoingreso", pet);
+            if (pet.getCabecera().get("resp_cod").equals("200")) {
+                return mapeo.readValue(pet.getCuerpo().get("response"), Pago.class);
+            } else {
+                return null;
+            }
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 }

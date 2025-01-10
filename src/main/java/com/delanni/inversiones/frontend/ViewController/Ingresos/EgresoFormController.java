@@ -109,24 +109,12 @@ public class EgresoFormController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
+        mto_pagado.setDisable(false);
         agregar_pago.setDisable(false);
         agregar_pago.setOnAction((e) -> {
             registroPago();
         });
-        chk_parte.setSelected(true);
 
-        chk_parte.setOnAction((e) -> {
-
-            if (!chk_parte.isSelected()) {
-                mto_pagado.setDisable(false);
-                //agregar_pago.setDisable(false);
-            } else {
-                mto_pagado.setDisable(true);
-                calcularValorTotal();
-                //agregar_pago.setDisable(true);
-            }
-
-        });
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
         if (moneda != null) {
@@ -197,7 +185,9 @@ public class EgresoFormController implements Initializable {
 
             pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }
+
         pago.setMoneda(moneda_Combo.getValue());
+
         if (pago.getMoneda().getConverted().equals("1")) {
             pago.setMonto(mto_pagado.getValue() / valor.getValor());
             pago.setValor(valor);
@@ -205,45 +195,13 @@ public class EgresoFormController implements Initializable {
             pago.setMonto(mto_pagado.getValue());
         }
 
-        if (!chk_parte.isSelected()) {
-            if (pago.getMoneda().getConverted().equals("1")) {
-                pago.setMonto(calcularTotal());
-                pago.setValor(valor);
-
-            }
-
-            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
-                return;
-            }
-            if (file != null) {
-                ImageConverter convertidor = new ImageConverter(file);
-                pago.setComprobante(convertidor.getbase64img());
-                file = null;
-            }
-            PagoBackend bcl = new PagoImpl();
-            bcl.guardarPagoFactura(factura, pago);
-            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
-            clearPagoForm();
-        } else {
-            if (pago.getMoneda().getConverted().equals("1")) {
-                pago.setMonto(calcularTotal());
-                pago.setValor(valor);
-
-            }
-
-            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
-                return;
-            }
-            if (file != null) {
-                ImageConverter convertidor = new ImageConverter(file);
-                pago.setComprobante(convertidor.getbase64img());
-                file = null;
-            }
-            PagoBackend bcl = new PagoImpl();
-            bcl.guardarPagoFactura(factura, pago);
-            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
-            clearPagoForm();
+        if (file != null) {
+            ImageConverter convertidor = new ImageConverter(file);
+            pago.setComprobante(convertidor.getbase64img());
+            file = null;
         }
+        PagoBackend bcl = new PagoImpl();
+        bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
 
     }
 
@@ -264,10 +222,9 @@ public class EgresoFormController implements Initializable {
         return this.factura.getSaldo_pagado();
     }
 
-    private Double calcularTotal() {
+    /*private Double calcularTotal() {
         return this.factura.getSaldo();
-    }
-
+    }*/
     public Factura getFactura() {
         return factura;
     }
@@ -275,8 +232,7 @@ public class EgresoFormController implements Initializable {
     public void setFactura(Factura factura) {
 
         this.factura = factura;
-        pago_lbl_restante.setText(String.format("P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
-        calcularValorTotal();
+
     }
 
     private void calcularValorTotal() {

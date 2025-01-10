@@ -30,4 +30,6 @@ public interface PagoBackend {
     public Pago guardarPagoFactura(Factura factura, Pago pago);
 
     public List<TP_Ingreso> obtenerIngreso(String tipo);
+    
+   public Pago guardarPagoIngreso(TP_Ingreso ingreso, Pago pago);
 }
