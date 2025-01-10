@@ -62,6 +62,9 @@ public class EgresoFormController implements Initializable {
 
     @FXML
     private ListView<Pago> list_pagos;
+    
+    @FXML
+    private Button comprobante_btn;
 
     @FXML
     private Label lbl_monto;
@@ -115,7 +118,9 @@ public class EgresoFormController implements Initializable {
         agregar_pago.setOnAction((e) -> {
             registroPago();
         });
-
+        comprobante_btn.setOnAction((e)->{
+            AgregarImagen();
+        });
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
         if (moneda != null) {

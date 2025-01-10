@@ -137,7 +137,7 @@
                         <Label fx:id="lg_titulo_lb1" styleClass="title" text="Agregar Egreso" GridPane.columnSpan="3" />
                         <Label text="Narrativa de pago" GridPane.rowIndex="7" />
                         <TextField fx:id="narra_pag" promptText="Narrativa" GridPane.rowIndex="8" />
-                        <Button id="lg_login_btn" fx:id="save_btn111" mnemonicParsing="false" text="Agregar Comprobante" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                        <Button id="lg_login_btn" fx:id="comprobante_btn" mnemonicParsing="false" text="Agregar Comprobante" GridPane.columnIndex="2" GridPane.rowIndex="3">
                            <styleClass>
                               <String fx:value="btn" />
                               <String fx:value="btn-primary" />

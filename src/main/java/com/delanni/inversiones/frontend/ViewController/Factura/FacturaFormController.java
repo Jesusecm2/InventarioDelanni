@@ -442,4 +442,6 @@ public class FacturaFormController implements Controladores {
         this.nombre_tf.setText(pr.getNombre());
         //this.get
     }
+    
+    
 }

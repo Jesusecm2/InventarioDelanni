@@ -192,6 +192,7 @@ public class FacturaFormControllerV2 implements Initializable {
                 } else {
                     mto_pagado.setDisable(true);
                     agregar_pago.setDisable(true);
+                    calcularValorTotal();
                 }
             } else {
                 chk_parte.setSelected(false);
@@ -514,6 +515,18 @@ public class FacturaFormControllerV2 implements Initializable {
             backend.guardarFactura(guardar, guardarPago);
             System.out.println("Guardado");
         }
+    }
+
+    private void calcularValorTotal() {
+        if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
+            if (moneda_Combo.getSelectionModel().getSelectedItem().getConverted().equals("1")) {
+                Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+                mto_pagado.getValueFactory().setValue(temp);
+                return;
+            }
+        }
+        Double temp = (calcularTotal() - montoPagado());
+        mto_pagado.getValueFactory().setValue(temp);
     }
 
 }
