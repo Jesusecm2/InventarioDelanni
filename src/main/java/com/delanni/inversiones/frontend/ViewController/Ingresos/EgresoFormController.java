@@ -5,174 +5,281 @@
 package com.delanni.inversiones.frontend.ViewController.Ingresos;
 
 import com.delanni.inversiones.frontend.App;
-import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
-import static com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage.left_btn;
-import com.delanni.inversiones.frontend.ViewController.Inicio.CuerpoHomeController;
-import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
-import java.io.IOException;
+import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.Factura;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
+import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
+import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
+import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
+import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
+import java.io.File;
 import java.net.URL;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
+import javafx.stage.Stage;
 
 /**
  *
  * @author Jesusecm
  */
-public class EgresoFormController implements Controladores {
+public class EgresoFormController implements Initializable {
+
+    private Stage window;
+
+    private ValorMoneda valor;
+
+    @FXML
+    private Label pago_lbl_restante;
+    @FXML
+    private Button save_btn11;
+
+    @FXML
+    private Button agregar_pago;
+
+    @FXML
+    private ComboBox<Moneda> moneda_Combo;
+
+    @FXML
+    private ListView<Pago> list_pagos;
+
+    @FXML
+    private Label lbl_monto;
+
+    @FXML
+    private DatePicker fecha_ejec;
+
+    @FXML
+    private TextField narra_pag;
+
+    @FXML
+    private TextField ref_pag;
+
+    private File file;
+
+    @FXML
+    private Spinner<Double> mto_pagado;
+
+    @FXML
+    private ComboBox<TipodePago> combo_pagos;
+
+    @FXML
+    private TextField cod_tf;
+
+    @FXML
+    private Label amnt_lbl;
+
+    @FXML
+    private Label lb_img_nme;
+
+    private Factura factura;
 
     @FXML
     private ImageView img_src;
 
     @FXML
-    private Button btn_add;
+    private CheckBox chk_parte;
 
     @FXML
-    private Button btn_rest;
-
-    @FXML
-    private Button volver_btn;
-
-    private Parent lastRoot;
-
-    private Parent newRoot;
-
-    private StackPane stack_pane;
-
-    public void setLastRoot(Parent lastRoot) {
-        this.lastRoot = lastRoot;
-    }
-
-    public void setNewRoot(Parent newRoot) {
-        this.newRoot = newRoot;
-    }
-
-    public void setStack_pane(StackPane stack_pane) {
-        this.stack_pane = stack_pane;
-    }
-
-    @Override
-    public void responsive800() {
-        btn_add.setOnMouseEntered((e) -> {
-            btn_add.setGraphic(NormalImage.add_btn_rol);
-            btn_add.setCursor(Cursor.HAND);
-        });
-
-        btn_add.setOnMouseExited((e) -> {
-            btn_add.setGraphic(NormalImage.add_btn);
-            btn_add.setCursor(Cursor.DEFAULT);
-        });
-        btn_add.setOnMousePressed((e) -> {
-            btn_add.setGraphic(NormalImage.add_btn_click);
-            btn_add.setCursor(Cursor.CLOSED_HAND);
-
-        });
-        btn_add.setOnMouseReleased((e) -> {
-            btn_add.setGraphic(NormalImage.add_btn_rol);
-            btn_add.setCursor(Cursor.HAND);
-        });
-
-        btn_rest.setOnMouseEntered((e) -> {
-            btn_rest.setGraphic(NormalImage.rest_btn_rol);
-            btn_rest.setCursor(Cursor.HAND);
-        });
-
-        btn_rest.setOnMouseExited((e) -> {
-            btn_rest.setGraphic(NormalImage.rest_btn);
-            btn_rest.setCursor(Cursor.DEFAULT);
-        });
-        btn_rest.setOnMousePressed((e) -> {
-            btn_rest.setGraphic(NormalImage.rest_btn_click);
-            btn_rest.setCursor(Cursor.CLOSED_HAND);
-
-        });
-        btn_rest.setOnMouseReleased((e) -> {
-            btn_rest.setGraphic(NormalImage.rest_btn_rol);
-            btn_rest.setCursor(Cursor.HAND);
-        });
-
-        volver_btn.setOnMouseEntered((e) -> {
-            volver_btn.setGraphic(NormalImage.left_btn_rol);
-            volver_btn.setCursor(Cursor.HAND);
-        });
-
-        volver_btn.setOnMouseExited((e) -> {
-            volver_btn.setGraphic(NormalImage.left_btn);
-            volver_btn.setCursor(Cursor.DEFAULT);
-        });
-        volver_btn.setOnMousePressed((e) -> {
-            volver_btn.setGraphic(NormalImage.left_btn);
-            volver_btn.setCursor(Cursor.CLOSED_HAND);
-
-        });
-        volver_btn.setOnMouseReleased((e) -> {
-            volver_btn.setGraphic(NormalImage.left_btn_rol);
-            volver_btn.setCursor(Cursor.HAND);
-            loadHomeForm();
-        });
-
-    }
-
-    @Override
-    public void responsive1600() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setRollovers800() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setRollovers1600() {
-        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    private CheckBox chk_fecha;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        responsive800();
-        img_src.setImage(NormalImage.addimg_btn.getImage());
-        btn_add.setGraphic(NormalImage.add_btn);
-        btn_rest.setGraphic(NormalImage.rest_btn);
-        volver_btn.setGraphic(NormalImage.left_btn);
+        img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
+        mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
+        agregar_pago.setDisable(false);
+        agregar_pago.setOnAction((e) -> {
+            registroPago();
+        });
+        chk_parte.setSelected(true);
+
+        chk_parte.setOnAction((e) -> {
+
+            if (!chk_parte.isSelected()) {
+                mto_pagado.setDisable(false);
+                //agregar_pago.setDisable(false);
+            } else {
+                mto_pagado.setDisable(true);
+                calcularValorTotal();
+                //agregar_pago.setDisable(true);
+            }
+
+        });
+        PagoBackend bck = new PagoImpl();
+        List<Moneda> moneda = bck.obtenerMonedas();
+        if (moneda != null) {
+            moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
+        }
+        cargarTiposPago();
+        moneda_Combo.setOnAction((e) -> {
+            Moneda mon = moneda_Combo.getValue();
+            if (mon != null && mon.getConverted().equals("1")) {
+                PagoBackend bl = new PagoImpl();
+                valor = bl.obtenerValorMonedaHoy(mon);
+                if (valor == null) {
+                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
+                    control.setMoneda(mon);
+                    moneda_Combo.getSelectionModel().clearSelection();
+
+                } else {
+
+                    amnt_lbl.setText(String.format("%.2f", valor.getValor()));
+                    lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                    calcularValorTotal();
+                }
+            } else if (mon != null) {
+                amnt_lbl.setText("");
+                lbl_monto.setText("Monto en ".concat(mon.getCcy()));
+            }
+        });
+        save_btn11.setOnAction((e) -> {
+            AgregarImagen();
+        });
     }
 
-    private void loadHomeForm() {
-        try {
-            //this.setLastRoot(getNewRoot());
-            Parent root = App.loadFXML("fxml/CuerpoHome");
-            CuerpoHomeController control = App.loadctual.getController();
-            control.setLastRoot(root);
-            control.setNewRoot(root);
-            control.setStack_pane(stack_pane);
-            this.setNewRoot(root);
-            Scene secene = stack_pane.getScene();
-            root.translateXProperty().set(secene.getWidth());
-            stack_pane.getChildren().add(root);
-            Timeline timeline = new Timeline();
-            KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-            KeyFrame kf = new KeyFrame(Duration.seconds(1), kv);
-            timeline.getKeyFrames().add(kf);
-            timeline.setOnFinished(t -> {
-                stack_pane.getChildren().remove(lastRoot);
+    public Stage getWindow() {
+        return window;
+    }
 
-            });
-            timeline.play();
+    public void setWindow(Stage window) {
+        this.window = window;
+    }
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    private void cargarTiposPago() {
+        PagoBackend service = new PagoImpl();
+        List<TipodePago> list = service.obtenerTiposPago();
+        if (list != null && !list.isEmpty()) {
+            combo_pagos.setItems(FXCollections.observableArrayList(list));
+        }
+    }
+
+    private void AgregarImagen() {
+        File fl = SelecionArchivos.seleccionarImagen();
+        if (fl != null) {
+            lb_img_nme.setText(fl.getName());
+            file = fl;
+        }
+    }
+
+    private void registroPago() {
+        Pago pago = new Pago();
+        pago.setTipo(combo_pagos.getValue());
+        pago.setNarrativa(narra_pag.getText());
+        pago.setCod_ejecucion(ref_pag.getText());
+        if (chk_fecha.isSelected()) {
+
+            pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+        pago.setMoneda(moneda_Combo.getValue());
+        if (pago.getMoneda().getConverted().equals("1")) {
+            pago.setMonto(mto_pagado.getValue() / valor.getValor());
+            pago.setValor(valor);
+        } else {
+            pago.setMonto(mto_pagado.getValue());
         }
 
+        if (!chk_parte.isSelected()) {
+            if (pago.getMoneda().getConverted().equals("1")) {
+                pago.setMonto(calcularTotal());
+                pago.setValor(valor);
+
+            }
+
+            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+                return;
+            }
+            if (file != null) {
+                ImageConverter convertidor = new ImageConverter(file);
+                pago.setComprobante(convertidor.getbase64img());
+                file = null;
+            }
+            PagoBackend bcl = new PagoImpl();
+            bcl.guardarPagoFactura(factura, pago);
+            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+            clearPagoForm();
+        } else {
+            if (pago.getMoneda().getConverted().equals("1")) {
+                pago.setMonto(calcularTotal());
+                pago.setValor(valor);
+
+            }
+
+            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+                return;
+            }
+            if (file != null) {
+                ImageConverter convertidor = new ImageConverter(file);
+                pago.setComprobante(convertidor.getbase64img());
+                file = null;
+            }
+            PagoBackend bcl = new PagoImpl();
+            bcl.guardarPagoFactura(factura, pago);
+            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+            clearPagoForm();
+        }
+
+    }
+
+    private void clearPagoForm() {
+        valor = null;
+        combo_pagos.getSelectionModel().clearSelection();
+        //chk_parte.setSelected(false);
+        mto_pagado.getValueFactory().setValue(0.0);
+        //mto_pagado.setDisable(true);
+        moneda_Combo.getSelectionModel().clearSelection();
+        narra_pag.setText("");
+        ref_pag.setText("");
+        lb_img_nme.setText("Empty");
+
+    }
+
+    private Double montoPagado() {
+        return this.factura.getSaldo_pagado();
+    }
+
+    private Double calcularTotal() {
+        return this.factura.getSaldo();
+    }
+
+    public Factura getFactura() {
+        return factura;
+    }
+
+    public void setFactura(Factura factura) {
+
+        this.factura = factura;
+        pago_lbl_restante.setText(String.format("P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+        calcularValorTotal();
+    }
+
+    private void calcularValorTotal() {
+        if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
+            if (valor.getMoneda().getConverted().equals("1")) {
+                Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+                mto_pagado.getValueFactory().setValue(temp);
+                return;
+            }
+        }
+        Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+        mto_pagado.getValueFactory().setValue(temp);
     }
 
 }

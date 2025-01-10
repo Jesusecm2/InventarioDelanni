@@ -4,7 +4,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
@@ -22,7 +24,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <GridPane alignment="TOP_CENTER" maxWidth="500.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <GridPane alignment="TOP_CENTER" maxWidth="500.0" visible="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -55,7 +57,7 @@
                         <Rectangle2D />
                      </viewport>
                   </ImageView>
-                  <Label fx:id="lg_titulo_lb" styleClass="title" text="Agregar Ingreso" GridPane.columnSpan="3" />
+                  <Label fx:id="lg_titulo_lb" styleClass="title" text="Pagar Factura" GridPane.columnSpan="2" />
                   <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Guardar" GridPane.halignment="LEFT" GridPane.rowIndex="9">
                      <styleClass>
                         <String fx:value="btn" />
@@ -65,7 +67,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label text="Narrativa de Ingreso" GridPane.rowIndex="2" />
+                  <Label text="Narrativa de pago" GridPane.rowIndex="2" />
                   <TextField GridPane.rowIndex="3" />
                   <Label text="Monto en Bolívares" GridPane.rowIndex="4" />
                   <Spinner maxWidth="1.7976931348623157E308" GridPane.rowIndex="5" />
@@ -82,8 +84,6 @@
                      </GridPane.margin>
                   </TextField>
                   <ComboBox maxWidth="1.7976931348623157E308" promptText="Seleccionar cuenta" GridPane.rowIndex="8" />
-                  <ComboBox promptText="Tipo de Ingreso" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
-                  <Label text="Categoría de Ingreso" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                </children>
                <GridPane.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -96,6 +96,124 @@
          <styleClass>
             <String fx:value="panel-primary" />
             <String fx:value="radiusnormal" />
+         </styleClass>
+      </GridPane>
+      <GridPane prefHeight="300.0" prefWidth="500.0" stylesheets="@../css/styles.css">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <GridPane alignment="TOP_CENTER" maxWidth="500.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <GridPane maxWidth="500.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+                        <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" />
+                        <Label fx:id="lg_titulo_lb1" styleClass="title" text="Agregar Ingreso" GridPane.columnSpan="3" />
+                        <Label text="Narrativa de pago" GridPane.rowIndex="7" />
+                        <TextField fx:id="narra_pag" promptText="Narrativa" GridPane.rowIndex="8" />
+                        <Label fx:id="lbl_monto" text="Monto en Bolívares" GridPane.rowIndex="3" />
+                        <Button id="lg_login_btn" fx:id="save_btn111" mnemonicParsing="false" text="Agregar Comprobante" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                           <styleClass>
+                              <String fx:value="btn" />
+                              <String fx:value="btn-primary" />
+                           </styleClass>
+                        </Button>
+                        <Label text="Referencia" GridPane.rowIndex="5" />
+                        <TextField fx:id="ref_pag" promptText="Referencia" GridPane.rowIndex="6">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </TextField>
+                        <ComboBox fx:id="combo_pagos" maxWidth="1.7976931348623157E308" promptText="Tipo de Pago" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                        <Button fx:id="fin_factura" mnemonicParsing="false" text="Finalizar Compra" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                        <GridPane GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Spinner fx:id="mto_pagado" disable="true" editable="true" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
+                              <CheckBox fx:id="chk_parte" mnemonicParsing="false" text="Pago Total" />
+                           </children>
+                        </GridPane>
+                        <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Ingreso" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <Label fx:id="lb_img_nme" text="Imageicon.png" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="fecha_ejec" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <CheckBox fx:id="chk_fecha" mnemonicParsing="false" text="Fecha ejecución" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                        <GridPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Moneda" />
+                              <ComboBox fx:id="moneda_Combo" maxWidth="1.7976931348623157E308" promptText="Moneda" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Label fx:id="amnt_lbl" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <GridPane GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Tipo:" />
+                              <ComboBox fx:id="moneda_Combo1" maxWidth="1.7976931348623157E308" promptText="Ingreso" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </GridPane.margin>
+                  </GridPane>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </GridPane.margin>
+               <styleClass>
+                  <String fx:value="panel-primary" />
+                  <String fx:value="radiusnormal" />
+               </styleClass>
+            </GridPane>
+         </children>
+         <styleClass>
+            <String fx:value="plano" />
+            <String fx:value="modalsize" />
          </styleClass>
       </GridPane>
    </children>

@@ -33,6 +33,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -104,10 +105,12 @@ public class PagoFacturaController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
+        mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         agregar_pago.setDisable(false);
         agregar_pago.setOnAction((e) -> {
             registroPago();
         });
+        chk_parte.setSelected(true);
 
         chk_parte.setOnAction((e) -> {
 
@@ -116,6 +119,7 @@ public class PagoFacturaController implements Initializable {
                 //agregar_pago.setDisable(false);
             } else {
                 mto_pagado.setDisable(true);
+                calcularValorTotal();
                 //agregar_pago.setDisable(true);
             }
 
@@ -137,8 +141,10 @@ public class PagoFacturaController implements Initializable {
                     moneda_Combo.getSelectionModel().clearSelection();
 
                 } else {
+
                     amnt_lbl.setText(String.format("%.2f", valor.getValor()));
                     lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                    calcularValorTotal();
                 }
             } else if (mon != null) {
                 amnt_lbl.setText("");
@@ -191,7 +197,7 @@ public class PagoFacturaController implements Initializable {
             pago.setMonto(mto_pagado.getValue());
         }
 
-        if (chk_parte.isSelected()) {
+        if (!chk_parte.isSelected()) {
             if (pago.getMoneda().getConverted().equals("1")) {
                 pago.setMonto(calcularTotal());
                 pago.setValor(valor);
@@ -206,7 +212,27 @@ public class PagoFacturaController implements Initializable {
                 pago.setComprobante(convertidor.getbase64img());
                 file = null;
             }
+            PagoBackend bcl = new PagoImpl();
+            bcl.guardarPagoFactura(factura, pago);
+            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+            clearPagoForm();
+        } else {
+            if (pago.getMoneda().getConverted().equals("1")) {
+                pago.setMonto(calcularTotal());
+                pago.setValor(valor);
 
+            }
+
+            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+                return;
+            }
+            if (file != null) {
+                ImageConverter convertidor = new ImageConverter(file);
+                pago.setComprobante(convertidor.getbase64img());
+                file = null;
+            }
+            PagoBackend bcl = new PagoImpl();
+            bcl.guardarPagoFactura(factura, pago);
             pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
             clearPagoForm();
         }
@@ -227,11 +253,11 @@ public class PagoFacturaController implements Initializable {
     }
 
     private Double montoPagado() {
-        return factura.getSaldo_pagado();
+        return this.factura.getSaldo_pagado();
     }
 
     private Double calcularTotal() {
-        return factura.getSaldo();
+        return this.factura.getSaldo();
     }
 
     public Factura getFactura() {
@@ -242,6 +268,19 @@ public class PagoFacturaController implements Initializable {
 
         this.factura = factura;
         pago_lbl_restante.setText(String.format("P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+        calcularValorTotal();
+    }
+
+    private void calcularValorTotal() {
+        if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
+            if (valor.getMoneda().getConverted().equals("1")) {
+                Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+                mto_pagado.getValueFactory().setValue(temp);
+                return;
+            }
+        }
+        Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+        mto_pagado.getValueFactory().setValue(temp);
     }
 
 }

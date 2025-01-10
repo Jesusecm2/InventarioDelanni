@@ -134,7 +134,7 @@
                      </rowConstraints>
                      <children>
                         <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" />
-                        <Label fx:id="lg_titulo_lb1" styleClass="title" text="Pagar Factura" GridPane.columnSpan="2" />
+                        <Label fx:id="lg_titulo_lb1" styleClass="title" text="Pagar Factura" GridPane.columnSpan="3" />
                         <Label text="Narrativa de pago" GridPane.rowIndex="7" />
                         <TextField fx:id="narra_pag" promptText="Narrativa" GridPane.rowIndex="8" />
                         <Label fx:id="lbl_monto" text="Monto en Bolívares" GridPane.rowIndex="3" />
