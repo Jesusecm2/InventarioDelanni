@@ -103,6 +103,12 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private Spinner<Double> mto_pagado;
+    
+    @FXML
+    private Spinner<Double> iva_value;
+    
+    @FXML
+    private Spinner<Double> excento_value;
 
     @FXML
     private Button save_btn11;
@@ -183,6 +189,13 @@ public class FacturaFormControllerV2 implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         upd_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
+        iva_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
+        excento_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
+        
+        
+        iva_value.getValueFactory().setValue(0.0);
+        excento_value.getValueFactory().setValue(0.0);
+        
         chk_parte.setSelected(true);
         chk_parte.setOnAction((e) -> {
             if (listado_pagos == null || listado_pagos.isEmpty()) {
@@ -493,6 +506,8 @@ public class FacturaFormControllerV2 implements Initializable {
         Factura factura = new Factura();
         factura.setIdProveedor(proveedor);
         List<LineaFactura> listado = new ArrayList<>();
+        factura.setIVA(iva_value.getValue());
+        factura.setExento(excento_value.getValue());
         table_view.getItems().forEach((e) -> {
             LineaFactura lnf = new LineaFactura();
             lnf.setCantidad(e.getCantidad());

@@ -38,7 +38,7 @@ public class TProducto {
         this.producto = producto;
         this.cantidad = cantidad;
         this.precio_unit = producto.getPrecio_unit();
-        this.precio_unit = producto.getPrecio_vent();
+       // this.precio_unit = producto.getPrecio_vent();
         this.total = precio_unit*cantidad;
         this.Sprecio_unit = String.format("%.2f", precio_unit);
         this.Scantidad = String.format("%.2f*%.2f", precio_unit,cantidad);

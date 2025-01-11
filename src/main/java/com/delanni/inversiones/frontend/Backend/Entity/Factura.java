@@ -28,8 +28,40 @@ public class Factura {
     private Date create_at;
 
     private Proveedor idProveedor;
+    
+    	private Double sub_total;
+	
+	private Double IVA;
+	
+	private Double exento;
 
     private List<LineaFactura> lineas;
+
+    public Double getSub_total() {
+        return sub_total;
+    }
+
+    public void setSub_total(Double sub_total) {
+        this.sub_total = sub_total;
+    }
+
+    public Double getIVA() {
+        return IVA;
+    }
+
+    public void setIVA(Double IVA) {
+        this.IVA = IVA;
+    }
+
+    public Double getExento() {
+        return exento;
+    }
+
+    public void setExento(Double exento) {
+        this.exento = exento;
+    }
+    
+    
 
     public Long getId() {
         return id;

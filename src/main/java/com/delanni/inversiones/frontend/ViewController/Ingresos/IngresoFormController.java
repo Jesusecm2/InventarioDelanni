@@ -139,7 +139,7 @@ public class IngresoFormController implements Initializable {
         if (moneda != null) {
             moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
         }
-        List<TP_Ingreso> egresos = bck.obtenerIngreso("E");
+        List<TP_Ingreso> egresos = bck.obtenerIngreso("I");
         if (egresos != null) {
             egreso_comb.setItems(FXCollections.observableArrayList(egresos));
         }
