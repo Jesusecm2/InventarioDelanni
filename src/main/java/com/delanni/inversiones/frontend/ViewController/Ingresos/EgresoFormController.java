@@ -121,6 +121,15 @@ public class EgresoFormController implements Initializable {
         comprobante_btn.setOnAction((e)->{
             AgregarImagen();
         });
+        
+        chk_fecha.setOnAction((e)->{
+            if(chk_fecha.isSelected()){
+                fecha_ejec.setDisable(false);
+            }else{
+                fecha_ejec.setDisable(true);
+            }
+        });
+        
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
         if (moneda != null) {

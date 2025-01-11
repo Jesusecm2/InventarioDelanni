@@ -101,6 +101,9 @@ public class ProductoFormController implements Controladores {
 
     @FXML
     private TextArea text_area;
+    
+    @FXML
+    private TextArea nombre_area;
 
     @FXML
     private Label success_msg;
@@ -164,7 +167,7 @@ public class ProductoFormController implements Controladores {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
-        nombre_tf.setText(producto.getNombre());
+        nombre_area.setText(producto.getNombre());
         if (producto.getCodigo() != null && !producto.getCodigo().isBlank()) {
             cod_tf.setText(producto.getCodigo());
             cod_tf.setDisable(true);
@@ -431,7 +434,7 @@ public class ProductoFormController implements Controladores {
         if (this.producto == null) {
             producto = new Producto();
         }
-        producto.setNombre(nombre_tf.getText());
+        producto.setNombre(nombre_area.getText());
         if (chk_tf.isSelected()) {
             producto.setCodigo(cod_tf.getText());
         }
@@ -520,7 +523,7 @@ public class ProductoFormController implements Controladores {
 
     private void limpiarCampos() {
         cantidad_tf.setText("");
-        nombre_tf.setText("");
+        nombre_area.setText("");
         cod_tf.setText("");
         precio_unit.getValueFactory().setValue(0.0);
         precio_vent.getValueFactory().setValue(0.0);
