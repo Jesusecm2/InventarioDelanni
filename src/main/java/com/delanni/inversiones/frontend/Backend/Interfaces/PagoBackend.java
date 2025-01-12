@@ -10,6 +10,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface PagoBackend {
     public List<TpIngreso> obtenerIngreso(String tipo);
     
    public Pago guardarPagoIngreso(TpIngreso ingreso, Pago pago);
+   
+   public List<Transacciones> obtenerEgresos();
 }

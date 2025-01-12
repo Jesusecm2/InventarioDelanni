@@ -23,9 +23,9 @@ public class TIngreso {
     
     private Double monto;
 
-    public TIngreso(Transacciones trans, TpIngreso ingreso) {
+    public TIngreso(Transacciones trans) {
         this.trans = trans;
-        this.ingreso = ingreso;
+        this.ingreso = trans.getTpIngreso();
         if(trans.getPago()!=null){
             this.transref = trans.getPago().getNarrativa();
             this.monto = trans.getPago().getMonto();

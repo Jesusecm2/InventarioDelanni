@@ -16,6 +16,8 @@ import com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity.TIng
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -102,7 +104,7 @@ public class CuerpoHomeController implements Controladores {
         tb_ref = new TableColumn<>("Referencia");
         tb_ref.setCellValueFactory(new PropertyValueFactory<>("transref"));
         
-        tb_monto = new TableColumn<>("Referencia");
+        tb_monto = new TableColumn<>("Monto");
         tb_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
         
         tb_egresos.getColumns().clear();
@@ -111,7 +113,15 @@ public class CuerpoHomeController implements Controladores {
         tb_egresos.getColumns().add(tb_monto);
         
         PagoBackend back = new PagoImpl();
-        
+        List<Transacciones> egresos = back.obtenerEgresos();
+        if(egresos!=null && !egresos.isEmpty()){
+            List<TIngreso> listado = new ArrayList<>();
+            egresos.forEach((e)->{
+                TIngreso ingresos = new TIngreso(e);
+                listado.add(ingresos);
+            });
+            tb_egresos.setItems(FXCollections.observableArrayList(listado));
+        }
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });

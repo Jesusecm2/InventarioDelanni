@@ -14,6 +14,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -152,6 +153,22 @@ public class PagoImpl implements PagoBackend {
             trans.HttpPostObject("/api/inventario/pago/guardar/pagoingreso", pet);
             if (pet.getCabecera().get("resp_cod").equals("200")) {
                 return mapeo.readValue(pet.getCuerpo().get("response"), Pago.class);
+            } else {
+                return null;
+            }
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Transacciones> obtenerEgresos() {
+        try {
+            trans.HttpGetObject("/api/inventario/pago/obtener/Egresos", pet);
+
+            if (pet.getCabecera().get("resp_cod").equals("200")) {
+                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Transacciones[].class)));
             } else {
                 return null;
             }

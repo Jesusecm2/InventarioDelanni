@@ -13,7 +13,6 @@ import java.util.Date;
  */
 public class Transacciones {
 
-
     private Long id;
 
     private Cuenta cuenta;
@@ -28,16 +27,13 @@ public class Transacciones {
 
     private Pago pago;
 
-
     private Cliente id_cliente;
 
-    
     private Producto id_producto;
 
-  
     private Factura id_factura;
 
-    private TpIngreso id_TP_Ingreso;
+    private TpIngreso tpIngreso;
 
     public Cuenta getCuenta() {
         return cuenta;
@@ -143,12 +139,12 @@ public class Transacciones {
         this.id_factura = id_factura;
     }
 
-    public TpIngreso getId_TP_Ingreso() {
-        return id_TP_Ingreso;
+    public TpIngreso getTpIngreso() {
+        return tpIngreso;
     }
 
-    public void setId_TP_Ingreso(TpIngreso id_TP_Ingreso) {
-        this.id_TP_Ingreso = id_TP_Ingreso;
+    public void setTpIngreso(TpIngreso tpIngreso) {
+        this.tpIngreso = tpIngreso;
     }
 
 }

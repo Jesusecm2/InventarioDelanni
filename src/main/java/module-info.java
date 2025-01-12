@@ -29,6 +29,8 @@ module InventarioDelanni {
     exports com.delanni.inversiones.frontend.ViewController.Pagos;
     exports com.delanni.inversiones.frontend.ViewController.Ventas;
     exports com.delanni.inversiones.frontend.Backend.Entity.Pagos;
+    exports com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity;
+    opens com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity;
     opens com.delanni.inversiones.frontend.Backend.Entity.Pagos;
     opens com.delanni.inversiones.frontend.ViewController.Inicio;
         exports com.delanni.inversiones.frontend.ViewController.Producto;
