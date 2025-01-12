@@ -5,9 +5,14 @@
 package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.EgresoFormController;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.IngresoFormController;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
+import com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity.TIngreso;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +36,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
@@ -56,12 +62,16 @@ public class CuerpoHomeController implements Controladores {
     private Parent newRoot;
 
     private StackPane stack_pane;
-
+    
     @FXML
-    private Pagination ingresos_pagination;
-
-    @FXML
-    private Pagination egreso_pagination;
+    private TableView<TIngreso> tb_egresos;
+    
+    private TableColumn<TIngreso,TpIngreso> tb_descripcion;
+    
+    private TableColumn<TIngreso,String> tb_ref;
+    
+    private TableColumn<TIngreso,Double> tb_monto;
+    
 
     @FXML
     private LineChart<CategoryAxis, NumberAxis> chart_main;
@@ -85,24 +95,31 @@ public class CuerpoHomeController implements Controladores {
     public void initialize(URL location, ResourceBundle resources) {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
+        
+        tb_descripcion = new TableColumn<>("Descripcion");
+        tb_descripcion.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
+        
+        tb_ref = new TableColumn<>("Referencia");
+        tb_ref.setCellValueFactory(new PropertyValueFactory<>("transref"));
+        
+        tb_monto = new TableColumn<>("Referencia");
+        tb_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        
+        tb_egresos.getColumns().clear();
+        tb_egresos.getColumns().add(tb_descripcion);
+        tb_egresos.getColumns().add(tb_ref);
+        tb_egresos.getColumns().add(tb_monto);
+        
+        PagoBackend back = new PagoImpl();
+        
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });
         rest_btn.setOnAction(e -> {
             EgresoFormController control = App.cargarVentanaModal("Agregar Egreso", "fxml/EgresoForm", true);
         });
-        ingresos_pagination.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer param) {
-                return TablaIngresos();
-            }
-        });
-        egreso_pagination.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer param) {
-                return TablaIngresos();
-            }
-        });
+        
+        
 
         XYChart.Series series = new XYChart.Series();
         series.setName("No of schools in an year");

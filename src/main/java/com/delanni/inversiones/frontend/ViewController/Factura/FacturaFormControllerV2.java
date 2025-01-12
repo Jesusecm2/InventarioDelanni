@@ -436,7 +436,7 @@ public class FacturaFormControllerV2 implements Initializable {
             pago.setNarrativa(narra_pag.getText());
             pago.setCod_ejecucion(ref_pag.getText());
             if (chk_fecha.isSelected()) {
-
+            
                 pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
             pago.setMoneda(moneda_Combo.getValue());

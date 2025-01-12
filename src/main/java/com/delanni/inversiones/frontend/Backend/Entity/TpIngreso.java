@@ -8,7 +8,7 @@ package com.delanni.inversiones.frontend.Backend.Entity;
  *
  * @author Jesusecm
  */
-public class TP_Ingreso {
+public class TpIngreso {
 
     private Long id;
 

@@ -13,7 +13,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
-import com.delanni.inversiones.frontend.Backend.Entity.TP_Ingreso;
+import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,13 +124,13 @@ public class PagoImpl implements PagoBackend {
     }
 
     @Override
-    public List<TP_Ingreso> obtenerIngreso(String tipo) {
+    public List<TpIngreso> obtenerIngreso(String tipo) {
         try {
             pet.addParameter("tipo", tipo);
             trans.HttpGetObject("/api/inventario/pago/obtener/tingreso", pet);
 
             if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), TP_Ingreso[].class)));
+                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), TpIngreso[].class)));
             } else {
                 return null;
             }
@@ -141,7 +141,7 @@ public class PagoImpl implements PagoBackend {
     }
 
     @Override
-    public Pago guardarPagoIngreso(TP_Ingreso ingreso, Pago pago) {
+    public Pago guardarPagoIngreso(TpIngreso ingreso, Pago pago) {
         Map<String, String> valores = new HashMap<>();
 
         try {

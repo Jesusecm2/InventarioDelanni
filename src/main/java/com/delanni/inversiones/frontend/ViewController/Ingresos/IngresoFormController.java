@@ -12,7 +12,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
-import com.delanni.inversiones.frontend.Backend.Entity.TP_Ingreso;
+import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
@@ -100,7 +100,7 @@ public class IngresoFormController implements Initializable {
     private ComboBox<TipodePago> combo_pagos;
 
     @FXML
-    private ComboBox<TP_Ingreso> egreso_comb;
+    private ComboBox<TpIngreso> egreso_comb;
 
     @FXML
     private TextField cod_tf;
@@ -139,7 +139,7 @@ public class IngresoFormController implements Initializable {
         if (moneda != null) {
             moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
         }
-        List<TP_Ingreso> egresos = bck.obtenerIngreso("I");
+        List<TpIngreso> egresos = bck.obtenerIngreso("I");
         if (egresos != null) {
             egreso_comb.setItems(FXCollections.observableArrayList(egresos));
         }

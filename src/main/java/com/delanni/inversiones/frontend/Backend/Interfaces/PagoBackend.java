@@ -9,7 +9,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
-import com.delanni.inversiones.frontend.Backend.Entity.TP_Ingreso;
+import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface PagoBackend {
 
     public Pago guardarPagoFactura(Factura factura, Pago pago);
 
-    public List<TP_Ingreso> obtenerIngreso(String tipo);
+    public List<TpIngreso> obtenerIngreso(String tipo);
     
-   public Pago guardarPagoIngreso(TP_Ingreso ingreso, Pago pago);
+   public Pago guardarPagoIngreso(TpIngreso ingreso, Pago pago);
 }
