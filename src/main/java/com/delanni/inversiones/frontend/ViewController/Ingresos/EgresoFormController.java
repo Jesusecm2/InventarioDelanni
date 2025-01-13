@@ -16,6 +16,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -116,7 +118,8 @@ public class EgresoFormController implements Initializable {
         mto_pagado.setDisable(false);
         agregar_pago.setDisable(false);
         agregar_pago.setOnAction((e) -> {
-            registroPago();
+          registroPago();
+          
         });
         comprobante_btn.setOnAction((e)->{
             AgregarImagen();
@@ -137,6 +140,7 @@ public class EgresoFormController implements Initializable {
         }
         List<TpIngreso> egresos = bck.obtenerIngreso("E");
         if (egresos != null) {
+            
             egreso_comb.setItems(FXCollections.observableArrayList(egresos));
         }
 
@@ -218,13 +222,28 @@ public class EgresoFormController implements Initializable {
             file = null;
         }
         PagoBackend bcl = new PagoImpl();
-        bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
+        Pago retorno = bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
+        if(retorno!=null){
+            
+            clearPagoForm();
+        }
 
     }
 
     private void clearPagoForm() {
-        valor = null;
+            Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Completado", "Se guardo exitosamente", null);
+            alert.showAndWait();
+            Stage st = (Stage) this.combo_pagos.getParent().getScene().getWindow();
+            st.close();
+        /*valor = null;
+        
+        
         combo_pagos.getSelectionModel().clearSelection();
+        
+        combo_pagos.getEditor().clear();
+        
+
+        //combo_pagos.getEditor().setPromptText("Alocate");
         //chk_parte.setSelected(false);
         mto_pagado.getValueFactory().setValue(0.0);
         //mto_pagado.setDisable(true);
@@ -232,7 +251,7 @@ public class EgresoFormController implements Initializable {
         narra_pag.setText("");
         ref_pag.setText("");
         lb_img_nme.setText("Empty");
-
+*/
     }
 
     private Double montoPagado() {
@@ -264,11 +283,6 @@ public class EgresoFormController implements Initializable {
         Double temp = valor.getValor() * (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);*/
     }
-    
-    
-    private void clearForm(){
-        combo_pagos.getSelectionModel().clearSelection();
-        combo_pagos.getEditor().clear();
-    }
+
 
 }

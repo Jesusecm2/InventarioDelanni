@@ -18,6 +18,7 @@ import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
 import com.delanni.inversiones.frontend.ViewController.Inicio.CuerpoHomeController;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
@@ -38,6 +39,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -222,20 +224,19 @@ public class IngresoFormController implements Initializable {
             file = null;
         }
         PagoBackend bcl = new PagoImpl();
-        bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
+        Pago retorno = bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
+        if (retorno != null) {
+
+            clearPagoForm();
+        }
 
     }
 
     private void clearPagoForm() {
-        valor = null;
-        combo_pagos.getSelectionModel().clearSelection();
-        //chk_parte.setSelected(false);
-        mto_pagado.getValueFactory().setValue(0.0);
-        //mto_pagado.setDisable(true);
-        moneda_Combo.getSelectionModel().clearSelection();
-        narra_pag.setText("");
-        ref_pag.setText("");
-        lb_img_nme.setText("Empty");
+        Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Completado", "Se guardo exitosamente", null);
+        alert.showAndWait();
+        Stage st = (Stage) this.combo_pagos.getParent().getScene().getWindow();
+        st.close();
 
     }
 
