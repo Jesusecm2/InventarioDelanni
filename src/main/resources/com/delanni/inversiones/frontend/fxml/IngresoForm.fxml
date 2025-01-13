@@ -134,7 +134,7 @@
                      </rowConstraints>
                      <children>
                         <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" />
-                        <Label fx:id="lg_titulo_lb1" styleClass="title" text="Agregar Egreso" GridPane.columnSpan="3" />
+                        <Label fx:id="lg_titulo_lb1" styleClass="title" text="Agregar Ingreso" GridPane.columnSpan="3" />
                         <Label text="Narrativa de pago" GridPane.rowIndex="7" />
                         <TextField fx:id="narra_pag" promptText="Narrativa" GridPane.rowIndex="8" />
                         <Button id="lg_login_btn" fx:id="comprobante_btn" mnemonicParsing="false" text="Agregar Comprobante" GridPane.columnIndex="2" GridPane.rowIndex="3">
@@ -165,7 +165,7 @@
                               <Label fx:id="lbl_monto" text="Monto en Bolívares" />
                            </children>
                         </GridPane>
-                        <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Egreso" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Ingreso" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                         <Label fx:id="lb_img_nme" text="Imageicon.png" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                         <DatePicker fx:id="fecha_ejec" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                         <CheckBox fx:id="chk_fecha" mnemonicParsing="false" text="Fecha ejecución" GridPane.columnIndex="2" GridPane.rowIndex="6" />
@@ -193,7 +193,7 @@
                            </rowConstraints>
                            <children>
                               <Label text="Tipo:" />
-                              <ComboBox fx:id="egreso_comb" maxWidth="1.7976931348623157E308" promptText="Egreso" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="egreso_comb" maxWidth="1.7976931348623157E308" promptText="Ingreso" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                      </children>

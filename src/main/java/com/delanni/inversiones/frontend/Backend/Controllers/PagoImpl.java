@@ -178,4 +178,20 @@ public class PagoImpl implements PagoBackend {
         return null;
     }
 
+    @Override
+    public List<Transacciones> obtenerIngresos() {
+        try {
+            trans.HttpGetObject("/api/inventario/pago/obtener/Ingresos", pet);
+
+            if (pet.getCabecera().get("resp_cod").equals("200")) {
+                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Transacciones[].class)));
+            } else {
+                return null;
+            }
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 }

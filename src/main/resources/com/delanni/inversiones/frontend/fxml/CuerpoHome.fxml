@@ -43,7 +43,7 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="add_btn" mnemonicParsing="false" text="Agregar Ingreso" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <Button fx:id="rest_btn" mnemonicParsing="false" text="Agregar Egreso" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <TableView fx:id="tb_ingreso" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
               <columns>
                 <TableColumn prefWidth="75.0" text="Descripcion" />
                   <TableColumn prefWidth="75.0" text="Referencia" />

@@ -64,16 +64,24 @@ public class CuerpoHomeController implements Controladores {
     private Parent newRoot;
 
     private StackPane stack_pane;
-    
+
     @FXML
     private TableView<TIngreso> tb_egresos;
-    
-    private TableColumn<TIngreso,TpIngreso> tb_descripcion;
-    
-    private TableColumn<TIngreso,String> tb_ref;
-    
-    private TableColumn<TIngreso,Double> tb_monto;
-    
+
+    private TableColumn<TIngreso, TpIngreso> tb_descripcion;
+
+    private TableColumn<TIngreso, String> tb_ref;
+
+    private TableColumn<TIngreso, Double> tb_monto;
+
+    @FXML
+    private TableView<TIngreso> tb_ingreso;
+
+    private TableColumn<TIngreso, TpIngreso> tb_descripcion1;
+
+    private TableColumn<TIngreso, String> tb_ref1;
+
+    private TableColumn<TIngreso, Double> tb_monto1;
 
     @FXML
     private LineChart<CategoryAxis, NumberAxis> chart_main;
@@ -97,39 +105,69 @@ public class CuerpoHomeController implements Controladores {
     public void initialize(URL location, ResourceBundle resources) {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
-        
+
         tb_descripcion = new TableColumn<>("Descripcion");
         tb_descripcion.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
-        
+
         tb_ref = new TableColumn<>("Referencia");
         tb_ref.setCellValueFactory(new PropertyValueFactory<>("transref"));
-        
+
         tb_monto = new TableColumn<>("Monto");
         tb_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
         
+                tb_descripcion1 = new TableColumn<>("Descripcion");
+        tb_descripcion1.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
+
+        tb_ref1 = new TableColumn<>("Referencia");
+        tb_ref1.setCellValueFactory(new PropertyValueFactory<>("transref"));
+
+        tb_monto1= new TableColumn<>("Monto");
+        tb_monto1.setCellValueFactory(new PropertyValueFactory<>("monto"));
+
         tb_egresos.getColumns().clear();
         tb_egresos.getColumns().add(tb_descripcion);
         tb_egresos.getColumns().add(tb_ref);
         tb_egresos.getColumns().add(tb_monto);
-        
+
+        tb_ingreso.getColumns().clear();
+        tb_ingreso.getColumns().add(tb_descripcion1);
+        tb_ingreso.getColumns().add(tb_ref1);
+        tb_ingreso.getColumns().add(tb_monto1);
+
         PagoBackend back = new PagoImpl();
         List<Transacciones> egresos = back.obtenerEgresos();
-        if(egresos!=null && !egresos.isEmpty()){
+        if (egresos != null && !egresos.isEmpty()) {
             List<TIngreso> listado = new ArrayList<>();
-            egresos.forEach((e)->{
-                TIngreso ingresos = new TIngreso(e);
-                listado.add(ingresos);
+            egresos.forEach((e) -> {
+                TIngreso egresoT = new TIngreso(e);
+                listado.add(egresoT);
             });
             tb_egresos.setItems(FXCollections.observableArrayList(listado));
         }
+        
+        
+        
+        List<Transacciones> ingresos = back.obtenerIngresos();
+        if (ingresos != null && !ingresos.isEmpty()) {
+            List<TIngreso> listado = new ArrayList<>();
+            ingresos.forEach((e) -> {
+                TIngreso egresoT = new TIngreso(e);
+                listado.add(egresoT);
+            });
+            tb_ingreso.setItems(FXCollections.observableArrayList(listado));
+        }
+        
+        
+        
+        
+        
+        
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });
         rest_btn.setOnAction(e -> {
             EgresoFormController control = App.cargarVentanaModal("Agregar Egreso", "fxml/EgresoForm", true);
         });
-        
-        
 
         XYChart.Series series = new XYChart.Series();
         series.setName("No of schools in an year");
