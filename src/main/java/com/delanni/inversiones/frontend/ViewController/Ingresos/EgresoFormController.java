@@ -264,5 +264,11 @@ public class EgresoFormController implements Initializable {
         Double temp = valor.getValor() * (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);*/
     }
+    
+    
+    private void clearForm(){
+        combo_pagos.getSelectionModel().clearSelection();
+        combo_pagos.getEditor().clear();
+    }
 
 }

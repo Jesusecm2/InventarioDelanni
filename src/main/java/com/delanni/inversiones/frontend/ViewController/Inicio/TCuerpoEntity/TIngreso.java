@@ -22,6 +22,8 @@ public class TIngreso {
     private String transref;
     
     private Double monto;
+    
+    private String fmonto;
 
     public TIngreso(Transacciones trans) {
         this.trans = trans;
@@ -29,6 +31,7 @@ public class TIngreso {
         if(trans.getPago()!=null){
             this.transref = trans.getPago().getNarrativa();
             this.monto = trans.getPago().getMonto();
+            this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" $");
         }else{
             this.transref = trans.getRef();
         }
@@ -68,6 +71,17 @@ public class TIngreso {
     public void setMonto(Double monto) {
         this.monto = monto;
     }
+
+    public String getFmonto() {
+        return fmonto;
+    }
+
+    public void setFmonto(String fmonto) {
+        this.fmonto = fmonto;
+    }
+
+
+    
     
     
 }

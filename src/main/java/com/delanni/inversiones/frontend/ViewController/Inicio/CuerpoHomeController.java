@@ -72,7 +72,7 @@ public class CuerpoHomeController implements Controladores {
 
     private TableColumn<TIngreso, String> tb_ref;
 
-    private TableColumn<TIngreso, Double> tb_monto;
+    private TableColumn<TIngreso, String> tb_monto;
 
     @FXML
     private TableView<TIngreso> tb_ingreso;
@@ -81,7 +81,7 @@ public class CuerpoHomeController implements Controladores {
 
     private TableColumn<TIngreso, String> tb_ref1;
 
-    private TableColumn<TIngreso, Double> tb_monto1;
+    private TableColumn<TIngreso, String> tb_monto1;
 
     @FXML
     private LineChart<CategoryAxis, NumberAxis> chart_main;
@@ -113,7 +113,7 @@ public class CuerpoHomeController implements Controladores {
         tb_ref.setCellValueFactory(new PropertyValueFactory<>("transref"));
 
         tb_monto = new TableColumn<>("Monto");
-        tb_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        tb_monto.setCellValueFactory(new PropertyValueFactory<>("fmonto"));
         
                 tb_descripcion1 = new TableColumn<>("Descripcion");
         tb_descripcion1.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
@@ -122,7 +122,7 @@ public class CuerpoHomeController implements Controladores {
         tb_ref1.setCellValueFactory(new PropertyValueFactory<>("transref"));
 
         tb_monto1= new TableColumn<>("Monto");
-        tb_monto1.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        tb_monto1.setCellValueFactory(new PropertyValueFactory<>("fmonto"));
 
         tb_egresos.getColumns().clear();
         tb_egresos.getColumns().add(tb_descripcion);
