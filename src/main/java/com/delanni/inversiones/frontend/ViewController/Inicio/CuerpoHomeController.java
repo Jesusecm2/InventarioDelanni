@@ -5,9 +5,11 @@
 package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.DiagramaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.DiagramaController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.EgresoFormController;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.IngresoFormController;
@@ -17,7 +19,10 @@ import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -31,6 +36,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -38,6 +44,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.StackPane;
@@ -84,7 +91,7 @@ public class CuerpoHomeController implements Controladores {
     private TableColumn<TIngreso, String> tb_monto1;
 
     @FXML
-    private LineChart<CategoryAxis, NumberAxis> chart_main;
+    private LineChart<String, Number> chart_main;
 
     @FXML
     private CategoryAxis xAxis;
@@ -114,14 +121,14 @@ public class CuerpoHomeController implements Controladores {
 
         tb_monto = new TableColumn<>("Monto");
         tb_monto.setCellValueFactory(new PropertyValueFactory<>("fmonto"));
-        
-                tb_descripcion1 = new TableColumn<>("Descripcion");
+
+        tb_descripcion1 = new TableColumn<>("Descripcion");
         tb_descripcion1.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
 
         tb_ref1 = new TableColumn<>("Referencia");
         tb_ref1.setCellValueFactory(new PropertyValueFactory<>("transref"));
 
-        tb_monto1= new TableColumn<>("Monto");
+        tb_monto1 = new TableColumn<>("Monto");
         tb_monto1.setCellValueFactory(new PropertyValueFactory<>("fmonto"));
 
         tb_egresos.getColumns().clear();
@@ -144,9 +151,7 @@ public class CuerpoHomeController implements Controladores {
             });
             tb_egresos.setItems(FXCollections.observableArrayList(listado));
         }
-        
-        
-        
+
         List<Transacciones> ingresos = back.obtenerIngresos();
         if (ingresos != null && !ingresos.isEmpty()) {
             List<TIngreso> listado = new ArrayList<>();
@@ -157,11 +162,8 @@ public class CuerpoHomeController implements Controladores {
             tb_ingreso.setItems(FXCollections.observableArrayList(listado));
         }
         
-        
-        
-        
-        
-        
+    
+
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
         });
@@ -169,34 +171,40 @@ public class CuerpoHomeController implements Controladores {
             EgresoFormController control = App.cargarVentanaModal("Agregar Egreso", "fxml/EgresoForm", true);
         });
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("No of schools in an year");
+        /*yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(-20);
+        yAxis.setUpperBound(2);
+        yAxis.setTickUnit(5);
+*/
+        XYChart.Series<String, Number> series = cargarDiagrama();
+        chart_main.setData(FXCollections.observableArrayList(series));
+        chart_main.applyCss();
+        chart_main.layout();
+// Añadir Tooltips a cada punto de datos 
+        for (XYChart.Data<String, Number> data : series.getData()) {
+            if (data.getNode() != null) {
+                Tooltip tooltip = new Tooltip();
+                tooltip.setText(String.valueOf(data.getYValue()).concat("$"));
+                tooltip.setShowDelay(Duration.millis(10));
+                Tooltip.install(data.getNode(), tooltip);
+                
+                data.getNode().setOnMouseEntered(event -> data.getNode().getStyleClass().add("onHover"));
+            data.getNode().setOnMouseExited(event -> data.getNode().getStyleClass().remove("onHover"));
+            }
+            
+        }
+// Mostrar el valor cuando el punto sea seleccionado 
 
-        series.getData().add(new XYChart.Data("6:00", 100));
-        series.getData().add(new XYChart.Data("7:00", 30));
-        series.getData().add(new XYChart.Data("8:00", 200));
-        series.getData().add(new XYChart.Data("9:00", 50));
-        series.getData().add(new XYChart.Data("10:00", 900));
-        series.getData().add(new XYChart.Data("11:00", 700));
-        series.getData().add(new XYChart.Data("12:00", 700));
-        series.getData().add(new XYChart.Data("01:00", 700));
-        series.getData().add(new XYChart.Data("02:00", 700));
-        series.getData().add(new XYChart.Data("03:00", 700));
-        series.getData().add(new XYChart.Data("04:00", 700));
-        series.getData().add(new XYChart.Data("05:00", 700));
-        series.getData().add(new XYChart.Data("06:00", 700));
+    }
 
-        chart_main.getData().add(series);
+
+@Override
+public void setRollovers800() {
 
     }
 
     @Override
-    public void setRollovers800() {
-
-    }
-
-    @Override
-    public void setRollovers1600() {
+public void setRollovers1600() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -233,6 +241,27 @@ public class CuerpoHomeController implements Controladores {
         TableColumn<String, String> ctl = new TableColumn<>("Monto");
         tb2.getColumns().addAll(ctc, ctn, ctl);
         return tb2;
+    }
+    
+    private XYChart.Series<String,Number> cargarDiagrama(){
+        XYChart.Series<String,Number> series = new XYChart.Series();
+        series.setName("No of schools in an year");
+        DiagramaController diagraam = new DiagramaControllerImpl();
+        LinkedHashMap<String, String> link = diagraam.obtenerDetalleSemanal();
+        for (Map.Entry<String, String> entry : link.entrySet()) {
+            try {
+
+                entry.setValue(entry.getValue().replace(",", "."));
+                Double convertir = Double.valueOf(entry.getValue().trim());
+
+                series.getData().add(new XYChart.Data<>(entry.getKey(), convertir));
+                System.out.println("Procesar:" + entry.getValue());
+            } catch (Exception e) {
+                series.getData().add(new XYChart.Data(entry.getKey(), 0.0));
+                System.out.println("Error");
+            }
+        }
+        return series;
     }
 
 }
