@@ -27,6 +27,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -154,10 +155,8 @@ public class ProductoController implements Controladores {
         //agregar_btn.setGraphic(NormalImage.add_btn);
         volver_btn.setGraphic(NormalImage.left_btn);
         try {
-
             this.carrusel = App.loadFXML("fxml/Carrusel");
             this.controlcarrusel = App.loadctual.getController();
-
             carrusel.setVisible(false);
             main_grid.add(carrusel, 1, 0, GridPane.REMAINING, GridPane.REMAINING);
         } catch (IOException ex) {
@@ -222,8 +221,20 @@ public class ProductoController implements Controladores {
         }));
 
         setRollovers800();
-        cargarProductos();
-        cargarCategoria();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                cargarProductos();
+            }
+        });
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                cargarCategoria();
+            }
+        });
+        //cargarProductos();
+        
     }
 
     @Override

@@ -24,6 +24,8 @@ public class Factura {
     private Date ultimaActualizacion;
 
     private String status;
+    
+    private String tipoFactura;
 
     private Date create_at;
 
@@ -134,6 +136,16 @@ public class Factura {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getTipoFactura() {
+        return tipoFactura;
+    }
+
+    public void setTipoFactura(String tipoFactura) {
+        this.tipoFactura = tipoFactura;
+    }
+    
+    
     
     
 

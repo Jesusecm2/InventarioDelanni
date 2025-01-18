@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane minHeight="600.0" minWidth="400.0" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Producto.ProveedorFormController">
+<GridPane minHeight="600.0" minWidth="400.0" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Factura.ClienteFormController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -45,7 +45,7 @@
                   <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField fx:id="rif_tf" promptText="RIF" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                  <TextField fx:id="rif_tf" promptText="Cédula" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                   <TextField fx:id="name_tf" promptText="Nombre" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                   <TextField fx:id="email_tf" promptText="Email" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                   <TextField fx:id="tel_tf" promptText="Télefono" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="4" />
@@ -55,7 +55,7 @@
                         <Rectangle2D />
                      </viewport>
                   </ImageView>
-                  <Label fx:id="lg_titulo_lb" styleClass="h1" text="Clientes" GridPane.columnSpan="2" />
+                  <Label fx:id="lg_titulo_lb" styleClass="h1" text="Cliente" GridPane.columnSpan="2" />
                   <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Guardar" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                      <styleClass>
                         <String fx:value="btn" />

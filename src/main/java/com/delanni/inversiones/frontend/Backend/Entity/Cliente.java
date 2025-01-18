@@ -93,6 +93,13 @@ public class Cliente {
     public void setCuenta(Cuenta cuenta) {
         this.cuenta = cuenta;
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
+    
+    
     
     
     

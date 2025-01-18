@@ -42,7 +42,7 @@ public class App extends Application {
         NormalImage.precarga();
         PreloadFXML.loadParent();
         stage.setMinWidth(800);
-        stage.setMinHeight(800);
+        stage.setMinHeight(600);
         stage.setTitle("Inversiones Delanni 2005 C.A");
         stage.getIcons().add(Getfile.getIcono("minilogo.png").getImage());
         ChangeListener<Number> resize = new ChangeListener<Number>() {
@@ -65,7 +65,7 @@ public class App extends Application {
         // scene = new Scene(loadFXML("fxml/Inicio"), 640, 480);
         FXMLLoader lo = App.getFMXL("fxml/Inicio");
         
-        scene = new Scene(lo.load(), 640, 480);
+        scene = new Scene(lo.load(), 800, 600);
         App.bodycenter = lo.getController();
         scene.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
         //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

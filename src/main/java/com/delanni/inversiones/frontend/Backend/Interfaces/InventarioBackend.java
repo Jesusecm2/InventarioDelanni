@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.Backend.Interfaces;
 
 import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
+import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.ImagenProducto;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import java.util.List;
@@ -21,18 +22,21 @@ public interface InventarioBackend {
 
     public List<Categoria> ListadoCategoria();
 
-    public Producto GuardarProducto(Producto producto,String categoria,Double valor);
-    
-    
+    public Producto GuardarProducto(Producto producto, String categoria, Double valor);
+
     public List<Producto> ListadoProducto();
+
     public List<Producto> ListadoProducto(Categoria cat);
-    
+
     public List<Producto> obtenerProducto(String cod);
-    
+
     public List<Producto> buscarNombre(String nombre);
-    
+
     public void EliminarImagen(ImagenProducto obj);
-    
-    
-    
+
+    public Cliente guardarCliente(Cliente save);
+
+    public Cliente BuscarCedulaCliente(String cedula);
+
+    public List<Cliente>listadoCliente();
 }

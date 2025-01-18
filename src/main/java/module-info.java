@@ -12,6 +12,7 @@ module InventarioDelanni {
     requires javafx.base;
     requires javafx.fxmlEmpty;
     requires javafx.fxml;
+    requires java.net.http;
     requires org.kordamp.bootstrapfx.core;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
@@ -30,6 +31,7 @@ module InventarioDelanni {
     exports com.delanni.inversiones.frontend.ViewController.Ventas;
     exports com.delanni.inversiones.frontend.Backend.Entity.Pagos;
     exports com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity;
+    
     opens com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity;
     opens com.delanni.inversiones.frontend.Backend.Entity.Pagos;
     opens com.delanni.inversiones.frontend.ViewController.Inicio;
