@@ -70,6 +70,16 @@ public class ClienteFormController implements Initializable{
         return loaded;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+    
+    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

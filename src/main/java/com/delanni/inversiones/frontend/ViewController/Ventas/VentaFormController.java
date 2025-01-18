@@ -22,6 +22,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
+import com.delanni.inversiones.frontend.ViewController.Factura.ClienteFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormController;
@@ -290,7 +291,8 @@ public class VentaFormController implements Initializable{
         tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
 
         prov_create_btn.setOnAction((e) -> {
-            App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+            ClienteFormController control =  App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+            
             
         });
 
