@@ -127,7 +127,7 @@
 
 .combo-box .list-cell:filled:selected:focused{
     -fx-background-color:-fx-secondarybg;
-    -fx-text-fill: -fx-text-1;
+    -fx-text-fill: -fx-text1;
 }
 
 

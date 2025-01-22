@@ -142,6 +142,9 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TableColumn<TProducto, String> tc_tot;
+    
+    @FXML
+    private TableColumn<TProducto,String>tc_precio;
 
     @FXML
     private TextField ref_pag;
@@ -294,6 +297,8 @@ public class FacturaFormControllerV2 implements Initializable {
         tc_cant.setCellValueFactory(new PropertyValueFactory<>("Scantidad"));
 
         tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
+        
+        tc_precio.setCellValueFactory(new PropertyValueFactory<>("total_unit"));
 
         prov_create_btn.setOnAction((e) -> {
             ProveedorFormController control = App.cargarVentanaModal("Crear Proveedor", "fxml/ProveedorForm", true);

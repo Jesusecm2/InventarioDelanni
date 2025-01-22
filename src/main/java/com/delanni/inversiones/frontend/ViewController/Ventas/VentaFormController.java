@@ -8,6 +8,7 @@ import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
@@ -56,7 +57,8 @@ import javafx.scene.input.KeyCode;
  *
  * @author Jesusecm
  */
-public class VentaFormController implements Initializable{
+public class VentaFormController implements Initializable {
+
     @FXML
     private Button prov_create_btn;
 
@@ -139,6 +141,9 @@ public class VentaFormController implements Initializable{
     private TableColumn<TProducto, String> tc_tot;
 
     @FXML
+    private TableColumn<TProducto, String> tc_precio;
+
+    @FXML
     private TextField ref_pag;
 
     @FXML
@@ -159,7 +164,7 @@ public class VentaFormController implements Initializable{
     @FXML
     private Label pago_lbl_restante;
 
-    private Proveedor proveedor;
+    private Cliente cliente;
 
     private Integer pagina;
 
@@ -236,8 +241,6 @@ public class VentaFormController implements Initializable{
 
             }
         });
-        
-        
 
         chk_fecha.setOnAction((e) -> {
             if (chk_fecha.isSelected()) {
@@ -288,12 +291,20 @@ public class VentaFormController implements Initializable{
 
         tc_cant.setCellValueFactory(new PropertyValueFactory<>("Scantidad"));
 
-        tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
+        tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal_vent"));
+
+        tc_precio.setCellValueFactory(new PropertyValueFactory<>("total_vent"));
 
         prov_create_btn.setOnAction((e) -> {
-            ClienteFormController control =  App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
-            
-            
+            ClienteFormController control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+            if (control != null) {
+                cliente = control.getCliente();
+                tab_window.getSelectionModel().getSelectedItem().setDisable(true);
+                tab_window.getSelectionModel().selectNext();
+                tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+                prov_lb.setText(cliente.getNombre());
+            }
+
         });
 
         elim_prod.setOnAction((e) -> {
@@ -428,7 +439,7 @@ public class VentaFormController implements Initializable{
             pago.setNarrativa(narra_pag.getText());
             pago.setCod_ejecucion(ref_pag.getText());
             if (chk_fecha.isSelected()) {
-            
+
                 pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
             pago.setMoneda(moneda_Combo.getValue());
@@ -499,7 +510,7 @@ public class VentaFormController implements Initializable{
 
     private Factura crearFactura() {
         Factura factura = new Factura();
-        factura.setIdProveedor(proveedor);
+        factura.setIdCliente(cliente);
         List<LineaFactura> listado = new ArrayList<>();
         factura.setIVA(iva_value.getValue());
         factura.setExento(excento_value.getValue());
@@ -540,5 +551,3 @@ public class VentaFormController implements Initializable{
     }
 
 }
-
-

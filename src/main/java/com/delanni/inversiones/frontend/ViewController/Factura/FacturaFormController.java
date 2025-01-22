@@ -329,7 +329,7 @@ public class FacturaFormController implements Controladores {
                 edit.setCantidad(edit.getCantidad() + cant_unit.getValue());
             }
             edit.setPrecio_unit(precio_unit.getValue());
-            edit.setTotal(edit.getPrecio_unit() * edit.getCantidad());
+            //edit.setTotal(edit.getPrecio_unit() * edit.getCantidad());
             // total += edit.getTotal();
             //  total_lbl.setText(String.valueOf(total) + "$");
             table_view.refresh();
@@ -345,7 +345,7 @@ public class FacturaFormController implements Controladores {
             nuevo.setNombre(producto_act.getNombre());
             nuevo.setPrecio_unit(precio_unit.getValue());
             nuevo.setCantidad(cant_unit.getValue());
-            nuevo.setTotal(nuevo.getCantidad() * nuevo.getPrecio_unit());
+           // nuevo.setTotal(nuevo.getCantidad() * nuevo.getPrecio_unit());
             // total += nuevo.getTotal();
             // total_lbl.setText(String.format("%.2f$", total));
             cant_unit.getValueFactory().setValue(0.0);
@@ -359,7 +359,7 @@ public class FacturaFormController implements Controladores {
         total = 0.0;
         for (TProducto pr : table_view.getItems()) {
             if (pr != null) {
-                total += pr.getTotal();
+               // total += pr.getTotal();
             }
         }
         total_lbl.setText(String.format("%.2f$", total));

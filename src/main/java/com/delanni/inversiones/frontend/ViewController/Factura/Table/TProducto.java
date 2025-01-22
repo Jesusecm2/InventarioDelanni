@@ -20,13 +20,20 @@ public class TProducto {
 
     private Double precio_unit;
     
+    private Double precio_vent;
     
-
-    private Double total;
+    
+    private Double total_unit;
+    
+    private Double total_vent;
+    
+    private String Stotal_vent;
 
     private String Stotal;
 
     private String Sprecio_unit;
+    
+    private String Sprecio_vent;
 
     private String Scantidad;
 
@@ -38,11 +45,18 @@ public class TProducto {
         this.producto = producto;
         this.cantidad = cantidad;
         this.precio_unit = producto.getPrecio_unit();
+        this.precio_vent = producto.getPrecio_vent();
        // this.precio_unit = producto.getPrecio_vent();
-        this.total = precio_unit*cantidad;
+       
+        this.total_unit = precio_unit*cantidad;
+        this.total_vent = precio_vent*cantidad;
         this.Sprecio_unit = String.format("%.2f", precio_unit);
-        this.Scantidad = String.format("%.2f*%.2f", precio_unit,cantidad);
-        this.Stotal = String.format("%.2f", total);
+        this.Sprecio_vent = String.format("%.2f", precio_vent);
+        
+        
+        this.Scantidad = String.format("%.2f", cantidad);
+        this.Stotal = String.format("%.2f", total_unit);
+        this.Stotal_vent = String.format("%.2f", total_vent);
     }
 
     public String getNombre() {
@@ -67,9 +81,11 @@ public class TProducto {
 
     public void setCantidad(Double cantidad) {
         this.cantidad = cantidad;
-        this.Scantidad = String.format("%.2f*%.2f", precio_unit,cantidad);
-        this.total = precio_unit*cantidad;
-        this.Stotal = String.format("%.2f", total);
+        this.Scantidad = String.format("%.2f",cantidad);
+        this.total_unit = precio_unit*cantidad;
+        this.total_vent = precio_vent*cantidad;
+        this.Stotal = String.format("%.2f", total_unit);
+        this.Stotal_vent = String.format("%.2f", total_vent);
     }
 
     public Double getPrecio_unit() {
@@ -81,14 +97,6 @@ public class TProducto {
         this.Sprecio_unit = String.format("%.2f", precio_unit);
     }
 
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
-        this.Stotal = String.format("%.2f", total);
-    }
 
     public String getStotal() {
         return Stotal;
@@ -113,5 +121,48 @@ public class TProducto {
     public void setScantidad(String Scantidad) {
         this.Scantidad = Scantidad;
     }
+
+    public Double getPrecio_vent() {
+        return precio_vent;
+    }
+
+    public void setPrecio_vent(Double precio_vent) {
+        this.precio_vent = precio_vent;
+    }
+
+    public String getSprecio_vent() {
+        return Sprecio_vent;
+    }
+
+    public void setSprecio_vent(String Sprecio_vent) {
+        this.Sprecio_vent = Sprecio_vent;
+    }
+
+    public Double getTotal_unit() {
+        return total_unit;
+    }
+
+    public void setTotal_unit(Double total_unit) {
+        this.total_unit = total_unit;
+    }
+
+    public Double getTotal_vent() {
+        return total_vent;
+    }
+
+    public void setTotal_vent(Double total_vent) {
+        this.total_vent = total_vent;
+    }
+
+    public String getStotal_vent() {
+        return Stotal_vent;
+    }
+
+    public void setStotal_vent(String Stotal_vent) {
+        this.Stotal_vent = Stotal_vent;
+    }
+    
+    
+    
 
 }

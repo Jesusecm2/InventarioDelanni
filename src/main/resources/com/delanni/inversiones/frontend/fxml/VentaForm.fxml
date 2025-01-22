@@ -88,7 +88,7 @@
                           <columns>
                             <TableColumn fx:id="tc_name" prefWidth="75.0" text="Producto" />
                             <TableColumn fx:id="tc_cant" prefWidth="75.0" text="Cantidad" />
-                              <TableColumn fx:id="tc_ad" prefWidth="75.0" text="Adicional" />
+                              <TableColumn fx:id="tc_precio" prefWidth="75.0" text="Precio" />
                               <TableColumn fx:id="tc_tot" prefWidth="75.0" text="Total" />
                           </columns>
                            <columnResizePolicy>
@@ -142,7 +142,7 @@
                            <children>
                               <Label text="Acciones" GridPane.rowIndex="1" />
                               <Button fx:id="elim_prod" mnemonicParsing="false" text="Eliminar Producto" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                              <Button fx:id="create_btn" mnemonicParsing="false" text="Crear Producto" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                              <Button fx:id="create_btn" mnemonicParsing="false" text="Crear Producto" visible="false" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                               <Button disable="true" mnemonicParsing="false" text="Propiedad Adicional" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                               <Spinner fx:id="upd_spin" editable="true">
                                  <GridPane.margin>
@@ -165,7 +165,7 @@
                            <children>
                               <Label fx:id="prov_lb" text="Jesus Eduardo Cedeño Mendieta" GridPane.rowIndex="1" />
                               <Label fx:id="monto_tot_lb" text="0$" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                              <Label text="Proveedor:" />
+                              <Label text="Cliente:" />
                            </children>
                         </GridPane>
                      </children>

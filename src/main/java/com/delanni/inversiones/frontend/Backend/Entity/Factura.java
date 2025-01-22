@@ -25,7 +25,17 @@ public class Factura {
 
     private String status;
     
-    private String tipoFactura;
+    private Cliente idCliente;
+
+    public Cliente getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Cliente idCliente) {
+        this.idCliente = idCliente;
+    }
+    
+    
 
     private Date create_at;
 
@@ -137,13 +147,6 @@ public class Factura {
         this.status = status;
     }
 
-    public String getTipoFactura() {
-        return tipoFactura;
-    }
-
-    public void setTipoFactura(String tipoFactura) {
-        this.tipoFactura = tipoFactura;
-    }
     
     
     

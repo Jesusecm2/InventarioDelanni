@@ -98,6 +98,7 @@ public class ClienteFormController implements Initializable{
         list_cat.setOnMouseClicked((e) -> {
             Cliente seleccion = list_cat.getSelectionModel().getSelectedItem();
             if (seleccion != null) {
+                cliente = seleccion;
                cerrar();
             }
         });

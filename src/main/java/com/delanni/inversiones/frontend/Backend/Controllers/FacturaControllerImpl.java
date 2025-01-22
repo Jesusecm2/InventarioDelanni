@@ -15,6 +15,12 @@ import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +36,8 @@ public class FacturaControllerImpl implements FacturaBackend {
     private ObjectMapper mapeo;
     private Conexion conn;
     private Peticion pet;
+    private final String server = "http://localhost:8090";
+    
 
     public FacturaControllerImpl() {
         this.mapeo = new ObjectMapper();
@@ -144,6 +152,25 @@ public class FacturaControllerImpl implements FacturaBackend {
             }
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> listadoFacturaNonuloProveedor() {
+         try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/listado/nonulo")))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }

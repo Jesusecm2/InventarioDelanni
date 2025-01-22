@@ -28,4 +28,6 @@ public interface FacturaBackend {
     public List<Factura> facturaProveedor(Integer id);
     
     public List<Factura> listadoFactura();
+    
+    public List<Factura> listadoFacturaNonuloProveedor();
 }

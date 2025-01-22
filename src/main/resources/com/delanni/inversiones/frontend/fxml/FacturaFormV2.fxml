@@ -88,7 +88,8 @@
                           <columns>
                             <TableColumn fx:id="tc_name" prefWidth="75.0" text="Producto" />
                             <TableColumn fx:id="tc_cant" prefWidth="75.0" text="Cantidad" />
-                              <TableColumn fx:id="tc_ad" prefWidth="75.0" text="Adicional" />
+                              <TableColumn fx:id="tc_precio" prefWidth="75.0" text="Precio" />
+                              <TableColumn fx:id="tc_ad1" prefWidth="75.0" text="Adicional" />
                               <TableColumn fx:id="tc_tot" prefWidth="75.0" text="Total" />
                           </columns>
                            <columnResizePolicy>

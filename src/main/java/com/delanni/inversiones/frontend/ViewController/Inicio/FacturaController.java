@@ -203,7 +203,7 @@ public class FacturaController implements Controladores {
 
     private void llenarTable() {
         FacturaBackend facturaService = new FacturaControllerImpl();
-        List<Factura> listado = facturaService.listadoFactura();
+        List<Factura> listado = facturaService.listadoFacturaNonuloProveedor();
         List<TFacturaInicio> inicio = new ArrayList<>();
         listado.forEach((e) -> {
             TFacturaInicio t = new TFacturaInicio(e);
