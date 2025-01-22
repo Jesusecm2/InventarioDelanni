@@ -38,6 +38,9 @@ public class InventarioControllerImpl implements InventarioBackend {
     private Peticion pet;
     private final String server = "http://localhost:8090";
 
+    private final String provider = "Inversiones Delanni App 1.0";
+    private final String system = System.getProperty("os.name");
+
     public InventarioControllerImpl() {
         this.mapeo = new ObjectMapper();
         this.trans = new Transaccional(new Conexion());
@@ -52,6 +55,8 @@ public class InventarioControllerImpl implements InventarioBackend {
                     .uri(new URI(server.concat("/api/inventario/inventario/categoria/guardar")))
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(categoria)))
                     .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Categoria.class);
@@ -76,6 +81,8 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/categoria/listado")))
                     .GET()
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Categoria[].class)));
@@ -91,33 +98,48 @@ public class InventarioControllerImpl implements InventarioBackend {
 
     @Override
     public Producto GuardarProducto(Producto producto, String categoria, Double valor) {
+
         try {
-            pet.addBody("request", mapeo.writeValueAsString(producto));
-            pet.addParameter("action", categoria);
-            pet.addParameter("value", String.valueOf(valor));
-            trans.HttpPostObject("/api/inventario/inventario/producto/guardar", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), Producto.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/producto/guardar?action=")
+                            .concat(categoria)
+                            .concat("&")
+                            .concat("value=").concat(String.valueOf(valor))))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(categoria)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Producto.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
 
     @Override
     public List<Producto> ListadoProducto() {
+
         try {
-            trans.HttpGetObject("/api/inventario/inventario/producto/lista", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Producto[].class));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/producto/lista")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Producto[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -128,6 +150,8 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/listacat")))
                     .GET()
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
@@ -148,6 +172,8 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/codigo?cod=".concat(cod))))
                     .GET()
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
@@ -193,6 +219,8 @@ public class InventarioControllerImpl implements InventarioBackend {
                     .uri(new URI(server.concat("/api/inventario/inventario/cliente/guardar")))
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(save)))
                     .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Cliente.class);
@@ -212,6 +240,8 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/cliente/cedula?cd=".concat(cedula))))
                     .GET()
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Cliente.class);
@@ -231,6 +261,8 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/cliente/todos")))
                     .GET()
+                    .header("system", system)
+                    .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Cliente[].class));
