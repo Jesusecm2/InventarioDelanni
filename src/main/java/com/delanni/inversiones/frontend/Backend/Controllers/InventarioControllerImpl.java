@@ -190,15 +190,20 @@ public class InventarioControllerImpl implements InventarioBackend {
     @Override
     public List<Producto> buscarNombre(String nombre) {
         try {
-            pet.addParameter("nombre", nombre);
-            trans.HttpGetObject("/api/inventario/inventario/producto/nombre", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Producto[].class));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/producto/nombre?nombre=".concat(nombre))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
