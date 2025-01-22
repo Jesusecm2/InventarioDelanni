@@ -105,7 +105,7 @@ public class InventarioControllerImpl implements InventarioBackend {
                             .concat(categoria)
                             .concat("&")
                             .concat("value=").concat(String.valueOf(valor))))
-                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(categoria)))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(producto)))
                     .header("Content-Type", "application/json")
                     .header("system", system)
                     .header("provider", provider)
