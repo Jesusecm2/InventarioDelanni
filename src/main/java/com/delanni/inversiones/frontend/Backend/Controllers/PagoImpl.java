@@ -13,11 +13,18 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
+import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +41,11 @@ public class PagoImpl implements PagoBackend {
     private Conexion conn;
     private Peticion pet;
 
+    private final String server = "http://localhost:8090";
+
+    private final String provider = "Inversiones Delanni App 1.0";
+    private final String system = System.getProperty("os.name");
+
     public PagoImpl() {
         this.mapeo = new ObjectMapper();
         this.trans = new Transaccional(new Conexion());
@@ -44,14 +56,20 @@ public class PagoImpl implements PagoBackend {
     @Override
     public List<TipodePago> obtenerTiposPago() {
         try {
-            trans.HttpGetObject("/api/inventario/pago/tipospago", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), TipodePago[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/tipospago")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), TipodePago[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -59,14 +77,20 @@ public class PagoImpl implements PagoBackend {
     @Override
     public List<Moneda> obtenerMonedas() {
         try {
-            trans.HttpGetObject("/api/inventario/pago/moneda", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Moneda[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/moneda")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Moneda[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -74,15 +98,21 @@ public class PagoImpl implements PagoBackend {
     @Override
     public ValorMoneda obtenerValorMonedaHoy(Moneda param) {
         try {
-            pet.addBody("request", mapeo.writeValueAsString(param));
-            trans.HttpPostObject("/api/inventario/pago/valorMoneda/hoy", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), ValorMoneda.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/hoy")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), ValorMoneda.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -90,15 +120,21 @@ public class PagoImpl implements PagoBackend {
     @Override
     public ValorMoneda guardarValorMoneda(ValorMoneda param) {
         try {
-            pet.addBody("request", mapeo.writeValueAsString(param));
-            trans.HttpPostObject("/api/inventario/pago/valorMoneda/guardar", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), ValorMoneda.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), ValorMoneda.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -106,20 +142,23 @@ public class PagoImpl implements PagoBackend {
     @Override
     public Pago guardarPagoFactura(Factura factura, Pago pago) {
         Map<String, String> valores = new HashMap<>();
-
         try {
             valores.put("factura", mapeo.writeValueAsString(factura));
             valores.put("pago", mapeo.writeValueAsString(pago));
-            pet.addBody("request", mapeo.writeValueAsString(valores));
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/guardar/pagofactura")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(valores)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Pago.class);
+        } catch (URISyntaxException ex) {
 
-            trans.HttpPostObject("/api/inventario/pago/guardar/pagofactura", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), Pago.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
         }
         return null;
     }
@@ -127,16 +166,20 @@ public class PagoImpl implements PagoBackend {
     @Override
     public List<TpIngreso> obtenerIngreso(String tipo) {
         try {
-            pet.addParameter("tipo", tipo);
-            trans.HttpGetObject("/api/inventario/pago/obtener/tingreso", pet);
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/tingreso")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), TpIngreso[].class)));
+        } catch (URISyntaxException ex) {
 
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), TpIngreso[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -144,20 +187,21 @@ public class PagoImpl implements PagoBackend {
     @Override
     public Pago guardarPagoIngreso(TpIngreso ingreso, Pago pago) {
         Map<String, String> valores = new HashMap<>();
-
         try {
             valores.put("ingreso", mapeo.writeValueAsString(ingreso));
             valores.put("pago", mapeo.writeValueAsString(pago));
-            pet.addBody("request", mapeo.writeValueAsString(valores));
-
-            trans.HttpPostObject("/api/inventario/pago/guardar/pagoingreso", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), Pago.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/guardar/pagoingreso")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(valores)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Pago.class);
+        } catch (URISyntaxException ex) {
+        } catch (IOException ex) {
+        } catch (InterruptedException ex) {
         }
         return null;
     }
@@ -165,15 +209,20 @@ public class PagoImpl implements PagoBackend {
     @Override
     public List<Transacciones> obtenerEgresos() {
         try {
-            trans.HttpGetObject("/api/inventario/pago/obtener/Egresos", pet);
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/Egresos")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
 
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Transacciones[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -181,15 +230,20 @@ public class PagoImpl implements PagoBackend {
     @Override
     public List<Transacciones> obtenerIngresos() {
         try {
-            trans.HttpGetObject("/api/inventario/pago/obtener/Ingresos", pet);
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/Ingresos")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
 
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Transacciones[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }

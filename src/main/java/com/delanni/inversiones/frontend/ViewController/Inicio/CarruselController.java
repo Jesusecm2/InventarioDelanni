@@ -67,6 +67,7 @@ public class CarruselController implements Initializable {
         pg_nation.setPageFactory(new Callback<Integer, Node>() {
             @Override
             public Node call(Integer param) {
+
                 if (img_viewls == null) {
                     return new Label("Contenedor Vacío");
                 } else {
@@ -98,9 +99,21 @@ public class CarruselController implements Initializable {
 
     public void setImg_viewls(List<ImageView> img_viewls) {
         this.img_viewls = img_viewls;
+        pg_nation.setPageFactory(new Callback<Integer, Node>() {
+            @Override
+            public Node call(Integer param) {
+
+                if (img_viewls == null) {
+                    return new Label("Contenedor Vacío");
+                } else {
+                    page = param;
+                    return img_viewls.get(param);
+
+                }
+            }
+        });
         pg_nation.setCurrentPageIndex(0);
         btn_aft.setDisable(true);
-
         pg_nation.setPageCount(img_viewls.size());
         if (pg_nation.getPageCount() <= 1) {
             btn_nxt.setDisable(true);

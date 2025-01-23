@@ -88,8 +88,9 @@ public class ProductoController implements Controladores {
 
     private StackPane stack_pane;
 
-    @FXML
     private Pagination pg_pagination;
+
+    private Pagination pg_nation;
 
     @FXML
     private TextField tc_busqueda;
@@ -157,6 +158,7 @@ public class ProductoController implements Controladores {
         try {
             this.carrusel = App.loadFXML("fxml/Carrusel");
             this.controlcarrusel = App.loadctual.getController();
+            this.pg_pagination = controlcarrusel.getPg_nation();
             carrusel.setVisible(false);
             main_grid.add(carrusel, 1, 0, GridPane.REMAINING, GridPane.REMAINING);
         } catch (IOException ex) {
@@ -204,18 +206,6 @@ public class ProductoController implements Controladores {
         tc_mod.setCellValueFactory(new PropertyValueFactory<>("btn_modify"));
         //tc_accion.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-        pg_pagination.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer param) {
-                if (img_viewls == null) {
-                    return new Label("Contenedor Vacío");
-
-                } else {
-                    return img_viewls.get(param);
-
-                }
-            }
-        });
         tc_busqueda.setOnKeyTyped((e -> {
             buscarProductos(tc_busqueda.getText());
         }));
@@ -234,7 +224,7 @@ public class ProductoController implements Controladores {
             }
         });
         //cargarProductos();
-        
+
     }
 
     @Override
@@ -348,12 +338,15 @@ public class ProductoController implements Controladores {
 
     private void loadImage() {
         Producto buscar = table_producto.getSelectionModel().getSelectedItem().getProducto();
+        if (this.img_viewls != null) {
+            this.img_viewls.clear();
+        }
 
         if (buscar != null && buscar.getImagenes() != null) {
             ImagenController imagenes = new ImageControllerImpl();
             int cantidad_imagenes = buscar.getImagenes().size();
             if (cantidad_imagenes > 0) {
-                img_viewls = new ArrayList<>();
+                this.img_viewls = new ArrayList<>();
                 for (int i = 0; i < cantidad_imagenes; i++) {
                     String imagen = imagenes.imageString(buscar.getImagenes().get(i).getImagen());
                     if (imagen == null) {
@@ -361,7 +354,7 @@ public class ProductoController implements Controladores {
                         alert.setTitle("Error");
                         alert.setContentText("No se pudieron cargar las imagenes");
                         alert.show();
-                        img_viewls = null;
+                        this.img_viewls = null;
                         break;
                     }
 
@@ -373,18 +366,12 @@ public class ProductoController implements Controladores {
                         view.setFitWidth(200);
                         view.getStyleClass().add("img_pagin");
                         img_viewls.add(view);
-                        convertidor = null;
-
                     }
                 }
-                pg_pagination.setPageCount(cantidad_imagenes);
-                pg_pagination.setCurrentPageIndex(0);
 
             } else {
-                img_viewls = null;
+                this.img_viewls = null;
 
-                pg_pagination.setCurrentPageIndex(0);
-                pg_pagination.setPageCount(1);
             }
         }
     }
@@ -405,10 +392,9 @@ public class ProductoController implements Controladores {
 
     private void loadCarrusel() {
         loadImage();
-        if (img_viewls != null) {
-
-            carrusel.setVisible(true);
+        if (this.img_viewls != null) {
             controlcarrusel.setImg_viewls(img_viewls);
+            carrusel.setVisible(true);
         }
     }
 
