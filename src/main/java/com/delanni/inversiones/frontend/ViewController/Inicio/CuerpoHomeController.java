@@ -41,6 +41,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -71,6 +72,9 @@ public class CuerpoHomeController implements Controladores {
     private Parent newRoot;
 
     private StackPane stack_pane;
+
+    @FXML
+    private ChoiceBox<String> reporte_tipo;
 
     @FXML
     private TableView<TIngreso> tb_egresos;
@@ -113,6 +117,11 @@ public class CuerpoHomeController implements Controladores {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
 
+        String[] tiposchart = new String[3];
+        tiposchart[0] = "Semanal";
+        tiposchart[1] = "Mensual";
+        tiposchart[2] = "Anual";
+        reporte_tipo.setItems(FXCollections.observableArrayList(tiposchart));
         tb_descripcion = new TableColumn<>("Descripcion");
         tb_descripcion.setCellValueFactory(new PropertyValueFactory<>("ingreso"));
 
@@ -161,8 +170,23 @@ public class CuerpoHomeController implements Controladores {
             });
             tb_ingreso.setItems(FXCollections.observableArrayList(listado));
         }
-        
-    
+
+        reporte_tipo.setOnAction((e) -> {
+            String selected = reporte_tipo.getSelectionModel().getSelectedItem();
+            switch (selected) {
+                case "Semanal":
+                    aplicarDiagrama(cargarDiagrama(1));
+                    break;
+                case "Mensual":
+                    aplicarDiagrama(cargarDiagrama(2));
+                    break;
+                case "Anual":
+                    aplicarDiagrama(cargarDiagrama(3));
+                    break;
+
+            }
+
+        });
 
         add_btn.setOnAction(e -> {
             IngresoFormController control = App.cargarVentanaModal("Agregar Ingreso", "fxml/IngresoForm", true);
@@ -175,36 +199,17 @@ public class CuerpoHomeController implements Controladores {
         yAxis.setLowerBound(-20);
         yAxis.setUpperBound(2);
         yAxis.setTickUnit(5);
-*/
-        XYChart.Series<String, Number> series = cargarDiagrama();
-        chart_main.setData(FXCollections.observableArrayList(series));
-        chart_main.applyCss();
-        chart_main.layout();
-// Añadir Tooltips a cada punto de datos 
-        for (XYChart.Data<String, Number> data : series.getData()) {
-            if (data.getNode() != null) {
-                Tooltip tooltip = new Tooltip();
-                tooltip.setText(String.valueOf(data.getYValue()).concat("$"));
-                tooltip.setShowDelay(Duration.millis(10));
-                Tooltip.install(data.getNode(), tooltip);
-                
-                data.getNode().setOnMouseEntered(event -> data.getNode().getStyleClass().add("onHover"));
-            data.getNode().setOnMouseExited(event -> data.getNode().getStyleClass().remove("onHover"));
-            }
-            
-        }
+         */
 // Mostrar el valor cuando el punto sea seleccionado 
-
     }
 
-
-@Override
-public void setRollovers800() {
+    @Override
+    public void setRollovers800() {
 
     }
 
     @Override
-public void setRollovers1600() {
+    public void setRollovers1600() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -242,26 +247,49 @@ public void setRollovers1600() {
         tb2.getColumns().addAll(ctc, ctn, ctl);
         return tb2;
     }
-    
-    private XYChart.Series<String,Number> cargarDiagrama(){
-        XYChart.Series<String,Number> series = new XYChart.Series();
+
+    private XYChart.Series<String, Number> cargarDiagrama(int tipo) {
+        System.out.println("Ejecutar:" + tipo);
+        XYChart.Series<String, Number> series = new XYChart.Series();
         series.setName("No of schools in an year");
         DiagramaController diagraam = new DiagramaControllerImpl();
-        LinkedHashMap<String, String> link = diagraam.obtenerDetalleSemanal();
+        LinkedHashMap<String, String> link = diagraam.obtenerDetalle(tipo);
         for (Map.Entry<String, String> entry : link.entrySet()) {
             try {
+                if (entry != null) {
+                    entry.setValue(entry.getValue().replace(",", "."));
+                    Double convertir = Double.valueOf(entry.getValue().trim());
 
-                entry.setValue(entry.getValue().replace(",", "."));
-                Double convertir = Double.valueOf(entry.getValue().trim());
+                    series.getData().add(new XYChart.Data<>(entry.getKey(), convertir));
+                    System.out.println("Procesar:" + entry.getKey() + " / " + entry.getValue());
+                }
 
-                series.getData().add(new XYChart.Data<>(entry.getKey(), convertir));
-                System.out.println("Procesar:" + entry.getValue());
             } catch (Exception e) {
                 series.getData().add(new XYChart.Data(entry.getKey(), 0.0));
                 System.out.println("Error");
             }
         }
         return series;
+    }
+
+    private void aplicarDiagrama(XYChart.Series<String, Number> values) {
+        XYChart.Series<String, Number> series = values;
+        chart_main.setData(FXCollections.observableArrayList(series));
+        chart_main.applyCss();
+        chart_main.layout();
+// Añadir Tooltips a cada punto de datos 
+        for (XYChart.Data<String, Number> data : series.getData()) {
+            if (data.getNode() != null) {
+                Tooltip tooltip = new Tooltip();
+                tooltip.setText(String.valueOf(data.getYValue()).concat("$"));
+                tooltip.setShowDelay(Duration.millis(10));
+                Tooltip.install(data.getNode(), tooltip);
+
+                data.getNode().setOnMouseEntered(event -> data.getNode().getStyleClass().add("onHover"));
+                data.getNode().setOnMouseExited(event -> data.getNode().getStyleClass().remove("onHover"));
+            }
+
+        }
     }
 
 }

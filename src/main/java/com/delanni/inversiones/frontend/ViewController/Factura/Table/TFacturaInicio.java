@@ -21,16 +21,21 @@ public class TFacturaInicio {
     private Double pagado;
 
     private Factura factura;
-    
+
     private List<TLineaFactura> lineas;
 
     public TFacturaInicio(Factura factura) {
-        this.nombre = factura.getIdProveedor().getNombre();
+        if (factura.getIdProveedor() != null) {
+            this.nombre = factura.getIdProveedor().getNombre();
+        }
+        if (factura.getIdCliente() != null) {
+            this.nombre = factura.getIdCliente().getNombre();
+        }
         this.monto = factura.getSaldo();
         this.factura = factura;
         this.pagado = factura.getSaldo_pagado();
         this.lineas = new ArrayList<>();
-        factura.getLineas().forEach((l)->{
+        factura.getLineas().forEach((l) -> {
             TLineaFactura fc = new TLineaFactura(l);
             lineas.add(fc);
         });
@@ -75,7 +80,5 @@ public class TFacturaInicio {
     public void setLineas(List<TLineaFactura> lineas) {
         this.lineas = lineas;
     }
-    
-    
 
 }

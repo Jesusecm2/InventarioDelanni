@@ -13,5 +13,5 @@ import java.util.LinkedHashMap;
 public interface DiagramaController {
     
     
-    public LinkedHashMap<String,String> obtenerDetalleSemanal();
+    public LinkedHashMap<String,String> obtenerDetalle(int valor);
 }

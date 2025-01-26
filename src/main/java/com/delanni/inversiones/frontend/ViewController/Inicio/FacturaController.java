@@ -6,11 +6,14 @@ package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
+import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
+import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
@@ -92,7 +95,16 @@ public class FacturaController implements Controladores {
     private Button pagar_btn;
 
     @FXML
-    private ComboBox<Proveedor> cat_box;
+    private ComboBox<Proveedor> cat_box1;
+
+    @FXML
+    private ComboBox<Cliente> cat_box2;
+
+    @FXML
+    private ComboBox<String> cat_box;
+
+    @FXML
+    private ComboBox<String> sts_box;
 
     public Parent getLastRoot() {
         return lastRoot;
@@ -141,6 +153,12 @@ public class FacturaController implements Controladores {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String[] find_box = new String[]{"Proveedor", "Cliente"};
+
+        String[] sts_item = new String[]{"Activo", "Cancelado"};
+        cat_box.setItems(FXCollections.observableArrayList(find_box));
+        sts_box.setItems(FXCollections.observableArrayList(sts_item));
+
         create_btn.setOnMouseClicked((e) -> {
             loadForm();
         });
@@ -150,8 +168,7 @@ public class FacturaController implements Controladores {
 
         tv_factura.setOnMouseClicked((e) -> {
             TFacturaInicio tf = tv_factura.getSelectionModel().getSelectedItem();
-            if(tf!=null){
-               
+            if (tf != null) {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
             }
         });
@@ -160,7 +177,7 @@ public class FacturaController implements Controladores {
         td_cnt.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
         td_total.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-        tv_factura.setRowFactory(tv -> new TableRow<TFacturaInicio>() {
+        /*tv_factura.setRowFactory(tv -> new TableRow<TFacturaInicio>() {
             @Override
             protected void updateItem(TFacturaInicio item, boolean empty) {
                 super.updateItem(item, empty);
@@ -174,42 +191,116 @@ public class FacturaController implements Controladores {
                 }
 
             }
-        });
-
-        llenarTable();
+        });*/
+        buscarFacturas();
         FacturaBackend bk = new FacturaControllerImpl();
         try {
             List<Proveedor> prov_list = bk.listadoProveedor();
+
             if (prov_list != null) {
-                cat_box.setItems(FXCollections.observableArrayList(bk.listadoProveedor()));
+                cat_box1.setItems(FXCollections.observableArrayList(bk.listadoProveedor()));
             } else {
             }
         } catch (Exception e) {
         }
+
+        InventarioBackend back = new InventarioControllerImpl();
+        List<Cliente> cliente = back.listadoCliente();
+        cat_box2.setItems(FXCollections.observableArrayList(cliente));
+
         pagar_btn.setOnMouseClicked((e) -> {
             loadPago();
         });
+        cat_box1.setOnAction((e) -> {
+            buscarFacturas();
+        });
+        
+        cat_box2.setOnAction((e)->{
+            buscarFacturas();
+        });
+        
+        sts_box.setOnAction((e)->{
+            buscarFacturas();
+        });
+        
+        cat_box.setOnAction((e) -> {
+            String item = cat_box.getSelectionModel().getSelectedItem();
+            if (item.equals("Cliente")) {
+                cat_box2.setVisible(true);
+                cat_box1.setVisible(false);
 
+            } else {
+                cat_box2.setVisible(false);
+                cat_box1.setVisible(true);
+            }
+        });
     }
 
     private void loadPago() {
-           PagoFacturaController control = App.cargarVentanaModal("Cargar Pago", "fxml/PagoForm", false);
-           control.setFactura(tv_factura.getSelectionModel().getSelectedItem().getFactura());
+        PagoFacturaController control = App.cargarVentanaModal("Cargar Pago", "fxml/PagoForm", false);
+        control.setFactura(tv_factura.getSelectionModel().getSelectedItem().getFactura());
     }
 
     private void loadForm() {
         App.bodycenter.cargarBody("fxml/FacturaFormV2");
     }
 
-    private void llenarTable() {
+    private void buscarFacturas() {
+
+        List<Factura> listado = null;
         FacturaBackend facturaService = new FacturaControllerImpl();
-        List<Factura> listado = facturaService.listadoFacturaNonuloProveedor();
+
+        if (cat_box.getSelectionModel().getSelectedIndex() == -1) {
+            listado = facturaService.listadoFacturaNonuloProveedor();
+            llenarTable(listado);
+            return;
+        }
+
+        if (cat_box1.isVisible() && cat_box1.getSelectionModel().getSelectedItem() != null) {
+            String status = sts_box.getSelectionModel().getSelectedItem();
+            if (status != null) {
+                if (status.equals("Activo")) {
+                    listado = facturaService.buscarPorProveedorStatus(cat_box1.getValue(), "A");
+                } else {
+                    listado = facturaService.buscarPorProveedorStatus(cat_box1.getValue(), "C");
+                }
+            }else{
+                listado = facturaService.facturaProveedor(cat_box1.getValue().getId());
+            }
+            llenarTable(listado);
+            return;
+        }
+        
+        if(cat_box2.isVisible() && cat_box2.getSelectionModel().getSelectedItem()!=null){
+            String status = sts_box.getSelectionModel().getSelectedItem();
+            if (status != null) {
+                if (status.equals("Activo")) {
+                    listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue(), "A");
+                } else {
+                    listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue(), "C");
+                }
+            }else{
+                listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue());
+            }
+            llenarTable(listado);
+            return;
+        }
+
+    }
+
+    private void llenarTable(List<Factura> facturas) {
+        List<TFacturaInicio> inicio = getTFacturas(facturas);
+        tv_factura.setItems(FXCollections.observableArrayList(inicio));
+        tv_factura.refresh();
+    }
+
+    private List<TFacturaInicio> getTFacturas(List<Factura> listado) {
         List<TFacturaInicio> inicio = new ArrayList<>();
         listado.forEach((e) -> {
             TFacturaInicio t = new TFacturaInicio(e);
             inicio.add(t);
         });
-        tv_factura.setItems(FXCollections.observableArrayList(inicio));
-        tv_factura.refresh();
+        return inicio;
     }
+
 }

@@ -8,6 +8,7 @@ import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Peticion;
 import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
 import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
+import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Cuenta;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
@@ -37,7 +38,9 @@ public class FacturaControllerImpl implements FacturaBackend {
     private Conexion conn;
     private Peticion pet;
     private final String server = "http://localhost:8090";
-    
+
+    private final String provider = "Inversiones Delanni App 1.0";
+    private final String system = System.getProperty("os.name");
 
     public FacturaControllerImpl() {
         this.mapeo = new ObjectMapper();
@@ -158,9 +161,127 @@ public class FacturaControllerImpl implements FacturaBackend {
 
     @Override
     public List<Factura> listadoFacturaNonuloProveedor() {
-         try {
+        try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/listado/nonulo")))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> buscarPorProveedorStatus(Proveedor prov, String parametro) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatusProveedor?id=")
+                            .concat(String.valueOf(prov.getId()))
+                            .concat("&").concat("status=").concat(parametro)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> buscarFacturasStatus(String parametro) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatus?status=").concat(parametro)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> obtenerVentasClientes() {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente")))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> obtenerVentasPorCliente(Cliente cl) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?cliente=").concat(String.valueOf(cl.getId()))))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> obtenerVentasPorCliente(Cliente cl, String sts) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?cliente=")
+                            .concat(String.valueOf(cl.getId()))
+                            .concat("&sts=").concat(sts)))
+                            
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
                     .GET()
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());

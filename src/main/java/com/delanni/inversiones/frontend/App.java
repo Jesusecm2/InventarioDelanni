@@ -1,6 +1,11 @@
 package com.delanni.inversiones.frontend;
 
+import com.delanni.inversiones.frontend.Backend.Authentication.AuthenticationImpl;
 import com.delanni.inversiones.frontend.Backend.Authentication.AuthenticationInfo;
+import com.delanni.inversiones.frontend.Backend.Authentication.IAuthentication;
+import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
+import com.delanni.inversiones.frontend.Backend.Entity.Role;
+import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Inicio.InicioController;
@@ -28,16 +33,23 @@ import org.kordamp.bootstrapfx.BootstrapFX;
  * JavaFX App
  */
 public class App extends Application {
-    
+
     private static Scene scene;
     public static FXMLLoader loadctual;
     public static Stage stage;
     public static AuthenticationInfo authinfo;
     private static boolean sizehigh;
     public static InicioController bodycenter;
-    
+
     @Override
     public void start(Stage stage) throws IOException {
+        Usuario user = new Usuario();
+        user.setUsername("app_user");
+        user.setPassword("123456");
+        user.setNombre("Usuario de Aplicacion");
+        user.setEmail("email@promedio");
+        
+        AuthenticationInfo us = new AuthenticationImpl().getToken(user);
         App.stage = stage;
         NormalImage.precarga();
         PreloadFXML.loadParent();
@@ -64,7 +76,7 @@ public class App extends Application {
         stage.heightProperty().addListener(resize);
         // scene = new Scene(loadFXML("fxml/Inicio"), 640, 480);
         FXMLLoader lo = App.getFMXL("fxml/Inicio");
-        
+
         scene = new Scene(lo.load(), 800, 600);
         App.bodycenter = lo.getController();
         scene.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
@@ -73,31 +85,31 @@ public class App extends Application {
         stage.centerOnScreen();
         stage.show();
     }
-    
+
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML("fxml/" + fxml));
     }
-    
+
     public static boolean IsResize() {
         double horizontal = stage.getWidth();
         double vertical = stage.getWidth();
         return (vertical > 1280 && horizontal > 720) ? true : false;
     }
-    
+
     public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         loadctual = fxmlLoader;
         //fxmlLoader.setController(new InicioSesionController());
         return fxmlLoader.load();
     }
-    
+
     public static FXMLLoader getFMXL(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         App.loadctual = fxmlLoader;
         //fxmlLoader.setController(new InicioSesionController());
         return fxmlLoader;
     }
-    
+
     private static void resizeHigh() {
         //Controladores control = loadctual.getController();
         //control.responsive1600();
@@ -108,10 +120,10 @@ public class App extends Application {
             // scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         }
-        
+
         sizehigh = true;
     }
-    
+
     private static void resizeMedium() {
         //Controladores control = loadctual.getController();
         //control.responsive800();
@@ -122,15 +134,15 @@ public class App extends Application {
 //            scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         }
-        
+
         sizehigh = false;
-        
+
     }
-    
+
     public static void main(String[] args) {
         launch();
     }
-    
+
     public static <T> T cargarVentanaModal(String titulo, String param, boolean modal) {
         try {
             Parent parent = App.loadFXML(param);
@@ -140,25 +152,25 @@ public class App extends Application {
             stage1.initStyle(StageStyle.DECORATED);
             stage1.getIcons().add(Getfile.getIcono("minilogo.png").getImage());
             if (modal) {
-                stage1.initModality(Modality.APPLICATION_MODAL);                
+                stage1.initModality(Modality.APPLICATION_MODAL);
             } else {
                 stage1.initModality(Modality.NONE);
             }
-            
+
             stage1.setScene(scene1);
             stage1.centerOnScreen();
-            scene1.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());   
-            if(modal){
-                stage1.showAndWait();    
-            }else{
+            scene1.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
+            if (modal) {
+                stage1.showAndWait();
+            } else {
                 stage1.show();
             }
-            
+
             return loadctual.getController();
         } catch (IOException ex) {
-            
+
         }
         return null;
     }
-    
+
 }

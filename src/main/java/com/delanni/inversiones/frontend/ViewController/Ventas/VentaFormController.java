@@ -30,6 +30,7 @@ import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormCont
 import com.delanni.inversiones.frontend.ViewController.Producto.ProveedorFormController;
 import java.io.File;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -246,6 +247,7 @@ public class VentaFormController implements Initializable {
             if (chk_fecha.isSelected()) {
                 fecha_ejec.setDisable(false);
             } else {
+                fecha_ejec.setValue(null);
                 fecha_ejec.setDisable(true);
             }
         });
@@ -271,8 +273,12 @@ public class VentaFormController implements Initializable {
                 PagoBackend bl = new PagoImpl();
                 valor = bl.obtenerValorMonedaHoy(mon);
                 if (valor == null) {
+
                     ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
                     control.setMoneda(mon);
+                    if (chk_fecha.isSelected()) {
+                        control.setDate(fecha_ejec.getValue());
+                    }
                     moneda_Combo.getSelectionModel().clearSelection();
 
                 } else {

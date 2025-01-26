@@ -63,6 +63,9 @@ public class ProductoController implements Controladores {
 
     @FXML
     private Button create_btn;
+    
+        @FXML
+    private Button clear_btn;
 
     @FXML
     private Parent lastPage;
@@ -164,6 +167,11 @@ public class ProductoController implements Controladores {
         } catch (IOException ex) {
 
         }
+        clear_btn.setOnAction((e)->{
+            cat_box.getSelectionModel().clearSelection();
+            tc_busqueda.setText("");
+        });
+        
         /*table_producto.setOnMouseClicked((e) -> {
             Producto seleccion = table_producto.getSelectionModel().getSelectedItem().getProducto();
             if (seleccion != null) {
@@ -207,6 +215,7 @@ public class ProductoController implements Controladores {
         //tc_accion.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
         tc_busqueda.setOnKeyTyped((e -> {
+            
             buscarProductos(tc_busqueda.getText());
         }));
 
@@ -324,12 +333,18 @@ public class ProductoController implements Controladores {
         if (producto != null) {
             //table_producto.getItems().clear();
             table_producto.setItems(FXCollections.observableList(convertir(producto)));
+            table_producto.refresh();
         }
     }
 
     private void buscarProductos(String value) {
         InventarioControllerImpl control = new InventarioControllerImpl();
-        List<Producto> producto = control.buscarNombre(value);
+        List<Producto> producto = null;
+        if(cat_box.getSelectionModel().getSelectedIndex()!=-1){
+            producto=control.buscarCategoriaNombre(cat_box.getSelectionModel().getSelectedItem(),value);
+        }else{
+            producto=control.buscarNombre(value);
+        }
         if (producto != null) {
             //table_producto.getItems().clear();
             table_producto.setItems(FXCollections.observableList(convertir(producto)));

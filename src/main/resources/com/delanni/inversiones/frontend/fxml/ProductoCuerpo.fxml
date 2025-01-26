@@ -79,5 +79,11 @@
          </children>
       </GridPane>
       <Button fx:id="volver_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+      <Button fx:id="clear_btn" mnemonicParsing="false" text="Limpiar" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <styleClass>
+            <String fx:value="btn-success" />
+            <String fx:value="btn-lg" />
+         </styleClass>
+      </Button>
    </children>
 </GridPane>

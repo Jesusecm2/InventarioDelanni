@@ -9,6 +9,9 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +21,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  *
@@ -42,10 +46,12 @@ public class ValorMonedaFormController implements Initializable {
     
     private Moneda moneda;
     
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fecha_chk.setOnAction((e) -> {
             if (fecha_chk.isSelected()) {
+                
                 date_pick.setDisable(false);
             } else {
                 date_pick.setDisable(true);
@@ -68,18 +74,26 @@ public class ValorMonedaFormController implements Initializable {
         moneda_tf.setText(moneda.getMoneda());
     }
     
+    public void setDate(LocalDate date){
+        date_pick.setValue(date);
+        fecha_chk.setDisable(true);
+    }
+    
     private void guardarMonedaValor(){
          ValorMoneda valorMoneda = new ValorMoneda();
          valorMoneda.setValor(saldo_spin.getValue());
          valorMoneda.setMoneda(moneda);
          if(fecha_chk.isSelected()){
-             valorMoneda.setRegistro(null);
+             
+             valorMoneda.setRegistro(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
          }
          
          PagoBackend bck = new PagoImpl();
          ValorMoneda guardado = bck.guardarValorMoneda(valorMoneda);
          if(guardado!=null){
              System.out.println("guardado");
+             Stage stg = (Stage)date_pick.getParent().getScene().getWindow();
+             stg.close();
          }
          
     }

@@ -31,23 +31,23 @@ import java.util.ArrayList;
  * @author Jesusecm
  */
 public class InventarioControllerImpl implements InventarioBackend {
-
+    
     private Transaccional trans;
     private ObjectMapper mapeo;
     private Conexion conn;
     private Peticion pet;
     private final String server = "http://localhost:8090";
-
+    
     private final String provider = "Inversiones Delanni App 1.0";
     private final String system = System.getProperty("os.name");
-
+    
     public InventarioControllerImpl() {
         this.mapeo = new ObjectMapper();
         this.trans = new Transaccional(new Conexion());
         this.conn = new Conexion();
         this.pet = new Peticion();
     }
-
+    
     @Override
     public Categoria GuardarCategoria(Categoria categoria) {
         try {
@@ -61,20 +61,20 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Categoria.class);
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public Categoria ObtenerCategoriaId(Categoria categoria) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public List<Categoria> ListadoCategoria() {
         try {
@@ -87,18 +87,18 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Categoria[].class)));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public Producto GuardarProducto(Producto producto, String categoria, Double valor) {
-
+        
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/guardar?action=")
@@ -113,18 +113,18 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Producto.class);
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public List<Producto> ListadoProducto() {
-
+        
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/lista")))
@@ -135,20 +135,20 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Producto[].class)));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public List<Producto> ListadoProducto(Categoria cat) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/inventario/producto/listacat")))
+                    .uri(new URI(server.concat("/api/inventario/inventario/producto/listacat?id=").concat(String.valueOf(cat.getId()))))
                     .GET()
                     .header("system", system)
                     .header("provider", provider)
@@ -156,18 +156,18 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public List<Producto> obtenerProducto(String cod) {
-
+        
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/codigo?cod=".concat(cod))))
@@ -178,15 +178,15 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public List<Producto> buscarNombre(String nombre) {
         try {
@@ -199,24 +199,24 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public void EliminarImagen(ImagenProducto obj) {
         pet.addParameter("obj", obj.getId().toString());
         trans.HttpPostObject("/api/inventario/inventario/imagen/eliminar", pet);
         if (pet.getCabecera().get("resp_cod").equals("200")) {
-
+            
         }
     }
-
+    
     @Override
     public Cliente guardarCliente(Cliente save) {
         try {
@@ -230,15 +230,15 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Cliente.class);
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public Cliente BuscarCedulaCliente(String cedula) {
         try {
@@ -251,15 +251,15 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Cliente.class);
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
     @Override
     public List<Cliente> listadoCliente() {
         try {
@@ -272,13 +272,37 @@ public class InventarioControllerImpl implements InventarioBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return Arrays.asList(mapeo.readValue(response.body(), Cliente[].class));
         } catch (URISyntaxException ex) {
-
+            
         } catch (IOException ex) {
-
+            
         } catch (InterruptedException ex) {
-
+            
         }
         return null;
     }
-
+    
+    @Override
+    public List<Producto> buscarCategoriaNombre(Categoria cat, String nombre) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/producto/catnombre?id=")
+                            .concat(String.valueOf(cat.getId())
+                                    .concat("&").concat("nombre=")
+                                    .concat(nombre))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return Arrays.asList(mapeo.readValue(response.body(), Producto[].class));
+        } catch (URISyntaxException ex) {
+            
+        } catch (IOException ex) {
+            
+        } catch (InterruptedException ex) {
+            
+        }
+        return null;
+    }
+    
 }

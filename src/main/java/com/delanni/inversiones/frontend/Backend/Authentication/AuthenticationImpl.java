@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Scanner;
-
 /**
  *
  * @author Jesusecm
@@ -28,39 +27,45 @@ public class AuthenticationImpl implements IAuthentication {
     private Peticion peticion;
     private Transaccional transaccional;
 
-    public AuthenticationImpl(Transaccional trans) {
+    public AuthenticationImpl() {
         //this.conexion = conexion;
         this.map = new ObjectMapper();
         //this.peticion = peticion;
-        this.transaccional = trans;
+        //this.transaccional = trans;
         this.peticion = new Peticion();
     }
 
     @Override
     public AuthenticationInfo getToken(Usuario user) {
-        peticion.addParameter("username", user.getUsername());
-        peticion.addParameter("password", user.getPassword());
-        peticion.addParameter("grant_type", "password");
-        this.transaccional.PostFormEncoded("/api/security/oauth/token", peticion);
-        if (peticion != null && peticion.getCuerpo() != null) {
+        try {
+            System.out.println(map.writeValueAsString(user));
+            /* peticion.addParameter("username", user.getUsername());
+            peticion.addParameter("password", user.getPassword());
+            peticion.addParameter("grant_type", "password");
+            this.transaccional.PostFormEncoded("/api/security/oauth/token", peticion);
+            if (peticion != null && peticion.getCuerpo() != null) {
             Conexion.ultima = this.peticion;
             if (peticion.getCabecera().get("resp_code") == "success") {
-                if (peticion.getCabecera().get("resp_cod").equals("200")) {
-                    try {
-                        return new AuthenticationInfo(map.readValue(peticion.getCuerpo().get("response"), Map.class));
-                    } catch (JsonProcessingException ex) {
-                        ex.printStackTrace();
-                        return null;
-                    }
-                }else{
-                    
-                }
-
-            } else {
-                return null;
+            if (peticion.getCabecera().get("resp_cod").equals("200")) {
+            try {
+            return new AuthenticationInfo(map.readValue(peticion.getCuerpo().get("response"), Map.class));
+            } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            return null;
             }
+            }else{
+            
+            }
+            
+            } else {
+            return null;
+            }
+            }*/
+         
+        } catch (JsonProcessingException ex) {
+            //Logger.getLogger(AuthenticationImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+           return null;
     }
 
     @Override

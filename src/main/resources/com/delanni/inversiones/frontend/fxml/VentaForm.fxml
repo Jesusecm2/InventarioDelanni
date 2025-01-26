@@ -31,7 +31,7 @@
       <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Label styleClass="h2" text="Proveedor" GridPane.columnIndex="1" />
+        <Label styleClass="h2" text="Ventas Formulario" GridPane.columnIndex="1" />
         <Button fx:id="volver_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" GridPane.rowIndex="1" />
       <TabPane fx:id="tab_window" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <tabs>

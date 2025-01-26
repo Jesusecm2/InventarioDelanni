@@ -12,6 +12,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public interface PagoBackend {
     public ValorMoneda obtenerValorMonedaHoy(Moneda param);
 
     public ValorMoneda guardarValorMoneda(ValorMoneda param);
+    
+    public ValorMoneda guardarValorMoneda(ValorMoneda param,Date date);
 
     public Pago guardarPagoFactura(Factura factura, Pago pago);
 

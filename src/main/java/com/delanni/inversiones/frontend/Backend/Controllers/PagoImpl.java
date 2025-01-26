@@ -26,6 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,7 @@ public class PagoImpl implements PagoBackend {
     public List<TpIngreso> obtenerIngreso(String tipo) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/pago/obtener/tingreso")))
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/tingreso?tipo=".concat(tipo))))
                     .GET()
                     .header("system", system)
                     .header("provider", provider)
@@ -238,6 +239,28 @@ public class PagoImpl implements PagoBackend {
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public ValorMoneda guardarValorMoneda(ValorMoneda param, Date date) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(date.toString())))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), ValorMoneda.class);
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {

@@ -39,4 +39,6 @@ public interface InventarioBackend {
     public Cliente BuscarCedulaCliente(String cedula);
 
     public List<Cliente>listadoCliente();
+    
+    public List<Producto> buscarCategoriaNombre(Categoria cat,String nombre);
 }
