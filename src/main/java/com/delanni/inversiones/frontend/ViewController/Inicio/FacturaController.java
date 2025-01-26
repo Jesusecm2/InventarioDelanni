@@ -251,7 +251,7 @@ public class FacturaController implements Controladores {
         FacturaBackend facturaService = new FacturaControllerImpl();
 
         if (cat_box.getSelectionModel().getSelectedIndex() == -1) {
-            listado = facturaService.listadoFacturaNonuloProveedor();
+            listado = facturaService.listadoFacturasNotNull();
             llenarTable(listado);
             return;
         }
@@ -260,12 +260,12 @@ public class FacturaController implements Controladores {
             String status = sts_box.getSelectionModel().getSelectedItem();
             if (status != null) {
                 if (status.equals("Activo")) {
-                    listado = facturaService.buscarPorProveedorStatus(cat_box1.getValue(), "A");
+                    listado = facturaService.listadoFacturas(cat_box1.getValue(), "A");
                 } else {
-                    listado = facturaService.buscarPorProveedorStatus(cat_box1.getValue(), "C");
+                    listado = facturaService.listadoFacturas(cat_box1.getValue(), "C");
                 }
             }else{
-                listado = facturaService.facturaProveedor(cat_box1.getValue().getId());
+                listado = facturaService.listadoFacturas(cat_box1.getValue());
             }
             llenarTable(listado);
             return;
@@ -275,12 +275,12 @@ public class FacturaController implements Controladores {
             String status = sts_box.getSelectionModel().getSelectedItem();
             if (status != null) {
                 if (status.equals("Activo")) {
-                    listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue(), "A");
+                    listado = facturaService.listadoVentas(cat_box2.getValue(), "A");
                 } else {
-                    listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue(), "C");
+                    listado = facturaService.listadoVentas(cat_box2.getValue(), "C");
                 }
             }else{
-                listado = facturaService.obtenerVentasPorCliente(cat_box2.getValue());
+                listado = facturaService.listadoVentas(cat_box2.getValue());
             }
             llenarTable(listado);
             return;

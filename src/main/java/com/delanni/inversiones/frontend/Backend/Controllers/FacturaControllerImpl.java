@@ -23,6 +23,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,10 +125,10 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> facturaProveedor(Integer id) {
+    public List<Factura> listadoFacturas(Proveedor id) {
         try {
             //pet.addBody("request", mapeo.writeValueAsString(categoria));
-            pet.addParameter("id", String.valueOf(id));
+            pet.addParameter("id", String.valueOf(id.getId()));
             trans.HttpGetObject("/api/inventario/inventario/factura/proveedor/buscar", pet);
 
             if (pet.getCabecera().get("resp_cod").equals("200")) {
@@ -144,7 +145,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> listadoFactura() {
+    public List<Factura> listadoFacturas() {
         try {
             trans.HttpGetObject("/api/inventario/inventario/factura/listado", pet);
 
@@ -160,7 +161,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> listadoFacturaNonuloProveedor() {
+    public List<Factura> listadoFacturasNotNull() {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/listado/nonulo")))
@@ -182,7 +183,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> buscarPorProveedorStatus(Proveedor prov, String parametro) {
+    public List<Factura> listadoFacturas(Proveedor prov, String parametro) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatusProveedor?id=")
@@ -206,7 +207,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> buscarFacturasStatus(String parametro) {
+    public List<Factura> listadoFacturas(String parametro) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatus?status=").concat(parametro)))
@@ -228,7 +229,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> obtenerVentasClientes() {
+    public List<Factura> listadoVentas() {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente")))
@@ -250,7 +251,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> obtenerVentasPorCliente(Cliente cl) {
+    public List<Factura> listadoVentas(Cliente cl) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?cliente=").concat(String.valueOf(cl.getId()))))
@@ -272,7 +273,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> obtenerVentasPorCliente(Cliente cl, String sts) {
+    public List<Factura> listadoVentas(Cliente cl, String sts) {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?cliente=")
@@ -294,6 +295,21 @@ public class FacturaControllerImpl implements FacturaBackend {
 
         }
         return null;
+    }
+
+    @Override
+    public List<Factura> listadoFacturas(Date start, Date end) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Factura> listadoVentas(Date date) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Factura> listadoVentas(Cliente cl, Date start) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
