@@ -6,9 +6,12 @@ package com.delanni.inversiones.frontend.Backend.Interfaces;
 
 import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
 import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
+import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.ImagenProducto;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -41,4 +44,10 @@ public interface InventarioBackend {
     public List<Cliente>listadoCliente();
     
     public List<Producto> buscarCategoriaNombre(Categoria cat,String nombre);
+    
+    public InputStream reporteProductoCategoria(Categoria categoria);
+    
+    
+    public List<String> getErrors();
+    
 }

@@ -12,16 +12,21 @@ import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Cuenta;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -279,7 +284,6 @@ public class FacturaControllerImpl implements FacturaBackend {
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?cliente=")
                             .concat(String.valueOf(cl.getId()))
                             .concat("&sts=").concat(sts)))
-                            
                     .header("Content-Type", "application/json")
                     .header("system", system)
                     .header("provider", provider)
@@ -298,18 +302,95 @@ public class FacturaControllerImpl implements FacturaBackend {
     }
 
     @Override
-    public List<Factura> listadoFacturas(Date start, Date end) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<Factura> listadoFacturas(Date start) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar?date=").concat(start.toString())))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.statusCode());
+            return Arrays.asList(mapeo.readValue(response.body(), Factura[].class));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
     }
 
     @Override
     public List<Factura> listadoVentas(Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+         try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/cliente?date=").concat(formato.format(date))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return Arrays.asList(mapeo.readValue(response.body(), Factura[].class));
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+                ex.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public List<Factura> listadoVentas(Cliente cl, Date start) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+         try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/cliente?date=").concat(formato.format(start))
+                            .concat("&id=").concat(String.valueOf(cl.getId()))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return Arrays.asList(mapeo.readValue(response.body(), Factura[].class));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public InputStream reporteFactura(Factura factura) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/reporte/producto/factura?id_factura=").concat(String.valueOf(factura.getId()))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<InputStream> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofInputStream());
+            return response.body();
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
     }
 
 }

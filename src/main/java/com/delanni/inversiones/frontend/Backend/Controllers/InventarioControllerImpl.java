@@ -15,6 +15,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ResponseCache;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+
 
 /**
  *
@@ -40,6 +43,7 @@ public class InventarioControllerImpl implements InventarioBackend {
     
     private final String provider = "Inversiones Delanni App 1.0";
     private final String system = System.getProperty("os.name");
+    private List<String> errors;
     
     public InventarioControllerImpl() {
         this.mapeo = new ObjectMapper();
@@ -98,7 +102,7 @@ public class InventarioControllerImpl implements InventarioBackend {
     
     @Override
     public Producto GuardarProducto(Producto producto, String categoria, Double valor) {
-        
+        HttpResponse<String> response = null;
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/producto/guardar?action=")
@@ -110,14 +114,22 @@ public class InventarioControllerImpl implements InventarioBackend {
                     .header("system", system)
                     .header("provider", provider)
                     .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Producto.class);
         } catch (URISyntaxException ex) {
             
         } catch (IOException ex) {
-            
+            if(response.statusCode()==400){
+                try {
+                    Map<String,Object> error = mapeo.readValue(response.body(), Map.class);
+                    errors = (List<String>)error.get("errors");
+                } catch (JsonProcessingException ex1) {
+                    ex.printStackTrace();
+                }
+            }
         } catch (InterruptedException ex) {
-            
+            //mapeo.readValue(response.body(), Producto.class);
+            System.out.println("Error Interrumped"+response.statusCode());
         }
         return null;
     }
@@ -304,5 +316,35 @@ public class InventarioControllerImpl implements InventarioBackend {
         }
         return null;
     }
+
+    @Override
+    public InputStream reporteProductoCategoria(Categoria categoria) {
+            try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/reporte/producto/categoria?id_Categoria=").concat(String.valueOf(categoria.getId()))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<InputStream> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofInputStream());
+            return response.body();
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    
+    
     
 }

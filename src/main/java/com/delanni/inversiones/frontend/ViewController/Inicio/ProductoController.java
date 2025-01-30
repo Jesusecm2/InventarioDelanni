@@ -5,20 +5,29 @@
 package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
+import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
+import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
+import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.ViewController.Producto.TableObject.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormController;
 import com.delanni.inversiones.frontend.ViewController.Size.NormalSize;
 import com.delanni.inversiones.frontend.ViewObject.Previews.PreloadFXML;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +58,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
@@ -81,6 +91,9 @@ public class ProductoController implements Controladores {
 
     @FXML
     private Label precio_unt;
+    
+    @FXML
+    private Button exportar_btn;
 
     @FXML
     private Label precio_vnt;
@@ -169,7 +182,9 @@ public class ProductoController implements Controladores {
         }
         clear_btn.setOnAction((e)->{
             cat_box.getSelectionModel().clearSelection();
+            exportar_btn.setDisable(true);
             tc_busqueda.setText("");
+            
         });
         
         /*table_producto.setOnMouseClicked((e) -> {
@@ -186,6 +201,41 @@ public class ProductoController implements Controladores {
                 precio_vnt.setText(0 + "$");
             }
         });*/
+        
+        exportar_btn.setOnAction((e)->{
+            if (cat_box.getSelectionModel().getSelectedItem() != null) {
+                try {
+                    Categoria find_f = cat_box.getSelectionModel().getSelectedItem();
+                    InventarioBackend bck = new InventarioControllerImpl();
+                    InputStream stream = bck.reporteProductoCategoria(find_f);
+                    FileChooser chooser = new FileChooser();
+                    chooser.setTitle("Reporte Factura");
+                    chooser.setInitialFileName("Reporte productos - ".concat(find_f.getNombre()));
+                    chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+                    File guardar = chooser.showSaveDialog(cat_box.getParent().getScene().getWindow());
+                    if (guardar != null) {
+                        byte[] buffer = new byte[4096];
+                        FileOutputStream output = new FileOutputStream(guardar);
+                        int bytesRead;
+                        while ((bytesRead = stream.read(buffer)) != -1) {
+                            output.write(buffer,0,bytesRead);
+                        }
+                    }
+                    Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Solicitud Completada", " ", null);
+                   alert.show();
+                  if(Desktop.isDesktopSupported() && guardar.exists()){
+                       Desktop.getDesktop().open(guardar);
+                   }
+                } catch (IOException ex) {
+                    Alert alert = Alerta.getAlert(Alert.AlertType.ERROR, "Solicitud no completada", " ", null);
+                    alert.show();
+                }
+
+            }
+        });
+        
+        
+        
         table_producto.setOnMouseClicked((e) -> {
             if (table_producto.getSelectionModel().getSelectedItem() != null) {
                 Producto seleccion = table_producto.getSelectionModel().getSelectedItem().getProducto();
@@ -203,6 +253,7 @@ public class ProductoController implements Controladores {
             public void changed(ObservableValue<? extends Categoria> observable, Categoria oldValue, Categoria newValue) {
                 if (newValue != null) {
                     cargarProductos(newValue);
+                    exportar_btn.setDisable(false);
                 }
             }
 

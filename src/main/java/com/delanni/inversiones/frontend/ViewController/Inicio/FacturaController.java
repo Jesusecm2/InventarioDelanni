@@ -17,13 +17,20 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
 import com.delanni.inversiones.frontend.ViewController.Producto.CategoriaFormController;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
@@ -34,8 +41,11 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -43,6 +53,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -92,7 +103,19 @@ public class FacturaController implements Controladores {
     private Button create_btn;
 
     @FXML
+    private Button export_factura;
+
+    @FXML
     private Button pagar_btn;
+
+    @FXML
+    private Button clear_btn;
+
+    @FXML
+    private DatePicker date_pick;
+
+    @FXML
+    private Label total_lb;
 
     @FXML
     private ComboBox<Proveedor> cat_box1;
@@ -170,6 +193,45 @@ public class FacturaController implements Controladores {
             TFacturaInicio tf = tv_factura.getSelectionModel().getSelectedItem();
             if (tf != null) {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
+                total_lb.setText("Total: ".concat(String.valueOf(tf.getMonto()).concat("$")));
+            }
+        });
+
+        export_factura.setOnAction((e) -> {
+            if (tv_factura.getSelectionModel().getSelectedItem() != null) {
+                try {
+                    Factura find_f = tv_factura.getSelectionModel().getSelectedItem().getFactura();
+                    FacturaBackend bck = new FacturaControllerImpl();
+                    InputStream stream = bck.reporteFactura(find_f);
+                    FileChooser chooser = new FileChooser();
+                    chooser.setTitle("Reporte Factura");
+                    if (find_f.getIdCliente() != null) {
+                        chooser.setInitialFileName(find_f.getIdCliente().getNombre().concat("-").concat(String.valueOf(find_f.getId())));
+                    } else {
+                        chooser.setInitialFileName(find_f.getIdProveedor().getNombre().concat("-").concat(String.valueOf(find_f.getId())));
+                    }
+                    chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+                    File guardar = chooser.showSaveDialog(tv_factura.getParent().getScene().getWindow());
+                    if (guardar != null) {
+                        byte[] buffer = new byte[4096];
+                        FileOutputStream output = new FileOutputStream(guardar);
+                        int bytesRead;
+                        while ((bytesRead = stream.read(buffer)) != -1) {
+                            output.write(buffer, 0, bytesRead);
+                        }
+
+                    }
+
+                    if (Desktop.isDesktopSupported() && guardar.exists()) {
+                        Desktop.getDesktop().open(guardar);
+                        Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Solicitud Completada", " ", null);
+                        alert.show();
+                    }
+                } catch (IOException ex) {
+                    Alert alert = Alerta.getAlert(Alert.AlertType.ERROR, "Solicitud no completada", " ", null);
+                    alert.show();
+                }
+
             }
         });
 
@@ -204,6 +266,14 @@ public class FacturaController implements Controladores {
         } catch (Exception e) {
         }
 
+        clear_btn.setOnAction((e) -> {
+            cat_box.getSelectionModel().clearSelection();
+            cat_box1.getSelectionModel().clearSelection();
+            cat_box2.getSelectionModel().clearSelection();
+            sts_box.getSelectionModel().clearSelection();
+            date_pick.setValue(null);
+        });
+
         InventarioBackend back = new InventarioControllerImpl();
         List<Cliente> cliente = back.listadoCliente();
         cat_box2.setItems(FXCollections.observableArrayList(cliente));
@@ -214,15 +284,19 @@ public class FacturaController implements Controladores {
         cat_box1.setOnAction((e) -> {
             buscarFacturas();
         });
-        
-        cat_box2.setOnAction((e)->{
+
+        cat_box2.setOnAction((e) -> {
             buscarFacturas();
         });
-        
-        sts_box.setOnAction((e)->{
+
+        sts_box.setOnAction((e) -> {
             buscarFacturas();
         });
-        
+
+        date_pick.setOnAction((e) -> {
+            buscarFacturas();
+        });
+
         cat_box.setOnAction((e) -> {
             String item = cat_box.getSelectionModel().getSelectedItem();
             if (item.equals("Cliente")) {
@@ -264,14 +338,14 @@ public class FacturaController implements Controladores {
                 } else {
                     listado = facturaService.listadoFacturas(cat_box1.getValue(), "C");
                 }
-            }else{
+            } else {
                 listado = facturaService.listadoFacturas(cat_box1.getValue());
             }
             llenarTable(listado);
             return;
         }
-        
-        if(cat_box2.isVisible() && cat_box2.getSelectionModel().getSelectedItem()!=null){
+
+        if (cat_box2.isVisible() && cat_box2.getSelectionModel().getSelectedItem() != null && date_pick.getValue() == null) {
             String status = sts_box.getSelectionModel().getSelectedItem();
             if (status != null) {
                 if (status.equals("Activo")) {
@@ -279,8 +353,21 @@ public class FacturaController implements Controladores {
                 } else {
                     listado = facturaService.listadoVentas(cat_box2.getValue(), "C");
                 }
-            }else{
+            } else {
                 listado = facturaService.listadoVentas(cat_box2.getValue());
+            }
+            llenarTable(listado);
+            return;
+        }
+
+        if (date_pick.getValue() != null) {
+            if (cat_box.getSelectionModel().getSelectedItem() != null) {
+                if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
+                    listado = facturaService.listadoVentas(cat_box2.getValue(), Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                } else {
+                    listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                }
+
             }
             llenarTable(listado);
             return;

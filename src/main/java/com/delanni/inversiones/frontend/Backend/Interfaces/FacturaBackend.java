@@ -10,6 +10,8 @@ import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public interface FacturaBackend {
 	
 	public List<Factura> listadoFacturas(Proveedor prov,String parametro);
 	
-	public List<Factura> listadoFacturas(Date start,Date end);
+	public List<Factura> listadoFacturas(Date start);
 	
 	public List<Factura> listadoFacturas(String status);
 	
@@ -51,5 +53,7 @@ public interface FacturaBackend {
 	public Factura guardarFactura(Factura save,List<Pago> pagos);
 	
             
+        
+        public InputStream reporteFactura(Factura factura);
 
             }

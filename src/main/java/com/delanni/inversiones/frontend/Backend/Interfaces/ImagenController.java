@@ -4,6 +4,8 @@
  */
 package com.delanni.inversiones.frontend.Backend.Interfaces;
 
+import java.io.File;
+
 /**
  *
  * @author Jesusecm
@@ -12,4 +14,5 @@ public interface ImagenController {
     
     
     public String imageString(String url);
+    
 }

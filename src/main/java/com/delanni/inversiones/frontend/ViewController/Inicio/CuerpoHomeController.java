@@ -116,7 +116,9 @@ public class CuerpoHomeController implements Controladores {
     public void initialize(URL location, ResourceBundle resources) {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
-
+        
+        xAxis.setTickLabelGap(0.1);
+        
         String[] tiposchart = new String[3];
         tiposchart[0] = "Semanal";
         tiposchart[1] = "Mensual";

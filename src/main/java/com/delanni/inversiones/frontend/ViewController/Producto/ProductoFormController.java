@@ -458,28 +458,28 @@ public class ProductoFormController implements Controladores {
         }
         //**************Fin 
 
-        InventarioControllerImpl implement = new InventarioControllerImpl();
+        InventarioBackend implement = new InventarioControllerImpl();
         if (producto.getId() == null) {
             Producto response = implement.GuardarProducto(producto, "crear", j_spim.getValue());
-            mensaje(response);
+            mensaje(response,implement);
         } else {
 
             Producto response = implement.GuardarProducto(producto, "actualizar", j_spim.getValue());
-            mensaje(response);
+            mensaje(response,implement);
         }
 
         //
     }
 
-    private void mensaje(Producto response) {
+    private void mensaje(Producto response,InventarioBackend bck) {
         if (response != null) {
             success_msg.setText("Ha sido guardado correctamente");
             SuccessMsg();
             limpiarCampos();
             //();
         } else {
-            if (Conexion.getStatus() == 400) {
-                error_list.setItems(FXCollections.observableArrayList(Conexion.getErrors()));
+            if(bck.getErrors()!=null){
+                error_list.setItems(FXCollections.observableArrayList(bck.getErrors()));
                 error_list.setVisible(true);
             }
             error_msg.setText("Error no se ha guardado correctamente");

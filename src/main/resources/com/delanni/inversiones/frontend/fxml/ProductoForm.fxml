@@ -37,7 +37,7 @@
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="3.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="1.0" percentHeight="2.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
@@ -283,7 +283,7 @@
                      </rowConstraints>
                   </GridPane>
                   <ListView fx:id="error_list" editable="true" prefHeight="200.0" prefWidth="200.0" styleClass="error_list" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                  <Button fx:id="dlt_img" mnemonicParsing="false" prefWidth="200.0" text="X Eliminar Imagen" GridPane.rowIndex="2">
+                  <Button fx:id="dlt_img" mnemonicParsing="false" text="X Eliminar Imagen" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                      <styleClass>
                         <String fx:value="btn-success" />
                         <String fx:value="btn-lg" />
