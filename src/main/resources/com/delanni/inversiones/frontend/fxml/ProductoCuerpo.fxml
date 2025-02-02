@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="main_grid" alignment="TOP_CENTER" hgap="5.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Inicio.ProductoController">
+<GridPane fx:id="main_grid" alignment="TOP_CENTER" hgap="5.0" styleClass="plano" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Inicio.ProductoController">
   <columnConstraints>
       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" />
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
@@ -92,13 +92,16 @@
                   <String fx:value="btn-lg" />
                </styleClass>
             </Button>
-            <Button fx:id="exportar_btn" mnemonicParsing="false" text="Exportar Productos" GridPane.halignment="CENTER">
+            <Button fx:id="exportar_btn" disable="true" mnemonicParsing="false" text="Exportar Productos" GridPane.halignment="CENTER">
                <styleClass>
                   <String fx:value="btn-success" />
                   <String fx:value="btn-lg" />
                </styleClass>
             </Button>
          </children>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
       </GridPane>
    </children>
 </GridPane>

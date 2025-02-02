@@ -35,7 +35,7 @@
         <Button fx:id="volver_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" GridPane.rowIndex="1" />
       <TabPane fx:id="tab_window" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <tabs>
-            <Tab fx:id="tab_prov" text="Proveedor">
+            <Tab fx:id="tab_prov" text="Cliente">
                <content>
                   <GridPane>
                     <columnConstraints>
@@ -62,7 +62,7 @@
                           </rowConstraints>
                            <children>
                               <Label text="Cédula Cliente:" />
-                              <TextField promptText="Cédula" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <TextField fx:id="cd_tf" promptText="Cédula" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                               <Button fx:id="prov_create_btn" mnemonicParsing="false" text="Buscar Cliente" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>

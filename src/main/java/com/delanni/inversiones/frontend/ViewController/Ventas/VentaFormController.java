@@ -25,6 +25,7 @@ import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Factura.ClienteFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProveedorFormController;
@@ -39,6 +40,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -160,6 +162,9 @@ public class VentaFormController implements Initializable {
     private TextField narra_pag;
 
     @FXML
+    private TextField cd_tf;
+
+    @FXML
     private Label monto_tot_lb;
 
     @FXML
@@ -218,6 +223,22 @@ public class VentaFormController implements Initializable {
             tab_window.getSelectionModel().getSelectedItem().setDisable(true);
             tab_window.getSelectionModel().selectNext();
             tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+        });
+
+        cd_tf.setOnKeyReleased((e) -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                InventarioBackend inventario = new InventarioControllerImpl();
+                Cliente res = inventario.BuscarCedulaCliente(cd_tf.getText());
+                if (res != null) {
+                    cliente = res;
+                    tab_window.getSelectionModel().getSelectedItem().setDisable(true);
+                    tab_window.getSelectionModel().selectNext();
+                    tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+                    prov_lb.setText(cliente.getNombre());
+                } else {
+                    crearCliente();
+                }
+            }
         });
 
         bck_btn.setOnAction((e) -> {
@@ -302,14 +323,7 @@ public class VentaFormController implements Initializable {
         tc_precio.setCellValueFactory(new PropertyValueFactory<>("total_vent"));
 
         prov_create_btn.setOnAction((e) -> {
-            ClienteFormController control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
-            if (control != null) {
-                cliente = control.getCliente();
-                tab_window.getSelectionModel().getSelectedItem().setDisable(true);
-                tab_window.getSelectionModel().selectNext();
-                tab_window.getSelectionModel().getSelectedItem().setDisable(false);
-                prov_lb.setText(cliente.getNombre());
-            }
+            crearCliente();
 
         });
 
@@ -375,6 +389,17 @@ public class VentaFormController implements Initializable {
             moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
         }
 
+    }
+
+    private void crearCliente() {
+        ClienteFormController control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+        if (control != null) {
+            cliente = control.getCliente();
+            tab_window.getSelectionModel().getSelectedItem().setDisable(true);
+            tab_window.getSelectionModel().selectNext();
+            tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+            prov_lb.setText(cliente.getNombre());
+        }
     }
 
     private void ingresarTable(Producto pr) {
@@ -528,7 +553,13 @@ public class VentaFormController implements Initializable {
             listado.add(lnf);
         });
         factura.setLineas(listado);
+
         return factura;
+    }
+
+    private void mostrarError(String error) {
+        Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", error, null);
+        alerta.showAndWait();
     }
 
     private void guardarFactura() {
@@ -537,11 +568,27 @@ public class VentaFormController implements Initializable {
             registroPago();
         }
         List<Pago> guardarPago = list_pagos.getItems();
+        if (facturaEsValida(guardar, guardarPago)) {
+            FacturaBackend backend = new FacturaControllerImpl();
+            Factura guardado = backend.guardarFactura(guardar, guardarPago);
+            if (guardado != null) {
+                Alert aceptado = Alerta.getAlert(Alert.AlertType.INFORMATION, "Complettado", "Se ha guardado", null);
+                aceptado.showAndWait();
+            }
+        }
 
-        FacturaBackend backend = new FacturaControllerImpl();
-        backend.guardarFactura(guardar, guardarPago);
-        System.out.println("Guardado");
+    }
 
+    private boolean facturaEsValida(Factura factura, List<Pago> pagos) {
+        if(factura.getLineas().isEmpty()){
+            mostrarError("Factura debe contener productos");
+            return false;
+        }
+        if(factura.getIdCliente()==null){
+            mostrarError("Factura debe contener cliente asignado");
+            return false;
+        }
+        return true;
     }
 
     private void calcularValorTotal() {

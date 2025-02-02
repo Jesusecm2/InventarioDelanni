@@ -40,4 +40,6 @@ public interface PagoBackend {
     public List<Transacciones> obtenerEgresos();
 
     public List<Transacciones> obtenerIngresos();
+    
+    public List<Transacciones> obtenerVentasHoy();
 }

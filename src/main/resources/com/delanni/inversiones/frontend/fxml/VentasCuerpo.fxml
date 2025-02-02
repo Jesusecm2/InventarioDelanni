@@ -29,16 +29,16 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label styleClass="title" text="Ventas" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT">
+      <Label styleClass="title" text="Ventas del día" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT">
          <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </GridPane.margin></Label>
       <TableView fx:id="table_producto" maxHeight="-Infinity" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="3">
         <columns>
-          <TableColumn fx:id="tc_nombre" prefWidth="200.0" text="Número de venta" />
-          <TableColumn fx:id="tc_cantidad" prefWidth="75.0" text="Cliente" />
-            <TableColumn fx:id="tc_btn" prefWidth="75.0" text="Tp.Pago" />
-            <TableColumn fx:id="tc_nombre21" prefWidth="200.0" text="Accion" />
+          <TableColumn fx:id="tc_id" prefWidth="200.0" text="Número de venta" />
+          <TableColumn fx:id="tc_nombre" prefWidth="75.0" text="Cliente" />
+            <TableColumn fx:id="tc_pago" prefWidth="75.0" text="Tp.Pago" />
+            <TableColumn fx:id="tc_monto" prefWidth="200.0" text="Monto" />
         </columns>
          <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -99,7 +99,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ComboBox fx:id="cat_box" maxWidth="1.7976931348623157E308" prefWidth="200.0" promptText="Fltrar" styleClass="h3" GridPane.halignment="LEFT">
+            <ComboBox fx:id="cat_box" maxWidth="1.7976931348623157E308" prefWidth="200.0" promptText="Fltrar" styleClass="h3" visible="false" GridPane.halignment="LEFT">
                <GridPane.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
                </GridPane.margin>

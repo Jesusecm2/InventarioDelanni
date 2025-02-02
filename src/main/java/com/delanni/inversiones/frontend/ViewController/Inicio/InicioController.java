@@ -60,8 +60,8 @@ public class InicioController implements Controladores {
 
     @FXML
     private Button product_btn;
-    @FXML
-    private Button cat_btn;
+    /*@FXML
+    private Button cat_btn;*/
 
     @FXML
     private Button fact_btn;
@@ -105,7 +105,7 @@ public class InicioController implements Controladores {
         product_btn.setGraphic(Getfile.getIcono("normal/Producto64.png"));
         inventory_btn.setGraphic(Getfile.getIcono("normal/Inventario64.png"));
         mant_btn.setGraphic(Getfile.getIcono("normal/Mantenimiento64.png"));
-        cat_btn.setGraphic(Getfile.getIcono("normal/catalogo64.png"));
+        //cat_btn.setGraphic(Getfile.getIcono("normal/catalogo64.png"));
         fact_btn.setGraphic(Getfile.getIcono("normal/factura-64.png"));
         ventas_btn.setGraphic(Getfile.getIcono("normal/dinero-64.png"));
         img_icon.setImage(Getfile.getIcono("minilogo.png").getImage());
@@ -144,9 +144,9 @@ public class InicioController implements Controladores {
             loadHome();
         });
 
-        cat_btn.setOnMouseReleased((e) -> {
+       /* cat_btn.setOnMouseReleased((e) -> {
             loadCatalogo();
-        });
+        });*/
 
         fact_btn.setOnMouseReleased((e) -> {
             loadFacturas();

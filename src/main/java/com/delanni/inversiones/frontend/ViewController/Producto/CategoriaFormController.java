@@ -7,8 +7,10 @@ package com.delanni.inversiones.frontend.ViewController.Producto;
 import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Peticion;
+import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
@@ -35,6 +37,7 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 
 /**
  *
@@ -61,6 +64,9 @@ public class CategoriaFormController implements Controladores {
 
     @FXML
     private Categoria categoria;
+
+    @FXML
+    private Categoria guardar;
 
     @FXML
     private GridPane sucess_cnt;
@@ -124,7 +130,21 @@ public class CategoriaFormController implements Controladores {
         });
 
         list_cat.setOnMouseClicked((e) -> {
-            Seleccion();
+            if (e.getClickCount() >= 2 && e.getButton() == MouseButton.PRIMARY) {
+                Seleccion();
+            } else {
+                guardar = list_cat.getSelectionModel().getSelectedItem();
+                if (guardar != null) {
+                    cat_name_tf.setText(guardar.getNombre());
+                    if(guardar.getImage()!=null){
+                        ImagenController control = new ImageControllerImpl();
+                        ImageConverter convert = new ImageConverter(control.imageString(guardar.getImage()));
+                        lg_logo_imgv.setImage(convert.getImage());
+                    }
+                    
+                }
+            }
+
         });
         /*Categoria ct = new Categoria();
         ct.setId(1);
@@ -166,18 +186,22 @@ public class CategoriaFormController implements Controladores {
     public void crearCategoria() {
 
         InventarioBackend back = new InventarioControllerImpl();
+
         if (!cat_name_tf.getText().isBlank()) {
-            Categoria ct = new Categoria();
-            ct.setNombre(cat_name_tf.getText());
-            if (convertidor != null) {
-                ct.setImage(convertidor.getbase64img());
+            if (guardar == null) {
+                guardar = new Categoria();
             }
 
-            Alert alerta = Alerta.getAlert(Alert.AlertType.CONFIRMATION, "¿Esta de acuerdo?", "Guardar:" + ct.getNombre(), null);
+            guardar.setNombre(cat_name_tf.getText());
+            if (convertidor != null) {
+                guardar.setImage(convertidor.getbase64img());
+            }
+
+            Alert alerta = Alerta.getAlert(Alert.AlertType.CONFIRMATION, "¿Esta de acuerdo?", "Guardar:" + guardar.getNombre(), null);
             Optional<ButtonType> act = alerta.showAndWait();
             if (act.get() == ButtonType.OK) {
                 try {
-                    categoria = back.GuardarCategoria(ct);
+                    categoria = back.GuardarCategoria(guardar);
                     Peticion pet = Conexion.ultima;
                     if (pet.getCabecera().get("resp_cod").equals("200")) {
                         success_msg.setText("Guardado Correctamente");
