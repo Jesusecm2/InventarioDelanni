@@ -9,11 +9,13 @@ import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImp
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
+import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Producto.CategoriaFormController;
@@ -31,6 +33,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -345,7 +348,7 @@ public class FacturaFormController implements Controladores {
             nuevo.setNombre(producto_act.getNombre());
             nuevo.setPrecio_unit(precio_unit.getValue());
             nuevo.setCantidad(cant_unit.getValue());
-           // nuevo.setTotal(nuevo.getCantidad() * nuevo.getPrecio_unit());
+            // nuevo.setTotal(nuevo.getCantidad() * nuevo.getPrecio_unit());
             // total += nuevo.getTotal();
             // total_lbl.setText(String.format("%.2f$", total));
             cant_unit.getValueFactory().setValue(0.0);
@@ -359,7 +362,7 @@ public class FacturaFormController implements Controladores {
         total = 0.0;
         for (TProducto pr : table_view.getItems()) {
             if (pr != null) {
-               // total += pr.getTotal();
+                // total += pr.getTotal();
             }
         }
         total_lbl.setText(String.format("%.2f$", total));
@@ -382,7 +385,7 @@ public class FacturaFormController implements Controladores {
 
     private void BuscarProducto() {
         ProductoBusquedaController control = App.cargarVentanaModal("Buscar Producto", "fxml/ProductoBusqueda", true);
-        if(control.getProducto()!=null){
+        if (control.getProducto() != null) {
             producto_act = control.getProducto();
             cargarproducto();
         }
@@ -410,7 +413,7 @@ public class FacturaFormController implements Controladores {
         factura.setLineas(lineas);
         factura.setSaldo(total);
         FacturaBackend back = new FacturaControllerImpl();
-    //        back.guardarFactura(factura);
+               // back.guardarFactura(factura);
 
     }
 
@@ -436,12 +439,29 @@ public class FacturaFormController implements Controladores {
         });
         fadeTransition.play();
     }
+
+    private boolean facturaEsValida(Factura factura, List<Pago> pagos) {
+        if (factura.getLineas().isEmpty()) {
+            mostrarError("Factura debe contener productos");
+            return false;
+        }
+        if (factura.getIdCliente() == null) {
+            mostrarError("Factura debe contener cliente asignado");
+            return false;
+        }
+        return true;
+    }
     
-    private void cargarActual(Producto pr){
+    
+        private void mostrarError(String error) {
+        Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", error, null);
+        alerta.showAndWait();
+    }
+
+    private void cargarActual(Producto pr) {
         this.producto_act = pr;
         this.nombre_tf.setText(pr.getNombre());
         //this.get
     }
-    
-    
+
 }

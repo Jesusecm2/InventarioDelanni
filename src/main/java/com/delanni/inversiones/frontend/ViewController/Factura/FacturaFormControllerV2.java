@@ -40,6 +40,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -142,9 +143,9 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TableColumn<TProducto, String> tc_tot;
-    
+
     @FXML
-    private TableColumn<TProducto,String>tc_precio;
+    private TableColumn<TProducto, String> tc_precio;
 
     @FXML
     private TextField ref_pag;
@@ -244,8 +245,6 @@ public class FacturaFormControllerV2 implements Initializable {
 
             }
         });
-        
-        
 
         chk_fecha.setOnAction((e) -> {
             if (chk_fecha.isSelected()) {
@@ -297,7 +296,7 @@ public class FacturaFormControllerV2 implements Initializable {
         tc_cant.setCellValueFactory(new PropertyValueFactory<>("Scantidad"));
 
         tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
-        
+
         tc_precio.setCellValueFactory(new PropertyValueFactory<>("total_unit"));
 
         prov_create_btn.setOnAction((e) -> {
@@ -441,7 +440,7 @@ public class FacturaFormControllerV2 implements Initializable {
             pago.setNarrativa(narra_pag.getText());
             pago.setCod_ejecucion(ref_pag.getText());
             if (chk_fecha.isSelected()) {
-            
+
                 pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
             pago.setMoneda(moneda_Combo.getValue());
@@ -533,10 +532,11 @@ public class FacturaFormControllerV2 implements Initializable {
             registroPago();
         }
         List<Pago> guardarPago = list_pagos.getItems();
-
-        FacturaBackend backend = new FacturaControllerImpl();
-        backend.guardarFactura(guardar, guardarPago);
-        System.out.println("Guardado");
+        if (facturaEsValida(guardar, guardarPago)) {
+            FacturaBackend backend = new FacturaControllerImpl();
+            backend.guardarFactura(guardar, guardarPago);
+            System.out.println("Guardado");
+        }
 
     }
 
@@ -550,6 +550,23 @@ public class FacturaFormControllerV2 implements Initializable {
         }
         Double temp = (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);
+    }
+
+    private void mostrarError(String error) {
+        Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", error, null);
+        alerta.showAndWait();
+    }
+
+    private boolean facturaEsValida(Factura factura, List<Pago> pagos) {
+        if (factura.getLineas().isEmpty()) {
+            mostrarError("Factura debe contener productos");
+            return false;
+        }
+        if (factura.getIdProveedor() == null) {
+            mostrarError("Factura debe contener cliente asignado");
+            return false;
+        }
+        return true;
     }
 
 }
