@@ -132,7 +132,8 @@ public class CategoriaFormController implements Controladores {
         list_cat.setOnMouseClicked((e) -> {
             if (e.getClickCount() >= 2 && e.getButton() == MouseButton.PRIMARY) {
                 Seleccion();
-            } else {
+            } else {//
+                
                 guardar = list_cat.getSelectionModel().getSelectedItem();
                 if (guardar != null) {
                     cat_name_tf.setText(guardar.getNombre());
