@@ -40,6 +40,7 @@ public class App extends Application {
     public static AuthenticationInfo authinfo;
     private static boolean sizehigh;
     public static InicioController bodycenter;
+    public static String AppIP;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -48,7 +49,7 @@ public class App extends Application {
         user.setPassword("123456");
         user.setNombre("Usuario de Aplicacion");
         user.setEmail("email@promedio");
-        
+        AppIP = "http://192.168.0.123:8090";
         AuthenticationInfo us = new AuthenticationImpl().getToken(user);
         App.stage = stage;
         NormalImage.precarga();
