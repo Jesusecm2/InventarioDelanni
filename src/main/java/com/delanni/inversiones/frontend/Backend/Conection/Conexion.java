@@ -30,7 +30,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class Conexion {
 
-    private final String URL = "http://localhost:8090";
+    private final String URL = App.AppIP;
     private HttpURLConnection http = null;
     private String token = "";
     private URL url = null;

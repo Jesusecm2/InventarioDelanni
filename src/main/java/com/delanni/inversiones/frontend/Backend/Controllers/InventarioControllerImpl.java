@@ -4,6 +4,7 @@
  */
 package com.delanni.inversiones.frontend.Backend.Controllers;
 
+import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Peticion;
 import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
@@ -39,7 +40,7 @@ public class InventarioControllerImpl implements InventarioBackend {
     private ObjectMapper mapeo;
     private Conexion conn;
     private Peticion pet;
-    private final String server = "http://localhost:8090";
+    private final String server = App.AppIP;
     
     private final String provider = "Inversiones Delanni App 1.0";
     private final String system = System.getProperty("os.name");
@@ -145,13 +146,14 @@ public class InventarioControllerImpl implements InventarioBackend {
                     .header("provider", provider)
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            
             return (Arrays.asList(mapeo.readValue(response.body(), Producto[].class)));
         } catch (URISyntaxException ex) {
-            
+            ex.printStackTrace();
         } catch (IOException ex) {
-            
+             ex.printStackTrace();
         } catch (InterruptedException ex) {
-            
+             ex.printStackTrace();
         }
         return null;
     }
