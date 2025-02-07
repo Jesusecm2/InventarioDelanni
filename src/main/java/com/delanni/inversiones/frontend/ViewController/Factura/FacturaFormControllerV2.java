@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Factura;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
@@ -18,6 +19,8 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
+import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ConfigSystem;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
@@ -199,6 +202,13 @@ public class FacturaFormControllerV2 implements Initializable {
         iva_value.getValueFactory().setValue(0.0);
         excento_value.getValueFactory().setValue(0.0);
 
+         
+        ConfigSystem backSystem = new ConfigSystemImpl();
+        SystemParam iva_param = backSystem.obtenerParametro(100, "IVA");
+        if(iva_param!=null){
+            iva_value.getValueFactory().setValue(iva_param.getValueNum());
+        }
+        
         chk_parte.setSelected(true);
         chk_parte.setOnAction((e) -> {
             if (listado_pagos == null || listado_pagos.isEmpty()) {

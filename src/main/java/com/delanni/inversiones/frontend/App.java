@@ -24,6 +24,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -49,7 +50,8 @@ public class App extends Application {
         user.setPassword("123456");
         user.setNombre("Usuario de Aplicacion");
         user.setEmail("email@promedio");
-        AppIP = "http://192.168.0.123:8090";
+        //AppIP = "http://192.168.0.123:8090";
+        AppIP = "http://localhost:8090";
         AuthenticationInfo us = new AuthenticationImpl().getToken(user);
         App.stage = stage;
         NormalImage.precarga();
@@ -81,6 +83,14 @@ public class App extends Application {
         scene = new Scene(lo.load(), 800, 600);
         App.bodycenter = lo.getController();
         scene.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
+        scene.setOnKeyReleased((e) -> {
+
+            if (e.getCode() == KeyCode.F12) {
+                cargarVentanaModal("Parametros", "fxml/ParametroForm", true);
+            }
+            
+
+        });
         //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         stage.setScene(scene);
         stage.centerOnScreen();
@@ -169,7 +179,7 @@ public class App extends Application {
 
             return loadctual.getController();
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
         return null;
     }
