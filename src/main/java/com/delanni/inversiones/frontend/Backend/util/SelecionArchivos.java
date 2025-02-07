@@ -16,7 +16,7 @@ public class SelecionArchivos {
     public static File seleccionarImagen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar Imagen");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Pictures"));
+        //fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Pictures"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JPG & PNG", "*.png", "*.jpg")
         );
