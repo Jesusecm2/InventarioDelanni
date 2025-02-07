@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Factura;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
@@ -12,6 +13,8 @@ import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
+import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ConfigSystem;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
@@ -207,7 +210,7 @@ public class FacturaFormController implements Controladores {
         buscar_btn.setOnMouseClicked((e) -> {
             BuscarProducto();
         });
-
+       
         cantidad = 0.0;
         total = 0.0;
         total_lbl.setText("0.0$");
