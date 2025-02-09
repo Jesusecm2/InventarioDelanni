@@ -48,14 +48,14 @@ public class VentasCuerpoController implements Initializable {
     private TableColumn<VentaTrans, String> tc_pago;
 
     @FXML
-    private TableColumn<VentaTrans, Double> tc_monto;
+    private TableColumn<VentaTrans, String> tc_monto;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         tc_id.setCellValueFactory(new PropertyValueFactory<>("idtrn"));
         tc_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        tc_pago.setCellValueFactory(new PropertyValueFactory<>("tc_pago"));
+        tc_pago.setCellValueFactory(new PropertyValueFactory<>("tp_pago"));
         tc_monto.setCellValueFactory(new PropertyValueFactory<>("monto_pag"));
         
         create_btn.setOnMouseClicked((e) -> {

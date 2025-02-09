@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Ventas;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
@@ -18,6 +19,8 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
+import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ConfigSystem;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
@@ -218,6 +221,11 @@ public class VentaFormController implements Initializable {
                 agregar_pago.setDisable(false);
             }
         });
+        ConfigSystem backSystem = new ConfigSystemImpl();
+        SystemParam iva_param = backSystem.obtenerParametro(100, "IVA");
+        if (iva_param != null) {
+            iva_value.getValueFactory().setValue(iva_param.getValueNum());
+        }
 
         nxt_btn.setOnAction((e) -> {
             tab_window.getSelectionModel().getSelectedItem().setDisable(true);
@@ -580,11 +588,11 @@ public class VentaFormController implements Initializable {
     }
 
     private boolean facturaEsValida(Factura factura, List<Pago> pagos) {
-        if(factura.getLineas().isEmpty()){
+        if (factura.getLineas().isEmpty()) {
             mostrarError("Factura debe contener productos");
             return false;
         }
-        if(factura.getIdCliente()==null){
+        if (factura.getIdCliente() == null) {
             mostrarError("Factura debe contener cliente asignado");
             return false;
         }

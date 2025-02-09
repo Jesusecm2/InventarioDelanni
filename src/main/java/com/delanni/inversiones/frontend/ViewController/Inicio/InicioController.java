@@ -73,6 +73,9 @@ public class InicioController implements Controladores {
 
     @FXML
     private Button mant_btn;
+
+    @FXML
+    private Button ingresos_btn;
     @FXML
     private SplitMenuButton split;
 
@@ -127,7 +130,11 @@ public class InicioController implements Controladores {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
+        
+        ingresos_btn.setOnAction((e)->{
+            cargarBody("fxml/IngresosEgresosCuerpo");
+        });
+        
         product_btn.setOnMouseReleased((e) -> {
             //loadProducto();
             cargarBody("fxml/ProductoCuerpo");
@@ -145,10 +152,9 @@ public class InicioController implements Controladores {
             loadHome();
         });
 
-       /* cat_btn.setOnMouseReleased((e) -> {
+        /* cat_btn.setOnMouseReleased((e) -> {
             loadCatalogo();
         });*/
-
         fact_btn.setOnMouseReleased((e) -> {
             loadFacturas();
         });
@@ -170,7 +176,7 @@ public class InicioController implements Controladores {
         ie.printStackTrace();     
     }*/
         });
-       
+
     }
 
     @Override

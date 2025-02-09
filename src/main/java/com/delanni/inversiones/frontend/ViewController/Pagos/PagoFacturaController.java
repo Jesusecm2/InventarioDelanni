@@ -198,7 +198,7 @@ public class PagoFacturaController implements Initializable {
             pago.setMonto(mto_pagado.getValue());
         }
 
-        if (!chk_parte.isSelected()) {
+        if (chk_parte.isSelected()) {
             if (pago.getMoneda().getConverted().equals("1")) {
                 pago.setMonto(calcularTotal());
                 pago.setValor(valor);

@@ -7,13 +7,17 @@ package com.delanni.inversiones.frontend.ViewController.Inicio;
 import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
+import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
+import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
+import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
 import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
@@ -39,6 +43,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -52,6 +57,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -64,7 +70,7 @@ import javafx.util.Duration;
  *
  * @author Jesusecm
  */
-public class FacturaController implements Controladores {
+public class FacturaController implements Initializable {
 
     private Parent lastRoot;
 
@@ -154,26 +160,6 @@ public class FacturaController implements Controladores {
     }
 
     @Override
-    public void responsive800() {
-        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void responsive1600() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setRollovers800() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setRollovers1600() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         String[] find_box = new String[]{"Proveedor", "Cliente"};
@@ -194,6 +180,11 @@ public class FacturaController implements Controladores {
             if (tf != null) {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
                 total_lb.setText("Total: ".concat(String.valueOf(tf.getMonto()).concat("$")));
+            }
+            if(e.getClickCount()>1 && e.getButton().PRIMARY==MouseButton.PRIMARY){
+                    PagoBackend bck = new PagoImpl();
+                    List<Transacciones> valores = bck.obtenerPago(tv_factura.getSelectionModel().getSelectedItem().getFactura());
+                    valores.forEach((p)->System.out.println(p));
             }
         });
 
@@ -253,19 +244,7 @@ public class FacturaController implements Controladores {
                 }
 
             }
-        });*/
-        buscarFacturas();
-        FacturaBackend bk = new FacturaControllerImpl();
-        try {
-            List<Proveedor> prov_list = bk.listadoProveedor();
-
-            if (prov_list != null) {
-                cat_box1.setItems(FXCollections.observableArrayList(bk.listadoProveedor()));
-            } else {
-            }
-        } catch (Exception e) {
-        }
-
+        });*/ 
         clear_btn.setOnAction((e) -> {
             cat_box.getSelectionModel().clearSelection();
             cat_box1.getSelectionModel().clearSelection();
@@ -274,27 +253,45 @@ public class FacturaController implements Controladores {
             date_pick.setValue(null);
         });
 
-        InventarioBackend back = new InventarioControllerImpl();
-        List<Cliente> cliente = back.listadoCliente();
-        cat_box2.setItems(FXCollections.observableArrayList(cliente));
-
         pagar_btn.setOnMouseClicked((e) -> {
             loadPago();
         });
         cat_box1.setOnAction((e) -> {
-            buscarFacturas();
+            try {
+
+                buscarFacturas();
+
+            } catch (Exception ex) {
+                Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+                a.showAndWait();
+            }
         });
 
         cat_box2.setOnAction((e) -> {
-            buscarFacturas();
+            try {
+                buscarFacturas();
+            } catch (Exception ex) {
+                Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+                a.showAndWait();
+            }
         });
 
         sts_box.setOnAction((e) -> {
-            buscarFacturas();
+            try {
+                buscarFacturas();
+            } catch (Exception ex) {
+                Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+                a.showAndWait();
+            }
         });
 
         date_pick.setOnAction((e) -> {
-            buscarFacturas();
+            try {
+                buscarFacturas();
+            } catch (Exception ex) {
+                Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+                a.showAndWait();
+            }
         });
 
         cat_box.setOnAction((e) -> {
@@ -308,6 +305,13 @@ public class FacturaController implements Controladores {
                 cat_box1.setVisible(true);
             }
         });
+        try {
+            cargarDatos();
+
+        } catch (Exception ex) {
+            Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+            a.showAndWait();
+        }
     }
 
     private void loadPago() {
@@ -319,7 +323,22 @@ public class FacturaController implements Controladores {
         App.bodycenter.cargarBody("fxml/FacturaFormV2");
     }
 
-    private void buscarFacturas() {
+    public void cargarDatos() throws Exception {
+        FacturaBackend bk = new FacturaControllerImpl();
+        InventarioBackend back = new InventarioControllerImpl();
+
+        List<Proveedor> prov_list = bk.listadoProveedor();
+        if (prov_list != null) {
+            cat_box1.setItems(FXCollections.observableArrayList(bk.listadoProveedor()));
+        } else {
+            throw new Exception("Error no se pudo cargar el formulario");
+        }
+        List<Cliente> cliente = back.listadoCliente();
+        cat_box2.setItems(FXCollections.observableArrayList(cliente));
+        buscarFacturas();
+    }
+
+    private void buscarFacturas() throws Exception {
 
         List<Factura> listado = null;
         FacturaBackend facturaService = new FacturaControllerImpl();
@@ -375,7 +394,7 @@ public class FacturaController implements Controladores {
 
     }
 
-    private void llenarTable(List<Factura> facturas) {
+    private void llenarTable(List<Factura> facturas) throws Exception {
         List<TFacturaInicio> inicio = getTFacturas(facturas);
         tv_factura.setItems(FXCollections.observableArrayList(inicio));
         tv_factura.refresh();

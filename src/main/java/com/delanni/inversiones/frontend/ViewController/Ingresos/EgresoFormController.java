@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Ingresos;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
@@ -13,21 +14,28 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
+import com.delanni.inversiones.frontend.ViewController.Inicio.CarruselController;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -39,6 +47,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -64,7 +73,7 @@ public class EgresoFormController implements Initializable {
 
     @FXML
     private ListView<Pago> list_pagos;
-    
+
     @FXML
     private Button comprobante_btn;
 
@@ -104,12 +113,29 @@ public class EgresoFormController implements Initializable {
 
     @FXML
     private ImageView img_src;
+    
+        @FXML
+    private GridPane main_grid;
 
     @FXML
     private CheckBox chk_parte;
 
     @FXML
     private CheckBox chk_fecha;
+
+    @FXML
+    private Label lbl_date;
+
+    @FXML
+    private Button ver_comprobante;
+
+    private Transacciones trn;
+
+    @FXML
+    private ImageView imagen;
+    private Parent carrusel;
+
+    private CarruselController controlcarrusel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -118,20 +144,28 @@ public class EgresoFormController implements Initializable {
         mto_pagado.setDisable(false);
         agregar_pago.setDisable(false);
         agregar_pago.setOnAction((e) -> {
-          registroPago();
-          
-        });
-        comprobante_btn.setOnAction((e)->{
-            AgregarImagen();
+            registroPago();
+
         });
         
-        chk_fecha.setOnAction((e)->{
-            if(chk_fecha.isSelected()){
+       
+        comprobante_btn.setOnAction((e) -> {
+            AgregarImagen();
+        });
+
+        chk_fecha.setOnAction((e) -> {
+            if (chk_fecha.isSelected()) {
                 fecha_ejec.setDisable(false);
-            }else{
+            } else {
                 fecha_ejec.setDisable(true);
             }
         });
+        
+        
+        ver_comprobante.setOnAction((e)->{
+            loadCarrusel();
+        });
+        
         
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
@@ -140,7 +174,7 @@ public class EgresoFormController implements Initializable {
         }
         List<TpIngreso> egresos = bck.obtenerIngreso("E");
         if (egresos != null) {
-            
+
             egreso_comb.setItems(FXCollections.observableArrayList(egresos));
         }
 
@@ -149,8 +183,10 @@ public class EgresoFormController implements Initializable {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
                 PagoBackend bl = new PagoImpl();
-                valor = bl.obtenerValorMonedaHoy(mon);
-                if (valor == null) {
+                if (trn == null) {
+                    valor = bl.obtenerValorMonedaHoy(mon);
+                }
+                if (valor == null && trn == null) {
                     ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
                     control.setMoneda(mon);
                     moneda_Combo.getSelectionModel().clearSelection();
@@ -223,18 +259,18 @@ public class EgresoFormController implements Initializable {
         }
         PagoBackend bcl = new PagoImpl();
         Pago retorno = bcl.guardarPagoIngreso(egreso_comb.getValue(), pago);
-        if(retorno!=null){
-            
+        if (retorno != null) {
+
             clearPagoForm();
         }
 
     }
 
     private void clearPagoForm() {
-            Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Completado", "Se guardo exitosamente", null);
-            alert.showAndWait();
-            Stage st = (Stage) this.combo_pagos.getParent().getScene().getWindow();
-            st.close();
+        Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Completado", "Se guardo exitosamente", null);
+        alert.showAndWait();
+        Stage st = (Stage) this.combo_pagos.getParent().getScene().getWindow();
+        st.close();
         /*valor = null;
         
         
@@ -251,7 +287,7 @@ public class EgresoFormController implements Initializable {
         narra_pag.setText("");
         ref_pag.setText("");
         lb_img_nme.setText("Empty");
-*/
+         */
     }
 
     private Double montoPagado() {
@@ -284,5 +320,62 @@ public class EgresoFormController implements Initializable {
         mto_pagado.getValueFactory().setValue(temp);*/
     }
 
+    public Transacciones getPago() {
+        return trn;
+    }
+
+    public void setPago(Transacciones trn) {
+        this.trn = trn;
+        ver_comprobante.setVisible(true);
+        comprobante_btn.setVisible(false);
+        chk_fecha.setDisable(true);
+        egreso_comb.getSelectionModel().select(trn.getTpIngreso());
+        combo_pagos.getSelectionModel().select(trn.getPago().getTipo());
+        mto_pagado.getValueFactory().setValue(trn.getPago().getMonto());
+        narra_pag.setText(trn.getPago().getNarrativa());
+        narra_pag.setEditable(false);
+        ref_pag.setEditable(false);
+        egreso_comb.setDisable(true);
+        combo_pagos.setDisable(true);
+        this.valor = trn.getPago().getValor();
+
+        moneda_Combo.getSelectionModel().select(trn.getPago().getMoneda());
+        moneda_Combo.setDisable(true);
+        mto_pagado.setDisable(true);
+        ref_pag.setText(trn.getPago().getCod_ejecucion());
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+        lbl_date.setText(formato.format(trn.getFecha()));
+
+        if (trn.getPago().getComprobante() != null) {
+            ver_comprobante.setDisable(false);
+            ImagenController controller = new ImageControllerImpl();
+            String img = controller.imageString(trn.getPago().getComprobante().getImagen());
+            ImageConverter convertidor = new ImageConverter(img);
+            this.imagen = new ImageView(convertidor.getImage());
+            this.imagen.setFitHeight(200);
+            this.imagen.setFitWidth(200);
+            this.imagen.getStyleClass().add("img_pagin");
+        }
+         try {
+            this.carrusel = App.loadFXML("fxml/Carrusel");
+            this.controlcarrusel = App.loadctual.getController();
+           // this.pg_pagination = controlcarrusel.getPg_nation();
+            carrusel.setVisible(false);
+            main_grid.add(carrusel, 0, 0, GridPane.REMAINING, GridPane.REMAINING);
+        } catch (IOException ex) {
+
+        }
+
+    }
+    
+     private void loadCarrusel() {
+         System.out.println("cargar carrusel");
+        if (this.imagen != null) {
+            List<ImageView> listado = new ArrayList<>();
+            listado.add(imagen);
+            controlcarrusel.setImg_viewls(listado);
+            carrusel.setVisible(true);
+        }
+    }
 
 }

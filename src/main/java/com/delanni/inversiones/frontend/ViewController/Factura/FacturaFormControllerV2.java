@@ -188,6 +188,8 @@ public class FacturaFormControllerV2 implements Initializable {
     private List<File> list_file;
 
     private File file;
+    
+    private Factura modificada;
 
     private List<Pago> listado_pagos;
     private ValorMoneda valor;
@@ -533,6 +535,9 @@ public class FacturaFormControllerV2 implements Initializable {
             listado.add(lnf);
         });
         factura.setLineas(listado);
+        if(modificada!=null){
+            factura.setId(modificada.getId());
+        }
         return factura;
     }
 
@@ -578,5 +583,16 @@ public class FacturaFormControllerV2 implements Initializable {
         }
         return true;
     }
+
+    public Factura getModificada() {
+        return modificada;
+    }
+
+    public void setModificada(Factura modificada) {
+         
+         
+    }
+    
+    
 
 }

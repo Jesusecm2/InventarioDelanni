@@ -128,6 +128,12 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </Button>
+                  <Separator minWidth="1.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="1.0" styleClass="separabotones">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Button fx:id="ingresos_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" />
                </children>
                <opaqueInsets>
                   <Insets />
