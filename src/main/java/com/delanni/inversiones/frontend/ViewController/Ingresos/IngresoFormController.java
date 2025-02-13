@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Ingresos;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
@@ -14,6 +15,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
@@ -155,15 +157,6 @@ public class IngresoFormController implements Initializable {
         agregar_pago.setOnAction((e) -> {
             registroPago();
         });
-        try {
-            this.carrusel = App.loadFXML("fxml/Carrusel");
-            this.controlcarrusel = App.loadctual.getController();
-            //this.pg_pagination = controlcarrusel.getPg_nation();
-            carrusel.setVisible(false);
-            main_grid.add(carrusel, 1, 0, GridPane.REMAINING, GridPane.REMAINING);
-        } catch (IOException ex) {
-
-        }
         comprobante_btn.setOnAction((e) -> {
             AgregarImagen();
         });
@@ -330,8 +323,26 @@ public class IngresoFormController implements Initializable {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
         lbl_date.setText(formato.format(trn.getFecha()));
         
-        if(trn.getPago().getComprobante()==null){
-            ver_comprobante.setDisable(true);
+         if (trn.getPago().getComprobante() != null) {
+            ver_comprobante.setDisable(false);
+            ImagenController controller = new ImageControllerImpl();
+            String img = controller.imageString(trn.getPago().getComprobante().getImagen());
+            ImageConverter convertidor = new ImageConverter(img);
+            this.imagen = new ImageView(convertidor.getImage());
+            this.imagen.setFitHeight(600);
+            this.imagen.setFitWidth(400);
+            this.imagen.getStyleClass().add("img_pagin");
+        }else{
+             ver_comprobante.setDisable(true);
+         }
+         try {
+            this.carrusel = App.loadFXML("fxml/Carrusel");
+            this.controlcarrusel = App.loadctual.getController();
+           // this.pg_pagination = controlcarrusel.getPg_nation();
+            carrusel.setVisible(false);
+            main_grid.add(carrusel, 0, 0, GridPane.REMAINING, GridPane.REMAINING);
+        } catch (IOException ex) {
+
         }
         
     }

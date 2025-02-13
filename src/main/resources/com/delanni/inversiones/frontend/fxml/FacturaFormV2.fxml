@@ -141,16 +141,24 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Acciones" GridPane.rowIndex="1" />
-                              <Button fx:id="elim_prod" mnemonicParsing="false" text="Eliminar Producto" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                              <Button fx:id="create_btn" mnemonicParsing="false" text="Crear Producto" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                              <Button disable="true" mnemonicParsing="false" text="Propiedad Adicional" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                              <Label text="Acciones" GridPane.rowIndex="2" />
+                              <Button fx:id="elim_prod" mnemonicParsing="false" text="Eliminar Producto" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                              <Button fx:id="create_btn" mnemonicParsing="false" text="Crear Producto" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                              <Button disable="true" mnemonicParsing="false" text="Propiedad Adicional" visible="false" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                               <Spinner fx:id="upd_spin" editable="true">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </Spinner>
                               <Button fx:id="upd_amnt" mnemonicParsing="false" text="Act" GridPane.columnIndex="1" />
+                              <Spinner fx:id="mto_spin" editable="true" visible="false" GridPane.rowIndex="1">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Spinner>
                            </children>
                         </GridPane>
                         <GridPane GridPane.rowIndex="2">

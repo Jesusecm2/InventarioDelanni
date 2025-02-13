@@ -352,9 +352,11 @@ public class EgresoFormController implements Initializable {
             String img = controller.imageString(trn.getPago().getComprobante().getImagen());
             ImageConverter convertidor = new ImageConverter(img);
             this.imagen = new ImageView(convertidor.getImage());
-            this.imagen.setFitHeight(200);
-            this.imagen.setFitWidth(200);
+            this.imagen.setFitHeight(600);
+            this.imagen.setFitWidth(400);
             this.imagen.getStyleClass().add("img_pagin");
+        }else{
+            ver_comprobante.setDisable(true);
         }
          try {
             this.carrusel = App.loadFXML("fxml/Carrusel");

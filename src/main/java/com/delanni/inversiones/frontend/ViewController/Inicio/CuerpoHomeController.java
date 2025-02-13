@@ -5,10 +5,13 @@
 package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.DiagramaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ConfigSystem;
 import com.delanni.inversiones.frontend.Backend.Interfaces.DiagramaController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.EgresoFormController;
@@ -173,6 +176,7 @@ public class CuerpoHomeController implements Controladores {
             tb_ingreso.setItems(FXCollections.observableArrayList(listado));
         }
 
+        
         reporte_tipo.setOnAction((e) -> {
             String selected = reporte_tipo.getSelectionModel().getSelectedItem();
             switch (selected) {
@@ -203,6 +207,20 @@ public class CuerpoHomeController implements Controladores {
         yAxis.setTickUnit(5);
          */
 // Mostrar el valor cuando el punto sea seleccionado 
+        ConfigSystem sistema = new ConfigSystemImpl();
+        SystemParam pr_diag = sistema.obtenerParametro(100, "AAA");
+        if(pr_diag.getValueNum()!=null)
+        {
+            if(pr_diag.getValueNum().equals(1.0)){
+                reporte_tipo.getSelectionModel().select(0);
+            }
+            if(pr_diag.getValueNum().equals(2.0)){
+                reporte_tipo.getSelectionModel().select(1);
+            }
+            if(pr_diag.getValueNum().equals(3.0)){
+                reporte_tipo.getSelectionModel().select(2);
+            }
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
 import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormController;
+import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormControllerV2;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
@@ -184,7 +185,8 @@ public class FacturaController implements Initializable {
             if(e.getClickCount()>1 && e.getButton().PRIMARY==MouseButton.PRIMARY){
                     PagoBackend bck = new PagoImpl();
                     List<Transacciones> valores = bck.obtenerPago(tv_factura.getSelectionModel().getSelectedItem().getFactura());
-                    valores.forEach((p)->System.out.println(p));
+                    FacturaFormControllerV2 control = App.cargarVentanaModal("Modificar Factura", "fxml/FacturaFormV2", false);
+                    control.setModificada(tv_factura.getSelectionModel().getSelectedItem().getFactura());
             }
         });
 

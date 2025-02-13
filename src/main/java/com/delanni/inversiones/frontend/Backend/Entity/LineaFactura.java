@@ -4,6 +4,8 @@
  */
 package com.delanni.inversiones.frontend.Backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author Jesusecm
@@ -18,6 +20,7 @@ public class LineaFactura {
 
     private Producto id_producto;
 
+    @JsonIgnore
     private Factura id_factura;
 
     public LineaFactura(Long id, Double cantidad, Double precio_unit, Producto id_producto, Factura id_factura) {

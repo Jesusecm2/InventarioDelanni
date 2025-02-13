@@ -12,6 +12,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Moneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
@@ -19,6 +20,7 @@ import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import java.io.File;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,6 +92,9 @@ public class PagoFacturaController implements Initializable {
     private Label amnt_lbl;
 
     @FXML
+    private Pago pagosave;
+
+    @FXML
     private Label lb_img_nme;
 
     private Factura factura;
@@ -135,8 +140,10 @@ public class PagoFacturaController implements Initializable {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
                 PagoBackend bl = new PagoImpl();
-                valor = bl.obtenerValorMonedaHoy(mon);
-                if (valor == null) {
+                if (pagosave == null) {
+                    valor = bl.obtenerValorMonedaHoy(mon);
+                }
+                if (valor == null && pagosave == null) {
                     ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
                     control.setMoneda(mon);
                     moneda_Combo.getSelectionModel().clearSelection();
@@ -183,6 +190,9 @@ public class PagoFacturaController implements Initializable {
 
     private void registroPago() {
         Pago pago = new Pago();
+        if (pagosave != null) {
+            pago = pagosave;
+        }
         pago.setTipo(combo_pagos.getValue());
         pago.setNarrativa(narra_pag.getText());
         pago.setCod_ejecucion(ref_pag.getText());
@@ -215,6 +225,10 @@ public class PagoFacturaController implements Initializable {
                 pago.setComprobante(comprobante);
                 file = null;
             }
+            if (pagosave != null) {
+                Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
+                stg.close();
+            }
             PagoBackend bcl = new PagoImpl();
             bcl.guardarPagoFactura(factura, pago);
             pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
@@ -235,6 +249,10 @@ public class PagoFacturaController implements Initializable {
                 comprobante.setImagen(convertidor.getbase64img());
                 pago.setComprobante(comprobante);
                 file = null;
+            }
+            if (pagosave != null) {
+                Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
+                stg.close();
             }
             PagoBackend bcl = new PagoImpl();
             bcl.guardarPagoFactura(factura, pago);
@@ -284,8 +302,39 @@ public class PagoFacturaController implements Initializable {
                 return;
             }
         }
-        Double temp = valor.getValor() * (calcularTotal() - montoPagado());
+        Double temp =  (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);
+    }
+
+    public void setPago(Pago trn) {
+        this.pagosave = trn;
+        // ver_comprobante.setVisible(true);
+        // comprobante_btn.setVisible(false);
+        chk_fecha.setDisable(true);
+        // egreso_comb.getSelectionModel().select(trn.getTpIngreso());
+        combo_pagos.getSelectionModel().select(pagosave.getTipo());
+        mto_pagado.getValueFactory().setValue(pagosave.getMonto());
+        narra_pag.setText(pagosave.getNarrativa());
+        narra_pag.setEditable(false);
+        if (this.pagosave.getMoneda().getConverted().equals("1")) {
+            this.valor = this.pagosave.getValor();
+        }
+
+        ref_pag.setEditable(false);
+        // egreso_comb.setDisable(true);
+        combo_pagos.setDisable(true);
+
+        moneda_Combo.getSelectionModel().select(pagosave.getMoneda());
+        moneda_Combo.setDisable(true);
+        mto_pagado.setDisable(true);
+        ref_pag.setText(pagosave.getCod_ejecucion());
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+        // lbl_date.setText(formato.format(trn.getFecha()));
+
+        if (pagosave.getComprobante() == null) {
+            // ver_comprobante.setDisable(true);
+        }
+
     }
 
 }

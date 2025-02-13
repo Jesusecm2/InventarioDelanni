@@ -9,6 +9,7 @@ import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
+import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.ImagenProducto;
 import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
@@ -20,14 +21,17 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.ConfigSystem;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
+import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
+import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProveedorFormController;
@@ -58,6 +62,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 
 /**
@@ -163,6 +168,9 @@ public class FacturaFormControllerV2 implements Initializable {
     private Spinner<Double> upd_spin;
 
     @FXML
+    private Spinner<Double> mto_spin;
+
+    @FXML
     private TextField narra_pag;
 
     @FXML
@@ -172,6 +180,8 @@ public class FacturaFormControllerV2 implements Initializable {
     private Label pago_lbl_restante;
 
     private Proveedor proveedor;
+
+    private Cliente cliente;
 
     private Integer pagina;
 
@@ -188,7 +198,7 @@ public class FacturaFormControllerV2 implements Initializable {
     private List<File> list_file;
 
     private File file;
-    
+
     private Factura modificada;
 
     private List<Pago> listado_pagos;
@@ -200,32 +210,35 @@ public class FacturaFormControllerV2 implements Initializable {
         upd_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         iva_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         excento_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
-
+        mto_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         iva_value.getValueFactory().setValue(0.0);
         excento_value.getValueFactory().setValue(0.0);
 
-         
+        tc_precio.setEditable(true);
         ConfigSystem backSystem = new ConfigSystemImpl();
         SystemParam iva_param = backSystem.obtenerParametro(100, "IVA");
-        if(iva_param!=null){
+        if (iva_param != null) {
             iva_value.getValueFactory().setValue(iva_param.getValueNum());
         }
-        
+
         chk_parte.setSelected(true);
         chk_parte.setOnAction((e) -> {
-            if (listado_pagos == null || listado_pagos.isEmpty()) {
-                if (!chk_parte.isSelected()) {
+            if (modificada == null) {
+
+                if (listado_pagos == null || listado_pagos.isEmpty()) {
+                    if (!chk_parte.isSelected()) {
+                        mto_pagado.setDisable(false);
+                        agregar_pago.setDisable(false);
+                    } else {
+                        mto_pagado.setDisable(true);
+                        agregar_pago.setDisable(true);
+                        calcularValorTotal();
+                    }
+                } else {
+                    chk_parte.setSelected(false);
                     mto_pagado.setDisable(false);
                     agregar_pago.setDisable(false);
-                } else {
-                    mto_pagado.setDisable(true);
-                    agregar_pago.setDisable(true);
-                    calcularValorTotal();
                 }
-            } else {
-                chk_parte.setSelected(false);
-                mto_pagado.setDisable(false);
-                agregar_pago.setDisable(false);
             }
         });
 
@@ -253,8 +266,9 @@ public class FacturaFormControllerV2 implements Initializable {
             if (table_view.getSelectionModel().getSelectedIndex() != -1) {
                 upd_amnt.setDisable(false);
                 upd_spin.setDisable(false);
+                mto_spin.setDisable(false);
                 upd_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getCantidad());
-
+                mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_unit());
             }
         });
 
@@ -273,14 +287,25 @@ public class FacturaFormControllerV2 implements Initializable {
         upd_amnt.setOnAction((e) -> {
             upd_amnt.setDisable(true);
             upd_spin.setDisable(true);
+            mto_spin.setDisable(true);
             TProducto pr = table_view.getSelectionModel().getSelectedItem();
+            pr.setPrecio_unit(mto_spin.getValue());
             pr.setCantidad(upd_spin.getValue());
+
             table_view.refresh();
             table_view.getSelectionModel().clearSelection();
             monto_tot_lb.setText(String.format("%.2f $", calcularTotal()));
             upd_spin.getValueFactory().setValue(0.0);
         });
+        list_pagos.setOnMouseClicked((e) -> {
+            Pago pago = list_pagos.getSelectionModel().getSelectedItem();
+            if (pago != null) {
+                PagoFacturaController control = App.cargarVentanaModal("Modificar Pago", "fxml/PagoForm", false);
+                control.setFactura(modificada);
+                control.setPago(pago);
 
+            }
+        });
         moneda_Combo.setOnAction((e) -> {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
@@ -309,7 +334,7 @@ public class FacturaFormControllerV2 implements Initializable {
 
         tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
 
-        tc_precio.setCellValueFactory(new PropertyValueFactory<>("total_unit"));
+        tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_unit"));
 
         prov_create_btn.setOnAction((e) -> {
             ProveedorFormController control = App.cargarVentanaModal("Crear Proveedor", "fxml/ProveedorForm", true);
@@ -523,19 +548,37 @@ public class FacturaFormControllerV2 implements Initializable {
 
     private Factura crearFactura() {
         Factura factura = new Factura();
-        factura.setIdProveedor(proveedor);
+        if (this.proveedor != null) {
+            factura.setIdProveedor(proveedor);
+        } else {
+            factura.setIdCliente(cliente);
+        }
         List<LineaFactura> listado = new ArrayList<>();
         factura.setIVA(iva_value.getValue());
         factura.setExento(excento_value.getValue());
         table_view.getItems().forEach((e) -> {
-            LineaFactura lnf = new LineaFactura();
-            lnf.setCantidad(e.getCantidad());
-            lnf.setId_producto(e.getProducto());
-            lnf.setPrecio_unit(e.getPrecio_unit());
-            listado.add(lnf);
+            boolean saved = false;
+            
+            for (LineaFactura ln : modificada.getLineas()) {
+                if (e.getProducto().equals(ln.getId_producto())) {
+                    ln.setCantidad(e.getCantidad());
+                    ln.setPrecio_unit(e.getPrecio_unit());
+                    ln.setId_factura(modificada);
+                    listado.add(ln);
+                    saved = true;
+                }
+            }
+            if (modificada == null && !saved) {
+                LineaFactura lnf = new LineaFactura();
+                lnf.setCantidad(e.getCantidad());
+                lnf.setId_producto(e.getProducto());
+                lnf.setPrecio_unit(e.getPrecio_unit());
+                listado.add(lnf);
+            }
+
         });
         factura.setLineas(listado);
-        if(modificada!=null){
+        if (modificada != null) {
             factura.setId(modificada.getId());
         }
         return factura;
@@ -589,10 +632,32 @@ public class FacturaFormControllerV2 implements Initializable {
     }
 
     public void setModificada(Factura modificada) {
-         
-         
+        this.modificada = modificada;
+        if (this.modificada.getIdProveedor() == null) {
+            this.cliente = modificada.getIdCliente();
+        } else {
+            this.proveedor = modificada.getIdProveedor();
+        }
+        prov_create_btn.setDisable(true);
+        mto_spin.setVisible(true);
+        tc_precio.setEditable(true);
+        tc_precio.setCellFactory(TextFieldTableCell.forTableColumn());
+        tab_window.getSelectionModel().selectNext();
+        tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+        table_view.refresh();
+        modificada.getLineas().forEach((e) -> {
+            ingresarTable(e.getId_producto());
+        });
+        iva_value.getValueFactory().setValue(modificada.getIVA());
+        excento_value.getValueFactory().setValue(modificada.getExento());
+        List<Transacciones> trns = new PagoImpl().obtenerTransacciones(modificada);
+        listado_pagos = new ArrayList<>();
+        if (trns != null && !trns.isEmpty()) {
+            trns.forEach((e) -> listado_pagos.add(e.getPago()));
+
+            list_pagos.setItems(FXCollections.observableArrayList(listado_pagos));
+        }
+
     }
-    
-    
 
 }
