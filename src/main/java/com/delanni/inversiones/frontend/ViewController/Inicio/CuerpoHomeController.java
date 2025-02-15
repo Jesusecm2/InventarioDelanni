@@ -31,7 +31,9 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -119,9 +121,9 @@ public class CuerpoHomeController implements Controladores {
     public void initialize(URL location, ResourceBundle resources) {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
-        
+
         xAxis.setTickLabelGap(0.1);
-        
+
         String[] tiposchart = new String[3];
         tiposchart[0] = "Semanal";
         tiposchart[1] = "Mensual";
@@ -155,42 +157,10 @@ public class CuerpoHomeController implements Controladores {
         tb_ingreso.getColumns().add(tb_ref1);
         tb_ingreso.getColumns().add(tb_monto1);
 
-        PagoBackend back = new PagoImpl();
-        List<Transacciones> egresos = back.obtenerEgresos();
-        if (egresos != null && !egresos.isEmpty()) {
-            List<TIngreso> listado = new ArrayList<>();
-            egresos.forEach((e) -> {
-                TIngreso egresoT = new TIngreso(e);
-                listado.add(egresoT);
-            });
-            tb_egresos.setItems(FXCollections.observableArrayList(listado));
-        }
-
-        List<Transacciones> ingresos = back.obtenerIngresos();
-        if (ingresos != null && !ingresos.isEmpty()) {
-            List<TIngreso> listado = new ArrayList<>();
-            ingresos.forEach((e) -> {
-                TIngreso egresoT = new TIngreso(e);
-                listado.add(egresoT);
-            });
-            tb_ingreso.setItems(FXCollections.observableArrayList(listado));
-        }
-
-        
+        //
+        cargarEIngresos();
         reporte_tipo.setOnAction((e) -> {
-            String selected = reporte_tipo.getSelectionModel().getSelectedItem();
-            switch (selected) {
-                case "Semanal":
-                    aplicarDiagrama(cargarDiagrama(1));
-                    break;
-                case "Mensual":
-                    aplicarDiagrama(cargarDiagrama(2));
-                    break;
-                case "Anual":
-                    aplicarDiagrama(cargarDiagrama(3));
-                    break;
-
-            }
+            cargarDiagrama();
 
         });
 
@@ -209,18 +179,19 @@ public class CuerpoHomeController implements Controladores {
 // Mostrar el valor cuando el punto sea seleccionado 
         ConfigSystem sistema = new ConfigSystemImpl();
         SystemParam pr_diag = sistema.obtenerParametro(100, "AAA");
-        if(pr_diag.getValueNum()!=null)
-        {
-            if(pr_diag.getValueNum().equals(1.0)){
+        if (pr_diag.getValueNum() != null) {
+            if (pr_diag.getValueNum().equals(1.0)) {
                 reporte_tipo.getSelectionModel().select(0);
             }
-            if(pr_diag.getValueNum().equals(2.0)){
+            if (pr_diag.getValueNum().equals(2.0)) {
                 reporte_tipo.getSelectionModel().select(1);
             }
-            if(pr_diag.getValueNum().equals(3.0)){
+            if (pr_diag.getValueNum().equals(3.0)) {
                 reporte_tipo.getSelectionModel().select(2);
             }
         }
+        refrescarPantalla();
+        //refrescarPantalla();
     }
 
     @Override
@@ -310,6 +281,70 @@ public class CuerpoHomeController implements Controladores {
             }
 
         }
+    }
+
+    private void cargarDiagrama() {
+        String selected = reporte_tipo.getSelectionModel().getSelectedItem();
+        switch (selected) {
+            case "Semanal":
+                aplicarDiagrama(cargarDiagrama(1));
+                break;
+            case "Mensual":
+                aplicarDiagrama(cargarDiagrama(2));
+                break;
+            case "Anual":
+                aplicarDiagrama(cargarDiagrama(3));
+                break;
+
+        }
+    }
+
+    private void cargarEIngresos() {
+        PagoBackend back = new PagoImpl();
+        List<Transacciones> egresos = back.obtenerEgresos();
+        if (egresos != null && !egresos.isEmpty()) {
+            List<TIngreso> listado = new ArrayList<>();
+            egresos.forEach((e) -> {
+                TIngreso egresoT = new TIngreso(e);
+                listado.add(egresoT);
+            });
+            tb_egresos.setItems(FXCollections.observableArrayList(listado));
+        }
+
+        List<Transacciones> ingresos = back.obtenerIngresos();
+        if (ingresos != null && !ingresos.isEmpty()) {
+            List<TIngreso> listado = new ArrayList<>();
+            ingresos.forEach((e) -> {
+                TIngreso egresoT = new TIngreso(e);
+                listado.add(egresoT);
+            });
+            tb_ingreso.setItems(FXCollections.observableArrayList(listado));
+        }
+    }
+
+    private void refrescarPantalla() {
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                do {
+                    Platform.runLater(() -> {
+                        cargarEIngresos();
+                        cargarDiagrama();
+
+                    });
+                    Thread.sleep(10000);
+                } while (true);
+                
+            }
+
+        };
+
+        Thread tr = new Thread(task);
+
+        tr.setDaemon(
+                true);
+        tr.start();
+
     }
 
 }

@@ -166,6 +166,9 @@ public class ProductoController implements Controladores {
     public void setLastPage(Parent lastPage) {
         this.lastPage = lastPage;
     }
+    
+    
+    
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -447,8 +450,8 @@ public class ProductoController implements Controladores {
         param.forEach((l -> {
             TProducto valor = new TProducto(l);
             valor.getBtn_modify().setOnAction((p) -> {
-                ProductoFormController control = App.cargarVentanaModal("Actualizar", "fxml/ProductoForm", false);
-                control.setProducto(l);
+                ProductoFormController control = new ProductoFormController(l);
+                App.cargarVentanaModal("fxml/ProductoForm", control, true, "Modificar Producto");
                 cargarProductos();
             });
             e.add(valor);

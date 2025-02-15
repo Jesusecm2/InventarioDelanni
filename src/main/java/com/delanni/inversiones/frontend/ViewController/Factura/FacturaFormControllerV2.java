@@ -213,7 +213,7 @@ public class FacturaFormControllerV2 implements Initializable {
         mto_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         iva_value.getValueFactory().setValue(0.0);
         excento_value.getValueFactory().setValue(0.0);
-
+        mto_spin.setVisible(true);
         tc_precio.setEditable(true);
         ConfigSystem backSystem = new ConfigSystemImpl();
         SystemParam iva_param = backSystem.obtenerParametro(100, "IVA");

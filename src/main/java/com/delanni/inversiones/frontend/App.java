@@ -22,8 +22,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.fxml.Initializable;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
@@ -88,7 +90,6 @@ public class App extends Application {
             if (e.getCode() == KeyCode.F12) {
                 cargarVentanaModal("Parametros", "fxml/ParametroForm", true);
             }
-            
 
         });
         //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
@@ -111,6 +112,12 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         loadctual = fxmlLoader;
         //fxmlLoader.setController(new InicioSesionController());
+        return fxmlLoader.load();
+    }
+
+    private static Parent loadFXML(String fxml, Object fml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        fxmlLoader.setController(fml);
         return fxmlLoader.load();
     }
 
@@ -182,6 +189,33 @@ public class App extends Application {
             ex.printStackTrace();
         }
         return null;
+    }
+    
+    public static void cargarVentanaModal(String fxml,Object controller,boolean modal,String titulo) {
+        try {
+            Parent pantalla = App.loadFXML(fxml,controller);
+            Stage stage1 = new Stage();
+            Scene scene1 = new Scene(pantalla);
+            stage1.setTitle(titulo);
+            stage1.initStyle(StageStyle.DECORATED);
+            stage1.getIcons().add(Getfile.getIcono("minilogo.png").getImage());
+            if (modal) {
+                stage1.initModality(Modality.APPLICATION_MODAL);
+            } else {
+                stage1.initModality(Modality.NONE);
+            }
+            stage1.setScene(scene1);
+            stage1.centerOnScreen();
+            scene1.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
+            if (modal) {
+                stage1.showAndWait();
+            } else {
+                stage1.show();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 }

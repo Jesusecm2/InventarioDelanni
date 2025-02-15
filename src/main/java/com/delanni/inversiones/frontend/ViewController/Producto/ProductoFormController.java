@@ -101,7 +101,7 @@ public class ProductoFormController implements Controladores {
 
     @FXML
     private TextArea text_area;
-    
+
     @FXML
     private TextArea nombre_area;
 
@@ -157,6 +157,14 @@ public class ProductoFormController implements Controladores {
     @FXML
     private Spinner<Double> j_spim;
 
+    public ProductoFormController(Producto producto) {
+        this.producto = producto;
+    }
+
+    public ProductoFormController() {
+    }
+    
+
     public Producto getProducto() {
         return producto;
     }
@@ -165,8 +173,7 @@ public class ProductoFormController implements Controladores {
         this.closeform = closeform;
     }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    private void modificarProducto() {
         nombre_area.setText(producto.getNombre());
         if (producto.getCodigo() != null && !producto.getCodigo().isBlank()) {
             cod_tf.setText(producto.getCodigo());
@@ -177,6 +184,7 @@ public class ProductoFormController implements Controladores {
         text_area.setText(producto.getDescripcion());
         stock_min.getValueFactory().setValue(producto.getStock_min());
         cat = producto.getCat();
+        j_spim.getValueFactory().setValue(producto.getCant_actual());
         categoria_lb.setText(cat.getNombre());
         display = producto.getImagenes();
         if (display != null && !display.isEmpty()) {
@@ -231,7 +239,7 @@ public class ProductoFormController implements Controladores {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //  throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-
+        
         j_spim.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 9999, 0));
         volver_btn.setVisible(false);
         cod_tf.setDisable(true);
@@ -248,7 +256,7 @@ public class ProductoFormController implements Controladores {
         pg_pagination.setPageFactory(new Callback<Integer, Node>() {
             @Override
             public Node call(Integer pageIndex) {
-                if (display == null) {
+                if (display == null || display.isEmpty()) {
                     return new Label("Contenedor vacío");
                 } else {
                     pagina_act = pageIndex;
@@ -330,6 +338,7 @@ public class ProductoFormController implements Controladores {
             Optional<ButtonType> type = alerta.showAndWait();
             if (type.get() == ButtonType.OK) {
                 GuardarProducto();
+                cerrar();
             }
         });
 
@@ -366,6 +375,10 @@ public class ProductoFormController implements Controladores {
                 }
             }
         });
+        
+        if(producto!=null){
+            modificarProducto();
+        }
 
     }
 
@@ -461,24 +474,24 @@ public class ProductoFormController implements Controladores {
         InventarioBackend implement = new InventarioControllerImpl();
         if (producto.getId() == null) {
             Producto response = implement.GuardarProducto(producto, "crear", j_spim.getValue());
-            mensaje(response,implement);
+            mensaje(response, implement);
         } else {
 
-            Producto response = implement.GuardarProducto(producto, "actualizar", j_spim.getValue());
-            mensaje(response,implement);
+            Producto response = implement.GuardarProducto(producto, "actualizar", 0.0);
+            mensaje(response, implement);
         }
 
         //
     }
 
-    private void mensaje(Producto response,InventarioBackend bck) {
+    private void mensaje(Producto response, InventarioBackend bck) {
         if (response != null) {
             success_msg.setText("Ha sido guardado correctamente");
             SuccessMsg();
             limpiarCampos();
-            //();
+
         } else {
-            if(bck.getErrors()!=null){
+            if (bck.getErrors() != null) {
                 error_list.setItems(FXCollections.observableArrayList(bck.getErrors()));
                 error_list.setVisible(true);
             }
@@ -542,7 +555,7 @@ public class ProductoFormController implements Controladores {
         fadeTransition.setByValue(-1);
         fadeTransition.setOnFinished((e) -> {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(500);
                 FadeTransition fadeTransition3 = new FadeTransition(Duration.millis(500), sucess_cnt);
                 fadeTransition3.setByValue(-1);
                 fadeTransition3.setOnFinished((l) -> {
@@ -599,7 +612,7 @@ public class ProductoFormController implements Controladores {
         if (closeform) {
             Stage stg = (Stage) this.categoria_lb.getParent().getScene().getWindow();
             stg.close();
-        }else{
+        } else {
             loadHomeForm();
         }
 
