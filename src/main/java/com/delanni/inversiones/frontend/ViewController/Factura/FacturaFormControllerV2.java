@@ -29,6 +29,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
+import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
@@ -111,7 +112,7 @@ public class FacturaFormControllerV2 implements Initializable {
     private TextField combo_tf;
 
     @FXML
-    private TableView<TProducto> table_view;
+    private TableView<TLineaFactura> table_view;
 
     @FXML
     private Spinner<Double> mto_pagado;
@@ -147,19 +148,19 @@ public class FacturaFormControllerV2 implements Initializable {
     private ComboBox<Moneda> moneda_Combo;
 
     @FXML
-    private TableColumn<TProducto, String> tc_name;
+    private TableColumn<TLineaFactura, String> tc_name;
 
     @FXML
-    private TableColumn<TProducto, String> tc_cant;
+    private TableColumn<TLineaFactura, String> tc_cant;
 
     @FXML
-    private TableColumn<TProducto, String> tc_ad;
+    private TableColumn<TLineaFactura, String> tc_ad;
 
     @FXML
-    private TableColumn<TProducto, String> tc_tot;
+    private TableColumn<TLineaFactura, String> tc_tot;
 
     @FXML
-    private TableColumn<TProducto, String> tc_precio;
+    private TableColumn<TLineaFactura, String> tc_precio;
 
     @FXML
     private TextField ref_pag;
@@ -290,12 +291,7 @@ public class FacturaFormControllerV2 implements Initializable {
                 upd_spin.setDisable(false);
                 mto_spin.setDisable(false);
                 upd_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getCantidad());
-                if (venta) {
-                    mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_vent());
-                } else {
-                    mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_unit());
-                }
-
+                mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getMonto());
             }
         });
 
@@ -315,12 +311,10 @@ public class FacturaFormControllerV2 implements Initializable {
             upd_amnt.setDisable(true);
             upd_spin.setDisable(true);
             mto_spin.setDisable(true);
-            TProducto pr = table_view.getSelectionModel().getSelectedItem();
-            if (venta) {
-                pr.setPrecio_vent(mto_spin.getValue());
-            } else {
-                pr.setPrecio_unit(mto_spin.getValue());
-            }
+            TLineaFactura pr = table_view.getSelectionModel().getSelectedItem();
+
+            pr.setMonto(mto_spin.getValue());
+
             pr.setCantidad(upd_spin.getValue());
             table_view.refresh();
             table_view.getSelectionModel().clearSelection();
@@ -360,23 +354,11 @@ public class FacturaFormControllerV2 implements Initializable {
         cargarTiposPago();
         tc_name.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-        tc_cant.setCellValueFactory(new PropertyValueFactory<>("Scantidad"));
+        tc_cant.setCellValueFactory(new PropertyValueFactory<>("cformat"));
 
-        tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
-        if (venta) {
-            tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal_vent"));
+        tc_tot.setCellValueFactory(new PropertyValueFactory<>("tformat"));
 
-        } else {
-            tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
-        }
-
-        tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_unit"));
-        if (venta) {
-            tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_vent"));
-
-        } else {
-            tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_unit"));
-        }
+        tc_precio.setCellValueFactory(new PropertyValueFactory<>("mformat"));
 
         if (venta) {
             prov_create_btn.setText("Buscar Cliente");
@@ -416,66 +398,19 @@ public class FacturaFormControllerV2 implements Initializable {
         create_btn.setOnAction((e) -> {
             crearProducto();
         });
-        
+
         InventarioBackend bckl = new InventarioControllerImpl();
         listado_productos = bckl.ListadoProducto();
         if (listado_productos != null && !listado_productos.isEmpty()) {
             combo_box.getItems().addAll(listado_productos);
         }
         AutoCompletionBinding<Producto> autoCompletado = TextFields.bindAutoCompletion(combo_box.getEditor(), combo_box.getItems());
-        autoCompletado.setOnAutoCompleted(event ->{
+        autoCompletado.setOnAutoCompleted(event -> {
             Producto p = event.getCompletion();
-            ingresarTable(p);
+            ingresarTable(null,p, 1.0);
             combo_box.getEditor().setText("");
             combo_box.hide();
         });
-        /*combo_box.getEditor().textProperty().addListener((obs, oldtext, newtext) -> {
-            combo_box.getItems().clear();
-            if (newtext.isEmpty()) {
-                combo_box.hide();
-                combo_box.getItems().setAll(listado_productos);
-            } else {
-                List<Producto> filtro = new ArrayList<>();
-                for (Producto item : listado_productos) {
-                    if (item.getNombre().toLowerCase().contains(newtext.toLowerCase())) {
-                        filtro.add(item);
-                    }
-                }
-                combo_box.hide();
-                combo_box.getItems().setAll(filtro);
-                combo_box.show();
-            }
-        });*/
-        /*
-        combo_box.getEditor().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            System.out.println("Filtro:"+event.getCode().getName()+"/"+event.getCharacter());
-            combo_box.getEditor().requestFocus();
-            if (event.getCode() == KeyCode.ENTER) {
-                String input = combo_box.getEditor().getText();
-                for (Producto item : combo_box.getItems()) {
-                    if (item.getNombre().equals(input)) {
-                        combo_box.setValue(item);
-                        System.out.println("Selected");
-                        break;
-                    }
-                }
-            }
-        });*/
-        /*cod_tf.setOnKeyReleased((e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
-
-                InventarioBackend bck = new InventarioControllerImpl();
-                List<Producto> list = bck.obtenerProducto(cod_tf.getText());
-                if (list != null && !list.isEmpty()) {
-                    Producto add = list.get(0);
-                    ingresarTable(add);
-                } else {
-
-                }
-
-                cod_tf.setText("");
-            }
-        });*/
 
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
@@ -488,22 +423,32 @@ public class FacturaFormControllerV2 implements Initializable {
         }
     }
 
-    private void ingresarTable(Producto pr) {
-        if (table_productos == null) {
-            table_productos = new ArrayList<>();
-            table_view.setItems(FXCollections.observableArrayList(table_productos));
+    private void ingresarTable(LineaFactura mod, Producto pr, Double cantidad) {
+        Double valor = null;
+        if (venta) {
+            valor = pr.getPrecio_vent();
+        } else {
+            valor = pr.getPrecio_unit();
         }
-        TProducto lc = new TProducto(pr, 1.0);
+        LineaFactura ln = null;
+        if (mod == null) {
+            ln = new LineaFactura(null, cantidad, valor, pr, null);
+        } else {
+            ln = mod;
+        }
+
+        TLineaFactura nuevaLinea = new TLineaFactura(ln);
+
         boolean exist = false;
-        for (TProducto p : table_view.getItems()) {
-            if (pr.getId().equals(p.getProducto().getId())) {
+        for (TLineaFactura p : table_view.getItems()) {
+            if (pr.getId().equals(p.getLinea().getId_producto().getId())) {
                 exist = true;
                 p.setCantidad(p.getCantidad() + 1.0);
                 break;
             }
         }
         if (!exist) {
-            table_view.getItems().add(lc);
+            table_view.getItems().add(nuevaLinea);
         }
 
         table_view.refresh();
@@ -515,7 +460,7 @@ public class FacturaFormControllerV2 implements Initializable {
         control.setCloseform(true);
         Producto nuevo = control.getProducto();
         if (nuevo != null) {
-            ingresarTable(nuevo);
+            ingresarTable(null,nuevo, 1.0);
         }
     }
 
@@ -543,7 +488,7 @@ public class FacturaFormControllerV2 implements Initializable {
     }
 
     private void registroPago() {
-        
+
         if (combo_pagos.getValue() != null) {
 
             if (listado_pagos == null) {
@@ -567,7 +512,7 @@ public class FacturaFormControllerV2 implements Initializable {
             } else {
                 pago.setMonto(mto_pagado.getValue());
             }
-
+            System.out.println("flg 1");
             if (chk_parte.isSelected()) {
                 if (pago.getMoneda().getConverted().equals("1")) {
                     pago.setMonto(calcularTotal());
@@ -578,6 +523,7 @@ public class FacturaFormControllerV2 implements Initializable {
                 if (calcularTotal() < (montoPagado() + pago.getMonto())) {
                     return;
                 }
+                System.out.println("flg 2");
                 if (file != null) {
                     ImageConverter convertidor = new ImageConverter(file);
                     ComprobantePago comprobante = new ComprobantePago();
@@ -585,7 +531,7 @@ public class FacturaFormControllerV2 implements Initializable {
                     pago.setComprobante(comprobante);
                     file = null;
                 }
-
+                System.out.println("flg 3");
                 listado_pagos.add(pago);
                 list_pagos.setItems(FXCollections.observableArrayList(listado_pagos));
                 pago_lbl_restante.setText(String.format("%.2f / %.2f", montoPagado(), calcularTotal()));
@@ -618,13 +564,8 @@ public class FacturaFormControllerV2 implements Initializable {
     private Double calcularTotal() {
         Double dbl = 0.0;
         if (!table_view.getItems().isEmpty()) {
-            for (TProducto l : table_view.getItems()) {
-                if (venta) {
-                    dbl += l.getCantidad() * l.getPrecio_vent();
-                } else {
-                    dbl += l.getCantidad() * l.getPrecio_unit();
-                }
-
+            for (TLineaFactura l : table_view.getItems()) {
+                dbl += l.getTotal();
             }
         }
 
@@ -643,26 +584,20 @@ public class FacturaFormControllerV2 implements Initializable {
         factura.setExento(excento_value.getValue());
         table_view.getItems().forEach((e) -> {
             boolean saved = false;
-            if(modificada!=null)
-            for (LineaFactura ln : modificada.getLineas()) {
-                if (e.getProducto().equals(ln.getId_producto())) {
-                    ln.setCantidad(e.getCantidad());
-                    if (venta) {
-                        ln.setPrecio_unit(e.getPrecio_vent());
-                    } else {
-                        ln.setPrecio_unit(e.getPrecio_unit());
+            if (modificada != null) {
+                for (LineaFactura ln : modificada.getLineas()) {
+                    if (e.getLinea().getId_producto().equals(ln.getId_producto())) {
+                        ln.setCantidad(e.getCantidad());
+                        ln.setPrecio_unit(e.getMonto());
+                        ln.setId_factura(modificada);
+                        listado.add(ln);
+                        saved = true;
                     }
-                    ln.setId_factura(modificada);
-                    listado.add(ln);
-                    saved = true;
                 }
             }
             if (modificada == null && !saved) {
-                LineaFactura lnf = new LineaFactura();
-                lnf.setCantidad(e.getCantidad());
-                lnf.setId_producto(e.getProducto());
-                lnf.setPrecio_unit(e.getPrecio_unit());
-                listado.add(lnf);
+
+                listado.add(e.getLinea());
             }
 
         });
@@ -736,7 +671,7 @@ public class FacturaFormControllerV2 implements Initializable {
         tab_window.getSelectionModel().getSelectedItem().setDisable(false);
         table_view.refresh();
         modificada.getLineas().forEach((e) -> {
-            ingresarTable(e.getId_producto());
+            ingresarTable(e,e.getId_producto(), e.getCantidad());
         });
         iva_value.getValueFactory().setValue(modificada.getIVA());
         excento_value.getValueFactory().setValue(modificada.getExento());

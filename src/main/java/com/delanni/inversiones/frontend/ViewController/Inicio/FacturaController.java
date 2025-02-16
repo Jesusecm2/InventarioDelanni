@@ -226,6 +226,7 @@ public class FacturaController implements Initializable {
                 } catch (IOException ex) {
                     Alert alert = Alerta.getAlert(Alert.AlertType.ERROR, "Solicitud no completada", " ", null);
                     alert.show();
+                    ex.printStackTrace();
                 }
 
             }
@@ -269,6 +270,7 @@ public class FacturaController implements Initializable {
             } catch (Exception ex) {
                 Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
                 a.showAndWait();
+                ex.printStackTrace();
             }
         });
 
@@ -278,6 +280,7 @@ public class FacturaController implements Initializable {
             } catch (Exception ex) {
                 Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
                 a.showAndWait();
+                ex.printStackTrace();
             }
         });
 
@@ -287,6 +290,7 @@ public class FacturaController implements Initializable {
             } catch (Exception ex) {
                 Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
                 a.showAndWait();
+                ex.printStackTrace();
             }
         });
 
@@ -296,6 +300,7 @@ public class FacturaController implements Initializable {
             } catch (Exception ex) {
                 Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
                 a.showAndWait();
+                ex.printStackTrace();
             }
         });
 
