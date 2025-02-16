@@ -64,6 +64,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 
 /**
  *
@@ -138,6 +141,9 @@ public class FacturaFormControllerV2 implements Initializable {
     private Button agregar_pago;
 
     @FXML
+    private List<Producto> listado_productos;
+
+    @FXML
     private ComboBox<Moneda> moneda_Combo;
 
     @FXML
@@ -198,11 +204,27 @@ public class FacturaFormControllerV2 implements Initializable {
     private List<File> list_file;
 
     private File file;
+    @FXML
+    private Label lb_cliente;
+
+    @FXML
+    private Label ci_cliente;
 
     private Factura modificada;
 
     private List<Pago> listado_pagos;
     private ValorMoneda valor;
+
+    private boolean venta;
+
+    public FacturaFormControllerV2(Factura modificada, boolean venta) {
+        this.modificada = modificada;
+        this.venta = venta;
+    }
+
+    public FacturaFormControllerV2(boolean venta) {
+        this.venta = venta;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -268,7 +290,12 @@ public class FacturaFormControllerV2 implements Initializable {
                 upd_spin.setDisable(false);
                 mto_spin.setDisable(false);
                 upd_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getCantidad());
-                mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_unit());
+                if (venta) {
+                    mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_vent());
+                } else {
+                    mto_spin.getValueFactory().setValue(table_view.getSelectionModel().getSelectedItem().getPrecio_unit());
+                }
+
             }
         });
 
@@ -289,9 +316,12 @@ public class FacturaFormControllerV2 implements Initializable {
             upd_spin.setDisable(true);
             mto_spin.setDisable(true);
             TProducto pr = table_view.getSelectionModel().getSelectedItem();
-            pr.setPrecio_unit(mto_spin.getValue());
+            if (venta) {
+                pr.setPrecio_vent(mto_spin.getValue());
+            } else {
+                pr.setPrecio_unit(mto_spin.getValue());
+            }
             pr.setCantidad(upd_spin.getValue());
-
             table_view.refresh();
             table_view.getSelectionModel().clearSelection();
             monto_tot_lb.setText(String.format("%.2f $", calcularTotal()));
@@ -333,16 +363,50 @@ public class FacturaFormControllerV2 implements Initializable {
         tc_cant.setCellValueFactory(new PropertyValueFactory<>("Scantidad"));
 
         tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
+        if (venta) {
+            tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal_vent"));
+
+        } else {
+            tc_tot.setCellValueFactory(new PropertyValueFactory<>("Stotal"));
+        }
 
         tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_unit"));
+        if (venta) {
+            tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_vent"));
+
+        } else {
+            tc_precio.setCellValueFactory(new PropertyValueFactory<>("Sprecio_unit"));
+        }
+
+        if (venta) {
+            prov_create_btn.setText("Buscar Cliente");
+            lb_cliente.setText("Cliente");
+            ci_cliente.setText("Cédula:");
+        } else {
+            prov_create_btn.setText("Buscar Proveedor");
+            lb_cliente.setText("Proveedor");
+            ci_cliente.setText("RIF:");
+        }
 
         prov_create_btn.setOnAction((e) -> {
-            ProveedorFormController control = App.cargarVentanaModal("Crear Proveedor", "fxml/ProveedorForm", true);
-            if (control.getProveedor() != null) {
-                proveedor = control.getProveedor();
-                prov_lb.setText(proveedor.toString());
-                nxt_btn.fire();
+            if (venta) {
+                ClienteFormController control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+                if (control != null) {
+
+                    cliente = control.getCliente();
+                    prov_lb.setText(cliente.getNombre());
+                    nxt_btn.fire();
+
+                }
+            } else {
+                ProveedorFormController control = App.cargarVentanaModal("Crear Proveedor", "fxml/ProveedorForm", true);
+                if (control.getProveedor() != null) {
+                    proveedor = control.getProveedor();
+                    prov_lb.setText(proveedor.toString());
+                    nxt_btn.fire();
+                }
             }
+
         });
 
         elim_prod.setOnAction((e) -> {
@@ -352,40 +416,52 @@ public class FacturaFormControllerV2 implements Initializable {
         create_btn.setOnAction((e) -> {
             crearProducto();
         });
-        combo_box.setOnAction((e) -> {
-            System.out.println("Cmbo Action");
+        
+        InventarioBackend bckl = new InventarioControllerImpl();
+        listado_productos = bckl.ListadoProducto();
+        if (listado_productos != null && !listado_productos.isEmpty()) {
+            combo_box.getItems().addAll(listado_productos);
+        }
+        AutoCompletionBinding<Producto> autoCompletado = TextFields.bindAutoCompletion(combo_box.getEditor(), combo_box.getItems());
+        autoCompletado.setOnAutoCompleted(event ->{
+            Producto p = event.getCompletion();
+            ingresarTable(p);
+            combo_box.getEditor().setText("");
+            combo_box.hide();
         });
-        combo_box.setOnKeyPressed((e) -> {
-            if (e.getCode() == KeyCode.ENTER && last_Select != null) {
-                System.out.println(last_Select);
-                ingresarTable(last_Select);
-                last_Select = null;
-                combo_box.setItems(null);
-                combo_tf.setText("");
+        /*combo_box.getEditor().textProperty().addListener((obs, oldtext, newtext) -> {
+            combo_box.getItems().clear();
+            if (newtext.isEmpty()) {
+                combo_box.hide();
+                combo_box.getItems().setAll(listado_productos);
+            } else {
+                List<Producto> filtro = new ArrayList<>();
+                for (Producto item : listado_productos) {
+                    if (item.getNombre().toLowerCase().contains(newtext.toLowerCase())) {
+                        filtro.add(item);
+                    }
+                }
+                combo_box.hide();
+                combo_box.getItems().setAll(filtro);
+                combo_box.show();
             }
-        });
-        combo_tf.setOnKeyPressed((e) -> {
-
-        });
-        combo_tf.setOnKeyReleased((e) -> {
-
-            try {
-                last_Select = combo_box.getSelectionModel().getSelectedItem();
-            } catch (Exception t) {
-                last_Select = null;
-            }
-            if (e.getCode() != KeyCode.ENTER) {
-                if (e.getCode() != KeyCode.ENTER && e.getCode() != KeyCode.DOWN && e.getCode() != KeyCode.UP) {
-                    InventarioBackend bck = new InventarioControllerImpl();
-                    List<Producto> list = bck.buscarNombre(combo_tf.getText());
-                    if (list != null && !list.isEmpty()) {
-                        combo_box.setItems(FXCollections.observableArrayList(list));
-                        combo_box.show();
+        });*/
+        /*
+        combo_box.getEditor().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            System.out.println("Filtro:"+event.getCode().getName()+"/"+event.getCharacter());
+            combo_box.getEditor().requestFocus();
+            if (event.getCode() == KeyCode.ENTER) {
+                String input = combo_box.getEditor().getText();
+                for (Producto item : combo_box.getItems()) {
+                    if (item.getNombre().equals(input)) {
+                        combo_box.setValue(item);
+                        System.out.println("Selected");
+                        break;
                     }
                 }
             }
-        });
-        cod_tf.setOnKeyReleased((e) -> {
+        });*/
+        /*cod_tf.setOnKeyReleased((e) -> {
             if (e.getCode() == KeyCode.ENTER) {
 
                 InventarioBackend bck = new InventarioControllerImpl();
@@ -399,7 +475,7 @@ public class FacturaFormControllerV2 implements Initializable {
 
                 cod_tf.setText("");
             }
-        });
+        });*/
 
         PagoBackend bck = new PagoImpl();
         List<Moneda> moneda = bck.obtenerMonedas();
@@ -407,6 +483,9 @@ public class FacturaFormControllerV2 implements Initializable {
             moneda_Combo.setItems(FXCollections.observableArrayList(moneda));
         }
 
+        if (modificada != null) {
+            setModificada();
+        }
     }
 
     private void ingresarTable(Producto pr) {
@@ -464,6 +543,7 @@ public class FacturaFormControllerV2 implements Initializable {
     }
 
     private void registroPago() {
+        
         if (combo_pagos.getValue() != null) {
 
             if (listado_pagos == null) {
@@ -539,7 +619,12 @@ public class FacturaFormControllerV2 implements Initializable {
         Double dbl = 0.0;
         if (!table_view.getItems().isEmpty()) {
             for (TProducto l : table_view.getItems()) {
-                dbl += l.getCantidad() * l.getPrecio_unit();
+                if (venta) {
+                    dbl += l.getCantidad() * l.getPrecio_vent();
+                } else {
+                    dbl += l.getCantidad() * l.getPrecio_unit();
+                }
+
             }
         }
 
@@ -558,11 +643,15 @@ public class FacturaFormControllerV2 implements Initializable {
         factura.setExento(excento_value.getValue());
         table_view.getItems().forEach((e) -> {
             boolean saved = false;
-            
+            if(modificada!=null)
             for (LineaFactura ln : modificada.getLineas()) {
                 if (e.getProducto().equals(ln.getId_producto())) {
                     ln.setCantidad(e.getCantidad());
-                    ln.setPrecio_unit(e.getPrecio_unit());
+                    if (venta) {
+                        ln.setPrecio_unit(e.getPrecio_vent());
+                    } else {
+                        ln.setPrecio_unit(e.getPrecio_unit());
+                    }
                     ln.setId_factura(modificada);
                     listado.add(ln);
                     saved = true;
@@ -616,11 +705,13 @@ public class FacturaFormControllerV2 implements Initializable {
     }
 
     private boolean facturaEsValida(Factura factura, List<Pago> pagos) {
+        boolean asignatario = false;
         if (factura.getLineas().isEmpty()) {
             mostrarError("Factura debe contener productos");
             return false;
         }
-        if (factura.getIdProveedor() == null) {
+
+        if (factura.getIdProveedor() == null && factura.getIdCliente() == null) {
             mostrarError("Factura debe contener cliente asignado");
             return false;
         }
@@ -631,8 +722,7 @@ public class FacturaFormControllerV2 implements Initializable {
         return modificada;
     }
 
-    public void setModificada(Factura modificada) {
-        this.modificada = modificada;
+    public void setModificada() {
         if (this.modificada.getIdProveedor() == null) {
             this.cliente = modificada.getIdCliente();
         } else {

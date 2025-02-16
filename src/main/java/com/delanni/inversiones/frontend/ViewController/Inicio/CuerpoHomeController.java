@@ -344,6 +344,7 @@ public class CuerpoHomeController implements Controladores {
         tr.setDaemon(
                 true);
         tr.start();
+        App.hilocentral = tr;
 
     }
 

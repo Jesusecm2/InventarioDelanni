@@ -30,6 +30,11 @@
         <artifactId>bootstrapfx-core</artifactId>
         <version>0.4.0</version>
     </dependency>
+    <dependency>
+        <groupId>org.controlsfx</groupId>
+        <artifactId>controlsfx</artifactId>
+        <version>11.2.0</version>
+    </dependency> 
             <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -58,6 +63,10 @@
                 <version>0.0.4</version>
                 <configuration>
                     <mainClass>com.delanni.inversiones.frontend.App</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
+                    </options>
                 </configuration>
                 <executions>
                     <execution>

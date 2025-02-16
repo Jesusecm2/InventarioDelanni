@@ -43,6 +43,7 @@ public class App extends Application {
     public static AuthenticationInfo authinfo;
     private static boolean sizehigh;
     public static InicioController bodycenter;
+    public static Thread hilocentral;
     public static String AppIP;
 
     @Override
@@ -115,7 +116,7 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    private static Parent loadFXML(String fxml, Object fml) throws IOException {
+    public static Parent loadFXML(String fxml, Object fml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         fxmlLoader.setController(fml);
         return fxmlLoader.load();

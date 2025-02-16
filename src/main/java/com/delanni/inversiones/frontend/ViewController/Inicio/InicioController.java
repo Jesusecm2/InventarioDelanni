@@ -130,51 +130,35 @@ public class InicioController implements Controladores {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
-        ingresos_btn.setOnAction((e)->{
-            cargarBody("fxml/IngresosEgresosCuerpo");
-        });
-        
-        product_btn.setOnMouseReleased((e) -> {
-            //loadProducto();
-            cargarBody("fxml/ProductoCuerpo");
-        });
 
-        mant_btn.setOnMouseReleased((e) -> {
-            MantenimientoCuerpo();
-        });
-
-        inventory_btn.setOnMousePressed((e) -> {
+        ingresos_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
             loadIngreso();
         });
 
-        home_btn.setOnMouseReleased((e) -> {
-            loadHome();
+        product_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
+            loadProducto();
         });
 
-        /* cat_btn.setOnMouseReleased((e) -> {
-            loadCatalogo();
-        });*/
-        fact_btn.setOnMouseReleased((e) -> {
+        fact_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
             loadFacturas();
         });
 
-        ventas_btn.setOnMouseClicked((e) -> {
-            App.bodycenter.cargarBody("fxml/VentasCuerpo");
-            /* try        
-    {
-        Runtime rt = Runtime.getRuntime();           
-        Process p = rt.exec("calc");            
-        p.waitFor();        
-    }        
-    catch ( IOException ioe )       
-    {            
-        ioe.printStackTrace();
-    }         
-    catch ( InterruptedException ie )
-    {            
-        ie.printStackTrace();     
-    }*/
+        inventory_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
+            loadProducto();
+        });
+
+        ventas_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
+            cargarBody("fxml/VentasCuerpo", null);
+        });
+
+        home_btn.setOnAction((e) -> {
+            cerrarHiloCentral();
+           loadHome();
         });
 
     }
@@ -197,27 +181,27 @@ public class InicioController implements Controladores {
 
     private void loadHome() {
 
-        cargarBody("fxml/CuerpoHome");
+        cargarBody("fxml/CuerpoHome", null);
     }
 
     private void loadProducto() {
-        cargarBody("fxml/ProductoCuerpo");
+        cargarBody("fxml/ProductoCuerpo", null);
     }
 
     private void loadFacturas() {
-        cargarBody("fxml/FacturaCuerpo");
+        cargarBody("fxml/FacturaCuerpo", null);
     }
 
     private void loadCatalogo() {
-        cargarBody("fxml/CatalogoCuerpo");
+        cargarBody("fxml/CatalogoCuerpo", null);
     }
 
     private void loadIngreso() {
-        cargarBody("fxml/EIngresosCuerpo");
+        cargarBody("fxml/IngresosEgresosCuerpo", null);
     }
 
     private void MantenimientoCuerpo() {
-        cargarBody("fxml/MantenimientoCuerpo");
+        cargarBody("fxml/MantenimientoCuerpo", null);
     }
 
     public Parent getNewRoot() {
@@ -233,10 +217,16 @@ public class InicioController implements Controladores {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public void cargarBody(String fxml) {
+    public void cargarBody(String fxml, Object control) {
         try {
             this.setLastRoot(getNewRoot());
-            Parent root = App.loadFXML(fxml);
+            Parent root = null;
+            if (control != null) {
+                root = App.loadFXML(fxml, control);
+            } else {
+                root = App.loadFXML(fxml);
+            }
+
             this.setNewRoot(root);
             Scene secene = menu_btn.getScene();
             root.translateXProperty().set(secene.getWidth());
@@ -253,6 +243,12 @@ public class InicioController implements Controladores {
 
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void cerrarHiloCentral() {
+        if (App.hilocentral != null) {
+            App.hilocentral.interrupt();
         }
     }
 }

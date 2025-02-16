@@ -414,7 +414,7 @@ public class ProductoFormController implements Controladores {
     }
 
     private void loadHomeForm() {
-        App.bodycenter.cargarBody("fxml/ProductoCuerpo");
+        App.bodycenter.cargarBody("fxml/ProductoCuerpo",null);
 
     }
 

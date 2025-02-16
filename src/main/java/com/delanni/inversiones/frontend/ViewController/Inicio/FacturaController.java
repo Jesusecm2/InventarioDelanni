@@ -182,11 +182,14 @@ public class FacturaController implements Initializable {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
                 total_lb.setText("Total: ".concat(String.valueOf(tf.getMonto()).concat("$")));
             }
-            if(e.getClickCount()>1 && e.getButton().PRIMARY==MouseButton.PRIMARY){
-                    PagoBackend bck = new PagoImpl();
-                    List<Transacciones> valores = bck.obtenerPago(tv_factura.getSelectionModel().getSelectedItem().getFactura());
-                    FacturaFormControllerV2 control = App.cargarVentanaModal("Modificar Factura", "fxml/FacturaFormV2", false);
-                    control.setModificada(tv_factura.getSelectionModel().getSelectedItem().getFactura());
+            if (e.getClickCount() > 1 && e.getButton().PRIMARY == MouseButton.PRIMARY) {
+                Factura f = tv_factura.getSelectionModel().getSelectedItem().getFactura();
+                boolean venta = false;
+                if (f.getIdCliente() != null) {
+                    venta = true;
+                }
+                FacturaFormControllerV2 control = new FacturaFormControllerV2(f, venta);
+                App.cargarVentanaModal("fxml/FacturaFormV2", control, true, "Modificar Factura");
             }
         });
 
@@ -246,7 +249,7 @@ public class FacturaController implements Initializable {
                 }
 
             }
-        });*/ 
+        });*/
         clear_btn.setOnAction((e) -> {
             cat_box.getSelectionModel().clearSelection();
             cat_box1.getSelectionModel().clearSelection();
@@ -322,7 +325,8 @@ public class FacturaController implements Initializable {
     }
 
     private void loadForm() {
-        App.bodycenter.cargarBody("fxml/FacturaFormV2");
+        FacturaFormControllerV2 control = new FacturaFormControllerV2(null,false);
+        App.bodycenter.cargarBody("fxml/FacturaFormV2", control);
     }
 
     public void cargarDatos() throws Exception {

@@ -11,6 +11,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
+import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormControllerV2;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Ventas.TEntity.VentaTrans;
 import java.net.URL;
@@ -40,7 +41,7 @@ public class VentasCuerpoController implements Initializable {
 
     @FXML
     private TableColumn<VentaTrans, String> tc_nombre;
-    
+
     @FXML
     private TableColumn<VentaTrans, Long> tc_id;
 
@@ -57,15 +58,16 @@ public class VentasCuerpoController implements Initializable {
         tc_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tc_pago.setCellValueFactory(new PropertyValueFactory<>("tp_pago"));
         tc_monto.setCellValueFactory(new PropertyValueFactory<>("monto_pag"));
-        
+
         create_btn.setOnMouseClicked((e) -> {
-            App.cargarVentanaModal("Modo Ventas", "fxml/VentaForm", true);
+            FacturaFormControllerV2 control = new FacturaFormControllerV2(null, true);
+            App.cargarVentanaModal("fxml/FacturaFormV2", control, true, "Realizar Venta");
         });
         cargarTabla();
     }
 
     private void cargarTabla() {
-       /* FacturaBackend backend = new FacturaControllerImpl();
+        /* FacturaBackend backend = new FacturaControllerImpl();
         List<Factura> ventas = backend.listadoVentas();
         if (ventas != null) {
             List<TFacturaInicio> listado = ventas.stream().map(venta -> new TFacturaInicio(venta)).collect(Collectors.toList());
@@ -73,13 +75,11 @@ public class VentasCuerpoController implements Initializable {
         }*/
         PagoBackend backend = new PagoImpl();
         List<Transacciones> ventas = backend.obtenerVentasHoy();
-        if(ventas!=null){
+        if (ventas != null) {
             List<VentaTrans> listado = ventas.stream().map(trn -> new VentaTrans(trn)).collect(Collectors.toList());
             table_producto.setItems(FXCollections.observableArrayList(listado));
         }
-        
-        
-        
+
     }
 
 }

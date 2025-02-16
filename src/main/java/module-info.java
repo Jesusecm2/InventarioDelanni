@@ -14,10 +14,12 @@ module InventarioDelanni {
     requires javafx.fxml;
     requires java.desktop;
     requires java.net.http;
+    requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
     requires org.apache.commons.io;
+    
     
     exports com.delanni.inversiones.frontend;
     exports com.delanni.inversiones.frontend.Backend.Entity;
@@ -25,6 +27,8 @@ module InventarioDelanni {
     opens com.delanni.inversiones.frontend.Backend.util;
     opens com.delanni.inversiones.frontend.ViewController.Login;
     opens com.delanni.inversiones.frontend.ViewController.Producto.TableObject;
+
+    //exports org.controlsfx.controls;
     exports com.delanni.inversiones.frontend.ViewController.Login;
     exports com.delanni.inversiones.frontend.ViewController.Inicio;
     exports com.delanni.inversiones.frontend.ViewController.Factura;

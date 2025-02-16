@@ -540,7 +540,7 @@ public class VentaFormController implements Initializable {
         Double dbl = 0.0;
         if (!table_view.getItems().isEmpty()) {
             for (TProducto l : table_view.getItems()) {
-                dbl += l.getCantidad() * l.getPrecio_unit();
+                dbl += l.getCantidad() * l.getPrecio_vent();
             }
         }
 
@@ -557,7 +557,7 @@ public class VentaFormController implements Initializable {
             LineaFactura lnf = new LineaFactura();
             lnf.setCantidad(e.getCantidad());
             lnf.setId_producto(e.getProducto());
-            lnf.setPrecio_unit(e.getPrecio_unit());
+            lnf.setPrecio_unit(e.getPrecio_vent());
             listado.add(lnf);
         });
         factura.setLineas(listado);

@@ -341,11 +341,12 @@ public class ProductoController implements Controladores {
     }
 
     private void loadHomeForm() {
-        App.bodycenter.cargarBody("fxml/CuerpoHome");
+        App.bodycenter.cargarBody("fxml/CuerpoHome",null);
     }
 
     private void loadForm() {
-        App.bodycenter.cargarBody("fxml/ProductoForm");
+         ProductoFormController control = new ProductoFormController();
+        App.bodycenter.cargarBody("fxml/ProductoForm",control);
     }
 
     public Parent getNewRoot() {
