@@ -114,7 +114,7 @@ public class Pago {
 
     @Override
     public String toString() {
-        return tipo.getTipo()+" " + cod_ejecucion + " : " +String.valueOf(monto);
+        return tipo.getTipo()+" " + cod_ejecucion + " : " +String.valueOf(monto)+" "+moneda.getMoneda();
     }
 
 }

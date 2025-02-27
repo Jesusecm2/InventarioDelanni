@@ -108,15 +108,16 @@ public class InicioController implements Controladores {
         home_btn.setGraphic(Getfile.getIcono("normal/Casa64.png"));
         product_btn.setGraphic(Getfile.getIcono("normal/Producto64.png"));
         inventory_btn.setGraphic(Getfile.getIcono("normal/Inventario64.png"));
-        mant_btn.setGraphic(Getfile.getIcono("normal/Mantenimiento64.png"));
+        //mant_btn.setGraphic(Getfile.getIcono("normal/Mantenimiento64.png"));
+        ingresos_btn.setGraphic(Getfile.getIcono("normal/ingresos-64.png"));
         //cat_btn.setGraphic(Getfile.getIcono("normal/catalogo64.png"));
         fact_btn.setGraphic(Getfile.getIcono("normal/factura-64.png"));
         ventas_btn.setGraphic(Getfile.getIcono("normal/dinero-64.png"));
         img_icon.setImage(Getfile.getIcono("minilogo.png").getImage());
         img_icon.setFitHeight(64);
         img_icon.setFitWidth(64);
-        Button btns[] = new Button[]{home_btn, product_btn, inventory_btn, mant_btn
-        };
+       // Button btns[] = new Button[]{home_btn, product_btn, inventory_btn, mant_btn
+        //};
         Parent root;
         try {
             root = App.loadFXML("fxml/CuerpoHome");
@@ -201,7 +202,7 @@ public class InicioController implements Controladores {
     }
 
     private void MantenimientoCuerpo() {
-        cargarBody("fxml/MantenimientoCuerpo", null);
+        //cargarBody("fxml/MantenimientoCuerpo", null);
     }
 
     public Parent getNewRoot() {

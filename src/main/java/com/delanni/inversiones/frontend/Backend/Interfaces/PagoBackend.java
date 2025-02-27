@@ -27,6 +27,8 @@ public interface PagoBackend {
 
     public ValorMoneda obtenerValorMonedaHoy(Moneda param);
 
+    public ValorMoneda obtenerValorMoneda(Moneda mon,Date date);
+    
     public ValorMoneda guardarValorMoneda(ValorMoneda param);
 
     public ValorMoneda guardarValorMoneda(ValorMoneda param, Date date);

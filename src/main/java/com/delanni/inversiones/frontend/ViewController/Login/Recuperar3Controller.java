@@ -5,6 +5,10 @@
 package com.delanni.inversiones.frontend.ViewController.Login;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.IuserController;
+import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
+import com.delanni.inversiones.frontend.Backend.Interfaces.IUser;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Size.AltoSize;
 import com.delanni.inversiones.frontend.ViewController.Size.NormalSize;
@@ -14,6 +18,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -37,8 +42,8 @@ public class Recuperar3Controller implements Controladores {
 
     @FXML
     private Button rc3_acces_btn;
-    
-        @FXML
+
+    @FXML
     private Button rc3_cancel_btn;
 
     @FXML
@@ -50,12 +55,27 @@ public class Recuperar3Controller implements Controladores {
     @FXML
     private PasswordField rc3_pg_pw1;
 
-
     @FXML
     private Label rc3_pg_lb;
     @FXML
     private Label rc3_pg1_lb;
 
+    private Usuario cambio;
+
+    public Recuperar3Controller() {
+    }
+
+    public Recuperar3Controller(Usuario cambio) {
+        this.cambio = cambio;
+    }
+
+    public Usuario getCambio() {
+        return cambio;
+    }
+
+    public void setCambio(Usuario cambio) {
+        this.cambio = cambio;
+    }
 
     @Override
     public void responsive800() {
@@ -100,8 +120,7 @@ public class Recuperar3Controller implements Controladores {
         rc3_acces_btn.getStyleClass().addAll(NormalSize.BTNG);
         //**************ADD OR SET
         rc3_titulo_lb.getStyleClass().addAll(AltoSize.TITULO);
-        
-        
+
         rc3_pg_lb.getStyleClass().addAll(AltoSize.TEXTO);
         rc3_pg1_lb.getStyleClass().addAll(AltoSize.TEXTO);
         //rc3_pg2_lb.getStyleClass().addAll(AltoSize.TEXTO);
@@ -114,12 +133,17 @@ public class Recuperar3Controller implements Controladores {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(App.IsResize()){
+        if (App.IsResize()) {
             responsive1600();
-        }else{
+        } else {
             responsive800();
         }
-        rc3_cancel_btn.setOnAction(new EventHandler<ActionEvent>(){
+
+        rc3_acces_btn.setOnAction((e) -> {
+            System.out.println("cambio");
+            cambioContrasena();
+        });
+        rc3_cancel_btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 try {
@@ -128,7 +152,7 @@ public class Recuperar3Controller implements Controladores {
                     ex.printStackTrace();
                 }
             }
-            
+
         });
     }
 
@@ -140,6 +164,24 @@ public class Recuperar3Controller implements Controladores {
     @Override
     public void setRollovers1600() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private boolean validar() {
+        if (!rc3_pg_pw.getText().equals(rc3_pg_pw1.getText())) {
+            Alert al = Alerta.getAlert(Alert.AlertType.ERROR, "Contrasena Incorrecta", "Ambos campos deben ser iguales", null);
+            al.showAndWait();
+            return false;
+        }
+        return true;
+    }
+
+    private void cambioContrasena() {
+        if (validar()) {
+            IUser control = new IuserController();
+            int resultado = control.cambioContrasena(cambio);
+            System.out.println("resultado:" + resultado);
+            rc3_cancel_btn.fire();
+        }
     }
 
 }

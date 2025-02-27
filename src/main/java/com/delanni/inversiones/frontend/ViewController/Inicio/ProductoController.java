@@ -451,7 +451,7 @@ public class ProductoController implements Controladores {
         param.forEach((l -> {
             TProducto valor = new TProducto(l);
             valor.getBtn_modify().setOnAction((p) -> {
-                ProductoFormController control = new ProductoFormController(l);
+                ProductoFormController control = new ProductoFormController(l,false);
                 App.cargarVentanaModal("fxml/ProductoForm", control, true, "Modificar Producto");
                 cargarProductos();
             });

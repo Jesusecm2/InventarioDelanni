@@ -4,7 +4,9 @@
  */
 package com.delanni.inversiones.frontend.Backend.Interfaces;
 
+import com.delanni.inversiones.frontend.Backend.Entity.DailyAudit;
 import com.delanni.inversiones.frontend.Backend.Entity.SystemParam;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,4 +20,6 @@ public interface ConfigSystem {
     public SystemParam obtenerParametro(Integer table, String referencia);
 
     public List<SystemParam> obtenerParametro(Integer table);
+    
+    public List<DailyAudit> obtenerLogs(Date date);
 }

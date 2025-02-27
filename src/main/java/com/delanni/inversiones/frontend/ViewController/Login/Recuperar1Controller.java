@@ -5,6 +5,8 @@
 package com.delanni.inversiones.frontend.ViewController.Login;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Size.AltoSize;
 import com.delanni.inversiones.frontend.ViewController.Size.NormalSize;
@@ -14,6 +16,9 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -92,10 +97,16 @@ public class Recuperar1Controller implements Controladores{
         }
         rc1_acces_btn.setOnAction((event)->{
             try {
-                    App.setRoot("RecuperarContrasena2");
+                    Recuperar2Controller rc = new Recuperar2Controller(inicializar());
+                    Parent fx = App.loadFXML("fxml/RecuperarContrasena2", rc);
+                    App.setRoot(fx);
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                }
+                } catch (Exception ex) {
+                     ex.printStackTrace();
+                    Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Error", "No se pudo obtener el usuario", null);
+                    msg.showAndWait();
+            }
         });
         rc1_cancel_btn.setOnAction((event)->{
                 try {
@@ -115,6 +126,12 @@ public class Recuperar1Controller implements Controladores{
     @Override
     public void setRollovers1600() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private Usuario inicializar(){
+        Usuario us = new Usuario();
+        us.setUsername(rc1_usuario_tf.getText());
+        return us;
     }
     
 }

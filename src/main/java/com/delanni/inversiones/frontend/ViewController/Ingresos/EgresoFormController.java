@@ -187,8 +187,8 @@ public class EgresoFormController implements Initializable {
                     valor = bl.obtenerValorMonedaHoy(mon);
                 }
                 if (valor == null && trn == null) {
-                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
-                    control.setMoneda(mon);
+                     ValorMonedaFormController control = new ValorMonedaFormController(mon, fecha_ejec.getValue());
+                    App.cargarVentanaModal("fxml/ValorMonedaForm", control, true, "Registrar Tasa");
                     moneda_Combo.getSelectionModel().clearSelection();
 
                 } else {

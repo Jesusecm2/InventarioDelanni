@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane minHeight="600.0" minWidth="400.0" prefHeight="800.0" prefWidth="600.0" styleClass="panel" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Login.Recuperar2Controller">
+<GridPane minHeight="600.0" minWidth="400.0" prefHeight="800.0" prefWidth="600.0" styleClass="panel" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -52,13 +52,13 @@
                   <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <PasswordField fx:id="rc2_pg_pw" styleClass="h4" GridPane.rowIndex="2" />
+                  <PasswordField fx:id="prg_pf" styleClass="h4" GridPane.rowIndex="2" />
                   <Label fx:id="rc1_titulo_lb" styleClass="h1" text="Recuperar Contraseña" wrapText="true" />
-                  <Label fx:id="rc2_pg_lb" text="¿Cuantos Años tienes?" GridPane.rowIndex="1" />
-                  <Label fx:id="rc2_pg1_lb" text="¿Cúal es tu comida favorita?" GridPane.rowIndex="3" />
-                  <PasswordField fx:id="rc2_pg_pw1" styleClass="h4" GridPane.rowIndex="4" />
-                  <Label fx:id="rc2_pg2_lb" text="¿Cúal es tu comida favorita?" GridPane.rowIndex="5" />
-                  <PasswordField fx:id="rc2_pg_pw2" styleClass="h4" GridPane.rowIndex="6" />
+                  <Label fx:id="prg_lb" text="¿Pregunta número?" GridPane.rowIndex="1" />
+                  <Label fx:id="rc2_pg1_lb" text="¿Cúal es tu comida favorita?" visible="false" GridPane.rowIndex="3" />
+                  <PasswordField fx:id="rc2_pg_pw1" styleClass="h4" visible="false" GridPane.rowIndex="4" />
+                  <Label fx:id="rc2_pg2_lb" text="¿Cúal es tu comida favorita?" visible="false" GridPane.rowIndex="5" />
+                  <PasswordField fx:id="rc2_pg_pw2" styleClass="h4" visible="false" GridPane.rowIndex="6" />
                   <Button id="lg_login_btn" fx:id="rc2_acces_btn" mnemonicParsing="false" text="Confirmar" GridPane.rowIndex="7">
                      <styleClass>
                         <String fx:value="btn" />

@@ -9,8 +9,10 @@ import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Inicio.InicioController;
+import com.delanni.inversiones.frontend.ViewController.Inicio.LogExportController;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Login.InicioSesionController;
+import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProveedorFormController;
 import com.delanni.inversiones.frontend.ViewObject.Previews.PreloadFXML;
 import javafx.application.Application;
@@ -45,17 +47,26 @@ public class App extends Application {
     public static InicioController bodycenter;
     public static Thread hilocentral;
     public static String AppIP;
+    public static String provider = "Inversiones Delanni App 1.0";
+    public static String system = System.getProperty("os.name");
 
     @Override
     public void start(Stage stage) throws IOException {
+                //AppIP = "http://192.168.0.123:8090";
+        AppIP = "http://localhost:8090";
+        
+        
         Usuario user = new Usuario();
         user.setUsername("app_user");
         user.setPassword("123456");
         user.setNombre("Usuario de Aplicacion");
         user.setEmail("email@promedio");
-        //AppIP = "http://192.168.0.123:8090";
-        AppIP = "http://localhost:8090";
+
         AuthenticationInfo us = new AuthenticationImpl().getToken(user);
+        if(us!=null){
+            authinfo = us;
+        }
+
         App.stage = stage;
         NormalImage.precarga();
         PreloadFXML.loadParent();
@@ -81,15 +92,25 @@ public class App extends Application {
         stage.widthProperty().addListener(resize);
         stage.heightProperty().addListener(resize);
         // scene = new Scene(loadFXML("fxml/Inicio"), 640, 480);
-        FXMLLoader lo = App.getFMXL("fxml/Inicio");
+        FXMLLoader lo = App.getFMXL("fxml/InicioSesion");
 
         scene = new Scene(lo.load(), 800, 600);
-        App.bodycenter = lo.getController();
+        //  App.bodycenter = lo.getController();
         scene.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
         scene.setOnKeyReleased((e) -> {
 
             if (e.getCode() == KeyCode.F12) {
                 cargarVentanaModal("Parametros", "fxml/ParametroForm", true);
+            }
+
+            if (e.getCode() == KeyCode.F1) {
+                cargarVentanaModal("fxml/LogsForm", new LogExportController(), true, "Logs del sistema");
+            }
+
+            if (e.getCode() == KeyCode.F11) {
+
+                //cargarVentanaModal("Parametros", "fxml/ParametroForm", true);
+                cargarVentanaModal("fxml/ValorMonedaForm", new ValorMonedaFormController(), true, "Mantenimiento");
             }
 
         });
@@ -101,6 +122,10 @@ public class App extends Application {
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML("fxml/" + fxml));
+    }
+
+    public static void setRoot(Parent fxml) throws IOException {
+        scene.setRoot(fxml);
     }
 
     public static boolean IsResize() {
@@ -191,10 +216,10 @@ public class App extends Application {
         }
         return null;
     }
-    
-    public static void cargarVentanaModal(String fxml,Object controller,boolean modal,String titulo) {
+
+    public static void cargarVentanaModal(String fxml, Object controller, boolean modal, String titulo) {
         try {
-            Parent pantalla = App.loadFXML(fxml,controller);
+            Parent pantalla = App.loadFXML(fxml, controller);
             Stage stage1 = new Stage();
             Scene scene1 = new Scene(pantalla);
             stage1.setTitle(titulo);

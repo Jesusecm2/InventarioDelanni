@@ -282,6 +282,19 @@
                                           <Label text="Excento :" />
                                        </children>
                                     </GridPane>
+                                    <GridPane GridPane.rowIndex="6">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label text="Fecha factura:" />
+                                          <DatePicker fx:id="f_factura" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
                                  </children>
                                  <GridPane.margin>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -368,9 +381,9 @@
                                     </GridPane>
                                     <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Pago" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                     <Label fx:id="lb_img_nme" text="Imageicon.png" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                                    <DatePicker fx:id="fecha_ejec" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                    <CheckBox fx:id="chk_fecha" mnemonicParsing="false" text="Fecha ejecución" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                    <GridPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                    <DatePicker fx:id="fecha_ejec" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                    <CheckBox fx:id="chk_fecha" mnemonicParsing="false" text="Fecha ejecución" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                    <GridPane GridPane.columnIndex="2" GridPane.rowIndex="6">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
@@ -383,8 +396,21 @@
                                           <ComboBox fx:id="moneda_Combo" maxWidth="1.7976931348623157E308" promptText="Moneda" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
-                                    <Label fx:id="amnt_lbl" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                    <Label fx:id="pago_lbl_restante" text="500$ restante 200$" GridPane.rowIndex="9" />
+                                    <Label fx:id="amnt_lbl" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                    <GridPane GridPane.rowIndex="9">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label fx:id="pago_lbl_restante" text="Monto Total:" GridPane.columnSpan="2" />
+                                       </children>
+                                    </GridPane>
                                  </children>
                                  <GridPane.margin>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

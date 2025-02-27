@@ -157,8 +157,9 @@ public class ProductoFormController implements Controladores {
     @FXML
     private Spinner<Double> j_spim;
 
-    public ProductoFormController(Producto producto) {
+    public ProductoFormController(Producto producto,boolean modal) {
         this.producto = producto;
+        this.closeform = modal;
     }
 
     public ProductoFormController() {
@@ -474,6 +475,7 @@ public class ProductoFormController implements Controladores {
         InventarioBackend implement = new InventarioControllerImpl();
         if (producto.getId() == null) {
             Producto response = implement.GuardarProducto(producto, "crear", j_spim.getValue());
+            this.producto = response;
             mensaje(response, implement);
         } else {
 

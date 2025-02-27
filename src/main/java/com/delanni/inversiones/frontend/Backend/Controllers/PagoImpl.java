@@ -254,8 +254,9 @@ public class PagoImpl implements PagoBackend {
     @Override
     public ValorMoneda guardarValorMoneda(ValorMoneda param, Date date) {
         try {
+            
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(date.toString())))
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(new SimpleDateFormat("dd-MM-yyyy").format(date))))
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
                     .header("Content-Type", "application/json")
                     .header("system", system)
@@ -385,6 +386,29 @@ public class PagoImpl implements PagoBackend {
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public ValorMoneda obtenerValorMoneda(Moneda mon, Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/fecha?date=").concat(format.format(date))))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(mon)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), ValorMoneda.class);
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {

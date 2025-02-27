@@ -101,7 +101,7 @@ public class IngresoFormController implements Initializable {
     private TextField ref_pag;
 
     private File file;
-    
+
     @FXML
     private Label lbl_date;
 
@@ -177,12 +177,14 @@ public class IngresoFormController implements Initializable {
         moneda_Combo.setOnAction((e) -> {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
-                
+
                 PagoBackend bl = new PagoImpl();
-                if(trn==null)valor = bl.obtenerValorMonedaHoy(mon);
-                if (this.valor == null && trn==null) {
-                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
-                    control.setMoneda(mon);
+                if (trn == null) {
+                    valor = bl.obtenerValorMonedaHoy(mon);
+                }
+                if (this.valor == null && trn == null) {
+                    ValorMonedaFormController control = new ValorMonedaFormController(mon, fecha_ejec.getValue());
+                    App.cargarVentanaModal("fxml/ValorMonedaForm", control, true, "Registrar Tasa");
                     moneda_Combo.getSelectionModel().clearSelection();
 
                 } else {
@@ -315,15 +317,15 @@ public class IngresoFormController implements Initializable {
         egreso_comb.setDisable(true);
         combo_pagos.setDisable(true);
         this.valor = trn.getPago().getValor();
-        
+
         moneda_Combo.getSelectionModel().select(trn.getPago().getMoneda());
         moneda_Combo.setDisable(true);
         mto_pagado.setDisable(true);
         ref_pag.setText(trn.getPago().getCod_ejecucion());
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
         lbl_date.setText(formato.format(trn.getFecha()));
-        
-         if (trn.getPago().getComprobante() != null) {
+
+        if (trn.getPago().getComprobante() != null) {
             ver_comprobante.setDisable(false);
             ImagenController controller = new ImageControllerImpl();
             String img = controller.imageString(trn.getPago().getComprobante().getImagen());
@@ -332,19 +334,19 @@ public class IngresoFormController implements Initializable {
             this.imagen.setFitHeight(600);
             this.imagen.setFitWidth(400);
             this.imagen.getStyleClass().add("img_pagin");
-        }else{
-             ver_comprobante.setDisable(true);
-         }
-         try {
+        } else {
+            ver_comprobante.setDisable(true);
+        }
+        try {
             this.carrusel = App.loadFXML("fxml/Carrusel");
             this.controlcarrusel = App.loadctual.getController();
-           // this.pg_pagination = controlcarrusel.getPg_nation();
+            // this.pg_pagination = controlcarrusel.getPg_nation();
             carrusel.setVisible(false);
             main_grid.add(carrusel, 0, 0, GridPane.REMAINING, GridPane.REMAINING);
         } catch (IOException ex) {
 
         }
-        
+
     }
 
     private void loadCarrusel() {

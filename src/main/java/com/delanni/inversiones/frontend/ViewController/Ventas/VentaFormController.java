@@ -303,12 +303,10 @@ public class VentaFormController implements Initializable {
                 valor = bl.obtenerValorMonedaHoy(mon);
                 if (valor == null) {
 
-                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
-                    control.setMoneda(mon);
-                    if (chk_fecha.isSelected()) {
-                        control.setDate(fecha_ejec.getValue());
-                    }
-                    moneda_Combo.getSelectionModel().clearSelection();
+                    ValorMonedaFormController control = new ValorMonedaFormController(mon, fecha_ejec.getValue());
+                    App.cargarVentanaModal("fxml/ValorMonedaForm", control, true, "Registrar Tasa");
+
+                   
 
                 } else {
                     amnt_lbl.setText(String.format("%.2f", valor.getValor()));

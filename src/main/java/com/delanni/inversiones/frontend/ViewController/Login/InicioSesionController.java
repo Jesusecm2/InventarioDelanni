@@ -25,7 +25,9 @@ import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -108,9 +110,8 @@ public class InicioSesionController implements Controladores {
     }
 
     private void IniciarSesion() {
-      /*  Conexion conn = new Conexion();
-        Transaccional trans = new Transaccional(conn);
-        AuthenticationImpl auth = new AuthenticationImpl(trans);
+       Conexion conn = new Conexion();
+        AuthenticationImpl auth = new AuthenticationImpl();
         Usuario user = new Usuario();
         user.setUsername(lg_username_tf.getText());
         user.setPassword(lg_password_tf.getText());
@@ -118,19 +119,26 @@ public class InicioSesionController implements Controladores {
 
         AuthenticationInfo info = auth.getToken(user);
         
-        System.out.println(Conexion.ultima.getCuerpo().get("response"));
+        //System.out.println(Conexion.ultima.getCuerpo().get("response"));
         if (info == null) {
             System.out.println(" no valido");
             msg_error_grid.setVisible(true);
             
         } else {
             try {
+                System.out.println("valido");
                 App.setRoot("Inicio");
+                FXMLLoader lo = App.getFMXL("Inicio");
+                Parent inicio = lo.load();
+                InicioSesionController controlador = lo.getController();
+                 App.bodycenter = lo.getController();
+                 App.setRoot(inicio);
+                
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
             System.out.println(info.getAccess_token());
-        }*/
+        }
         try {
                 App.setRoot("Inicio");
             } catch (IOException ex) {

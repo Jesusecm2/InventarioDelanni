@@ -125,6 +125,9 @@ public class FacturaController implements Initializable {
     private Label total_lb;
 
     @FXML
+    private Label rest_lbl;
+
+    @FXML
     private ComboBox<Proveedor> cat_box1;
 
     @FXML
@@ -180,7 +183,8 @@ public class FacturaController implements Initializable {
             TFacturaInicio tf = tv_factura.getSelectionModel().getSelectedItem();
             if (tf != null) {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
-                total_lb.setText("Total: ".concat(String.valueOf(tf.getMonto()).concat("$")));
+                total_lb.setText("Total: ".concat(String.format("%.2f", tf.getMonto()).concat("$")));
+                rest_lbl.setText("Restante:".concat(String.format("%.2f", tf.getMonto() - tf.getPagado()).concat("$")));
             }
             if (e.getClickCount() > 1 && e.getButton().PRIMARY == MouseButton.PRIMARY) {
                 Factura f = tv_factura.getSelectionModel().getSelectedItem().getFactura();
@@ -325,12 +329,18 @@ public class FacturaController implements Initializable {
     }
 
     private void loadPago() {
-        PagoFacturaController control = App.cargarVentanaModal("Cargar Pago", "fxml/PagoForm", false);
-        control.setFactura(tv_factura.getSelectionModel().getSelectedItem().getFactura());
+        PagoFacturaController control = new PagoFacturaController(tv_factura.getSelectionModel().getSelectedItem().getFactura());
+        App.cargarVentanaModal("fxml/PagoForm", control, true, "Pagar Factura");
+        try {
+            cargarDatos();
+        } catch (Exception ex) {
+            Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+            a.showAndWait();
+        }
     }
 
     private void loadForm() {
-        FacturaFormControllerV2 control = new FacturaFormControllerV2(null,false);
+        FacturaFormControllerV2 control = new FacturaFormControllerV2(null, false);
         App.bodycenter.cargarBody("fxml/FacturaFormV2", control);
     }
 
@@ -354,6 +364,20 @@ public class FacturaController implements Initializable {
         List<Factura> listado = null;
         FacturaBackend facturaService = new FacturaControllerImpl();
 
+        if (date_pick.getValue() != null) {
+            if (cat_box.getSelectionModel().getSelectedItem() != null) {
+                if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
+                    listado = facturaService.listadoVentas(cat_box2.getValue(), Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                } else {
+                    listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                }
+
+            }else{
+                 listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            }
+            llenarTable(listado);
+            return;
+        }
         if (cat_box.getSelectionModel().getSelectedIndex() == -1) {
             listado = facturaService.listadoFacturasNotNull();
             llenarTable(listado);
@@ -385,19 +409,6 @@ public class FacturaController implements Initializable {
                 }
             } else {
                 listado = facturaService.listadoVentas(cat_box2.getValue());
-            }
-            llenarTable(listado);
-            return;
-        }
-
-        if (date_pick.getValue() != null) {
-            if (cat_box.getSelectionModel().getSelectedItem() != null) {
-                if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
-                    listado = facturaService.listadoVentas(cat_box2.getValue(), Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                } else {
-                    listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                }
-
             }
             llenarTable(listado);
             return;

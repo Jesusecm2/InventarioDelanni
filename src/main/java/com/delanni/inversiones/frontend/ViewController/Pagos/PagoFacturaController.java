@@ -17,6 +17,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import java.io.File;
 import java.net.URL;
@@ -29,6 +30,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -56,6 +58,7 @@ public class PagoFacturaController implements Initializable {
     @FXML
     private Button save_btn11;
 
+    
     @FXML
     private Button agregar_pago;
 
@@ -108,6 +111,23 @@ public class PagoFacturaController implements Initializable {
     @FXML
     private CheckBox chk_fecha;
 
+    public PagoFacturaController(Factura factura) {
+        this.factura = factura;
+    }
+
+    public PagoFacturaController(Pago pagosave, Factura factura) {
+        this.pagosave = pagosave;
+        this.factura = factura;
+    }
+    
+    
+
+    public PagoFacturaController() {
+    }
+    
+    
+    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
@@ -117,7 +137,13 @@ public class PagoFacturaController implements Initializable {
             registroPago();
         });
         chk_parte.setSelected(true);
-
+        chk_fecha.setOnAction((e) -> {
+            if (chk_fecha.isSelected()) {
+                fecha_ejec.setDisable(false);
+            } else {
+                fecha_ejec.setDisable(true);
+            }
+        });
         chk_parte.setOnAction((e) -> {
 
             if (!chk_parte.isSelected()) {
@@ -140,14 +166,21 @@ public class PagoFacturaController implements Initializable {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
                 PagoBackend bl = new PagoImpl();
-                if (pagosave == null) {
+                if (pagosave == null && !chk_fecha.isSelected()) {
                     valor = bl.obtenerValorMonedaHoy(mon);
+                } else {
+                    valor = bl.obtenerValorMoneda(mon, Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 }
                 if (valor == null && pagosave == null) {
-                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
-                    control.setMoneda(mon);
-                    moneda_Combo.getSelectionModel().clearSelection();
+                    ValorMonedaFormController control = new ValorMonedaFormController(mon, fecha_ejec.getValue());
+                    App.cargarVentanaModal("fxml/ValorMonedaForm", control, true, "Registrar Tasa");
 
+                    if (control.getValorMoneda() != null) {
+                        valor = control.getValorMoneda();
+                        amnt_lbl.setText(String.format("%.2f", valor.getValor()));
+                    } else {
+                        moneda_Combo.getSelectionModel().clearSelection();
+                    }
                 } else {
 
                     amnt_lbl.setText(String.format("%.2f", valor.getValor()));
@@ -162,6 +195,13 @@ public class PagoFacturaController implements Initializable {
         save_btn11.setOnAction((e) -> {
             AgregarImagen();
         });
+        
+        if(this.pagosave!=null){
+            setPago();
+        }
+        if(this.factura!=null){
+            setFactura();
+        }
     }
 
     public Stage getWindow() {
@@ -193,6 +233,7 @@ public class PagoFacturaController implements Initializable {
         if (pagosave != null) {
             pago = pagosave;
         }
+
         pago.setTipo(combo_pagos.getValue());
         pago.setNarrativa(narra_pag.getText());
         pago.setCod_ejecucion(ref_pag.getText());
@@ -201,23 +242,19 @@ public class PagoFacturaController implements Initializable {
             pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }
         pago.setMoneda(moneda_Combo.getValue());
-        if (pago.getMoneda().getConverted().equals("1")) {
-            pago.setMonto(mto_pagado.getValue() / valor.getValor());
-            pago.setValor(valor);
-        } else {
-            pago.setMonto(mto_pagado.getValue());
-        }
-
         if (chk_parte.isSelected()) {
+            System.out.println("V CHKPARTE=" + chk_parte.isSelected());
             if (pago.getMoneda().getConverted().equals("1")) {
-                pago.setMonto(calcularTotal());
-                pago.setValor(valor);
-
+                pago.setMonto(mto_pagado.getValue() / valor.getValor());
+            } else {
+                pago.setMonto(montoRestante());
             }
-
-            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+            if (calcularTotal() < montoPagado() + pago.getMonto()) {
+                Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Este monto no es aceptado", "", null);
+                alert.showAndWait();
                 return;
             }
+            System.out.println("Proceso archivo");
             if (file != null) {
                 ImageConverter convertidor = new ImageConverter(file);
                 ComprobantePago comprobante = new ComprobantePago();
@@ -225,24 +262,27 @@ public class PagoFacturaController implements Initializable {
                 pago.setComprobante(comprobante);
                 file = null;
             }
-            if (pagosave != null) {
-                Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
+
+            PagoBackend back = new PagoImpl();
+            Pago pagado = back.guardarPagoFactura(factura, pago);
+            if (pagado != null) {
+                Alert save = Alerta.getAlert(Alert.AlertType.INFORMATION, "Guardado", "", null);
+                save.showAndWait();
+                Stage stg = (Stage) this.chk_fecha.getParent().getScene().getWindow();
                 stg.close();
             }
-            PagoBackend bcl = new PagoImpl();
-            bcl.guardarPagoFactura(factura, pago);
-            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
-            clearPagoForm();
         } else {
             if (pago.getMoneda().getConverted().equals("1")) {
-                pago.setMonto(calcularTotal());
-                pago.setValor(valor);
-
+                pago.setMonto(mto_pagado.getValue() * valor.getValor());
+            } else {
+                pago.setMonto(montoRestante());
             }
-
-            if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+            if (calcularTotal() < montoPagado() + pago.getMonto()) {
+                Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Este monto no es aceptado", "", null);
+                alert.showAndWait();
                 return;
             }
+            System.out.println("Proceso archivo");
             if (file != null) {
                 ImageConverter convertidor = new ImageConverter(file);
                 ComprobantePago comprobante = new ComprobantePago();
@@ -250,16 +290,24 @@ public class PagoFacturaController implements Initializable {
                 pago.setComprobante(comprobante);
                 file = null;
             }
-            if (pagosave != null) {
-                Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
+
+            PagoBackend back = new PagoImpl();
+            Pago pagado = back.guardarPagoFactura(factura, pago);
+            if (pagado != null) {
+                Alert save = Alerta.getAlert(Alert.AlertType.INFORMATION, "Guardado", "", null);
+                save.showAndWait();
+                Stage stg = (Stage) this.chk_fecha.getParent().getScene().getWindow();
                 stg.close();
             }
-            PagoBackend bcl = new PagoImpl();
-            bcl.guardarPagoFactura(factura, pago);
-            pago_lbl_restante.setText(String.format("¨P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
-            clearPagoForm();
         }
 
+        /* if (file != null) {
+                ImageConverter convertidor = new ImageConverter(file);
+                ComprobantePago comprobante = new ComprobantePago();
+                comprobante.setImagen(convertidor.getbase64img());
+                pago.setComprobante(comprobante);
+                file = null;
+            }*/
     }
 
     private void clearPagoForm() {
@@ -287,11 +335,15 @@ public class PagoFacturaController implements Initializable {
         return factura;
     }
 
-    public void setFactura(Factura factura) {
+    public void setFactura() {
 
-        this.factura = factura;
+      
         pago_lbl_restante.setText(String.format("P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
         calcularValorTotal();
+    }
+
+    private Double montoRestante() {
+        return (calcularTotal() - montoPagado());
     }
 
     private void calcularValorTotal() {
@@ -302,12 +354,11 @@ public class PagoFacturaController implements Initializable {
                 return;
             }
         }
-        Double temp =  (calcularTotal() - montoPagado());
+        Double temp = (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);
     }
 
-    public void setPago(Pago trn) {
-        this.pagosave = trn;
+    public void setPago() {
         // ver_comprobante.setVisible(true);
         // comprobante_btn.setVisible(false);
         chk_fecha.setDisable(true);
