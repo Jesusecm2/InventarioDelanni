@@ -122,7 +122,7 @@ public class InicioSesionController implements Controladores {
         //System.out.println(Conexion.ultima.getCuerpo().get("response"));
         if (info == null) {
             System.out.println(" no valido");
-            msg_error_grid.setVisible(true);
+           // msg_error_grid.setVisible(true);
             
         } else {
             try {
@@ -139,11 +139,11 @@ public class InicioSesionController implements Controladores {
             }
             System.out.println(info.getAccess_token());
         }
-        try {
+       /* try {
                 App.setRoot("Inicio");
             } catch (IOException ex) {
                 ex.printStackTrace();
-            }
+            }*/
 
     }
 

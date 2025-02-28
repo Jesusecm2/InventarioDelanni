@@ -8,6 +8,7 @@ import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.IuserController;
 import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
 import com.delanni.inversiones.frontend.Backend.Interfaces.IUser;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Size.AltoSize;
 import com.delanni.inversiones.frontend.ViewController.Size.NormalSize;
@@ -19,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -124,12 +126,14 @@ public class Recuperar2Controller implements Controladores {
                 
                 Usuario respuesta = control.validarRespuesta(busqueda);
                 if(respuesta!=null){
-                    System.out.println("Validado correctamente");
+                    Alert success = Alerta.getAlert(Alert.AlertType.INFORMATION, "Validado correctamente", "", null);
+                    success.showAndWait();
                     Recuperar3Controller rc = new Recuperar3Controller(respuesta);
                     Parent fx = App.loadFXML("fxml/RecuperarContrasena3", rc);
                     App.setRoot(fx);
                 }else{
-                    System.out.println("Error de validacion");
+                    Alert success = Alerta.getAlert(Alert.AlertType.ERROR, "Error de validación", "", null);
+                    success.showAndWait();
                 }
                 
             } catch (IOException ex) {
