@@ -97,6 +97,9 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TextField cod_tf;
+    
+    @FXML
+    private TextField rif_ci;
 
     @FXML
     private ComboBox<Producto> combo_box;
@@ -135,7 +138,7 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private DatePicker fecha_ejec;
-    
+
     @FXML
     private DatePicker f_factura;
 
@@ -194,7 +197,6 @@ public class FacturaFormControllerV2 implements Initializable {
 
     private Cliente cliente;
 
-    private Integer pagina;
 
     @FXML
     private Button nxt_btn;
@@ -202,11 +204,6 @@ public class FacturaFormControllerV2 implements Initializable {
     @FXML
     private Button bck_btn;
 
-    private Producto last_Select;
-
-    private List<TProducto> table_productos;
-
-    private List<File> list_file;
 
     private File file;
     @FXML
@@ -248,6 +245,18 @@ public class FacturaFormControllerV2 implements Initializable {
             iva_value.getValueFactory().setValue(iva_param.getValueNum());
         }
 
+        cod_tf.setOnAction((e) -> {
+            InventarioBackend bck = new InventarioControllerImpl();
+            List<Producto> busqueda = bck.obtenerProducto(cod_tf.getText().trim());
+            if (busqueda != null && !busqueda.isEmpty()) {
+                ingresarTable(null, busqueda.get(0), 1.0);
+                cod_tf.setText("");
+            } else {
+                cod_tf.setText("");
+                Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Producto no encontrado", null, null);
+                alerta.showAndWait();
+            }
+        });
         chk_parte.setSelected(true);
         chk_parte.setOnAction((e) -> {
             if (modificada == null) {
@@ -284,12 +293,11 @@ public class FacturaFormControllerV2 implements Initializable {
         agregar_pago.setOnAction((e) -> {
             registroPago();
         });
-        f_factura.setOnAction((e)->{
-            if(f_factura.getValue()!=null){
+        f_factura.setOnAction((e) -> {
+            if (f_factura.getValue() != null) {
                 fecha_ejec.setValue(f_factura.getValue());
             }
         });
-        
 
         fin_factura.setOnAction((e) -> {
             guardarFactura();
@@ -346,7 +354,7 @@ public class FacturaFormControllerV2 implements Initializable {
                 if (!chk_fecha.isSelected()) {
                     valor = bl.obtenerValorMonedaHoy(mon);
                 } else {
-                valor = bl.obtenerValorMoneda(mon, Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    valor = bl.obtenerValorMoneda(mon, Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 }
                 if (valor == null) {
 
@@ -525,8 +533,8 @@ public class FacturaFormControllerV2 implements Initializable {
                 pago.setEjecucion(Date.from(fecha_ejec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
             pago.setMoneda(moneda_Combo.getValue());
-            if (pago.getTipo()==null && pago.getMoneda()==null) {
-                
+            if (pago.getTipo() == null && pago.getMoneda() == null) {
+
                 return;
             }
             if (pago.getMoneda().getConverted().equals("1")) {
@@ -630,8 +638,8 @@ public class FacturaFormControllerV2 implements Initializable {
         } else {
             factura.setIdCliente(cliente);
         }
-        
-        if(f_factura.getValue()!=null){
+
+        if (f_factura.getValue() != null) {
             factura.setCreate_at(Date.from(f_factura.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }
         List<LineaFactura> listado = new ArrayList<>();
@@ -671,14 +679,22 @@ public class FacturaFormControllerV2 implements Initializable {
         List<Pago> guardarPago = list_pagos.getItems();
         if (facturaEsValida(guardar, guardarPago)) {
             FacturaBackend backend = new FacturaControllerImpl();
-            backend.guardarFactura(guardar, guardarPago);
-            System.out.println("Guardado");
-            Alert alerta = Alerta.getAlert(Alert.AlertType.INFORMATION, "Guardado con éxito", "Aceptado", null);
-            alerta.showAndWait();
-            if(this.modificada!=null){
-                Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
-                stg.close();
+            Factura saved = backend.guardarFactura(guardar, guardarPago);
+            if (saved != null) {
+                System.out.println("Guardado");
+                Alert alerta = Alerta.getAlert(Alert.AlertType.INFORMATION, "Guardado con éxito", "Aceptado", null);
+                alerta.showAndWait();
+                resetearFormulario();
+
+                if (this.modificada != null) {
+                    Stage stg = (Stage) agregar_pago.getParent().getScene().getWindow();
+                    stg.close();
+                }
+            } else {
+                Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Ha ocurrido un error", "error", null);
+                alerta.showAndWait();
             }
+
         }
 
     }
@@ -750,11 +766,28 @@ public class FacturaFormControllerV2 implements Initializable {
         }
 
     }
-    
-    private void resetearFormulario(){
-        this.cliente=null;
-        this.proveedor=null;
+
+    private void resetearFormulario() {
+        this.cliente = null;
+        this.proveedor = null;
         this.prov_lb.setText("");
+        this.cod_tf.setText("");
+        this.excento_value.getValueFactory().setValue(0.0);
+        ConfigSystem backSystem = new ConfigSystemImpl();
+        SystemParam iva_param = backSystem.obtenerParametro(100, "IVA");
+        System.out.println("flg1");
+        if (iva_param != null) {
+            iva_value.getValueFactory().setValue(iva_param.getValueNum());
+        }
+        System.out.println("flg2");
+        list_pagos.getItems().clear();
+        //listado_productos.clear();
+        table_view.getItems().clear();
+        System.out.println("flg3");
+        tab_window.getSelectionModel().getSelectedItem().setDisable(true);
+        tab_window.getSelectionModel().select(0);
+        tab_window.getSelectionModel().getSelectedItem().setDisable(false);
+        clearPagoForm();
     }
 
 }

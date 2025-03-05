@@ -12,6 +12,8 @@ import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
 import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
 import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
+import com.delanni.inversiones.frontend.ViewController.Inicio.InicioController;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Size.AltoSize;
 import com.delanni.inversiones.frontend.ViewController.Size.NormalSize;
@@ -28,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -52,10 +55,10 @@ public class InicioSesionController implements Controladores {
 
     @FXML
     private TextField lg_username_tf;
-    
+
     @FXML
     private GridPane msg_error_grid;
-    
+
     @FXML
     private Label error_msg_lbl;
 
@@ -89,7 +92,6 @@ public class InicioSesionController implements Controladores {
     @Override
     public void responsive800() {
 
-
     }
 
     @Override
@@ -110,7 +112,7 @@ public class InicioSesionController implements Controladores {
     }
 
     private void IniciarSesion() {
-       Conexion conn = new Conexion();
+        Conexion conn = new Conexion();
         AuthenticationImpl auth = new AuthenticationImpl();
         Usuario user = new Usuario();
         user.setUsername(lg_username_tf.getText());
@@ -118,32 +120,29 @@ public class InicioSesionController implements Controladores {
         //System.out.println(Conexion.ultima.getCabecera().get("resp_cod"));
 
         AuthenticationInfo info = auth.getToken(user);
-        
+
         //System.out.println(Conexion.ultima.getCuerpo().get("response"));
         if (info == null) {
             System.out.println(" no valido");
-           // msg_error_grid.setVisible(true);
-            
+            Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Usuario o contraseña incorrecto", "", null);
+            msg.showAndWait();
+            // msg_error_grid.setVisible(true);
+
         } else {
             try {
-                System.out.println("valido");
-                App.setRoot("Inicio");
-                FXMLLoader lo = App.getFMXL("Inicio");
-                Parent inicio = lo.load();
-                InicioSesionController controlador = lo.getController();
-                 App.bodycenter = lo.getController();
-                 App.setRoot(inicio);
-                
+                InicioController control = new InicioController();
+                Parent main = App.loadFXML("fxml/Inicio", control);
+                App.bodycenter = control;
+                App.setRoot(main);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            System.out.println(info.getAccess_token());
         }
-        try {
+        /*try {
                 App.setRoot("Inicio");
             } catch (IOException ex) {
                 ex.printStackTrace();
-            }
+            }*/
 
     }
 

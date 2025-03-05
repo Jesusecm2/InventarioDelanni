@@ -52,11 +52,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-                //AppIP = "http://192.168.0.123:8090";
+        //AppIP = "http://192.168.0.123:8090";
         AppIP = "http://localhost:8090";
-        
-        
-        Usuario user = new Usuario();
+
+        /* Usuario user = new Usuario();
         user.setUsername("app_user");
         user.setPassword("123456");
         user.setNombre("Usuario de Aplicacion");
@@ -65,8 +64,7 @@ public class App extends Application {
         AuthenticationInfo us = new AuthenticationImpl().getToken(user);
         if(us!=null){
             authinfo = us;
-        }
-
+        }*/
         App.stage = stage;
         NormalImage.precarga();
         PreloadFXML.loadParent();

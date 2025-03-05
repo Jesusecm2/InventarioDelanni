@@ -73,6 +73,10 @@ public class InicioController implements Controladores {
 
     @FXML
     private Button mant_btn;
+    
+    @FXML
+    private Button cerrar_sn;
+    
 
     @FXML
     private Button ingresos_btn;
@@ -88,6 +92,11 @@ public class InicioController implements Controladores {
     private Parent lastRoot;
 
     private Parent newRoot;
+
+    public InicioController() {
+    }
+    
+    
 
     public Parent getLastRoot() {
         return lastRoot;
@@ -161,6 +170,16 @@ public class InicioController implements Controladores {
             cerrarHiloCentral();
            loadHome();
         });
+        
+        
+        cerrar_sn.setOnAction((e)->{
+            try {
+                cerrarHiloCentral();
+                App.setRoot("InicioSesion");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
 
     }
 
@@ -200,6 +219,8 @@ public class InicioController implements Controladores {
     private void loadIngreso() {
         cargarBody("fxml/IngresosEgresosCuerpo", null);
     }
+    
+
 
     private void MantenimientoCuerpo() {
         //cargarBody("fxml/MantenimientoCuerpo", null);

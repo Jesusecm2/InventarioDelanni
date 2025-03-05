@@ -273,7 +273,7 @@ public class PagoFacturaController implements Initializable {
             }
         } else {
             if (pago.getMoneda().getConverted().equals("1")) {
-                pago.setMonto(mto_pagado.getValue() * valor.getValor());
+                pago.setMonto(mto_pagado.getValue() / valor.getValor());
             } else {
                 pago.setMonto(montoRestante());
             }
@@ -298,6 +298,9 @@ public class PagoFacturaController implements Initializable {
                 save.showAndWait();
                 Stage stg = (Stage) this.chk_fecha.getParent().getScene().getWindow();
                 stg.close();
+            }else{
+                Alert save = Alerta.getAlert(Alert.AlertType.ERROR, "No se ha guardado", "", null);
+                save.showAndWait();
             }
         }
 

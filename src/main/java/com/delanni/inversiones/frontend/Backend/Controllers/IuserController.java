@@ -88,7 +88,7 @@ public class IuserController implements IUser{
                     .uri(new URI(server.concat("/api/usuarios/usersecurity/guardar/seguridad")))
                     .header("Content-Type", "application/json")
                     .header("system", App.system)
-                    .header("Authorization", "Bearer ".concat(App.authinfo.getAccess_token()))
+                   // .header("Authorization", "Bearer ".concat(App.authinfo.getAccess_token()))
                     .header("provider", App.provider)
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(user)))
                     .build();
@@ -111,7 +111,7 @@ public class IuserController implements IUser{
                     .uri(new URI(server.concat("/api/usuarios/usersecurity/cambiar/contrasena")))
                     .header("Content-Type", "application/json")
                     .header("system", App.system)
-                    .header("Authorization", "Bearer ".concat(App.authinfo.getAccess_token()))
+                    //.header("Authorization", "Bearer ".concat(App.authinfo.getAccess_token()))
                     .header("provider", App.provider)
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(user)))
                     .build();

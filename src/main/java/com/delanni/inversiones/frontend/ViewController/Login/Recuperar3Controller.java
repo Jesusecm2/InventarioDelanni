@@ -178,8 +178,15 @@ public class Recuperar3Controller implements Controladores {
     private void cambioContrasena() {
         if (validar()) {
             IUser control = new IuserController();
+            cambio.setPassword(rc3_pg_pw.getText());
             int resultado = control.cambioContrasena(cambio);
-            System.out.println("resultado:" + resultado);
+            if(resultado==1){
+                Alert alerta = Alerta.getAlert(Alert.AlertType.INFORMATION, "Aceptado", "Se ha ejecutado correctamente", null);
+                alerta.showAndWait();
+            }else{
+                Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", "No se ha completado la solicitud", null);
+                alerta.showAndWait();
+            }
             rc3_cancel_btn.fire();
         }
     }

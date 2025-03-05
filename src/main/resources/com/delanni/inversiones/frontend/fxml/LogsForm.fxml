@@ -42,7 +42,7 @@
                   <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label fx:id="lg_titulo_lb" styleClass="h1" text="Mantenimiento Parametros" GridPane.columnSpan="2" />
+                        <Label fx:id="lg_titulo_lb" styleClass="h1" text="Logs Sistema" GridPane.columnSpan="2" />
                         <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Buscar" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                             <styleClass>
                                 <String fx:value="btn" />
