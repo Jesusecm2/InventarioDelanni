@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <a href=""><img src="https://github.com/Jesusecm2/InventarioDelanni/blob/master/src/main/resources/com/delanni/inversiones/frontend/images/LOGO%20NUEVO.png?raw=true" alt="Markdownify" width="200"></a>
+  <a href=""><img src="https://github.com/Jesusecm2/InventarioDelanni/blob/master/src/main/resources/com/delanni/inversiones/frontend/images/LOGO%20NUEVO.png?raw=true" alt="Markdownify" width="800" height="500"></a>
   <br>
   Inversiones Delanni 2005 C.A
   <br>
@@ -24,7 +24,7 @@
 </p>-->
 
 <p align="center">
-  <a href="#key-features">Características</a> •
+  <a href="#Características">Características</a> •
   <a href="#how-to-use">¿Como Utilizar?</a> •
   <a href="#download">Download</a><!-- •
   <a href="#credits">Credits</a> •
