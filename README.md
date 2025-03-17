@@ -7,7 +7,7 @@
   <br>
 </h1>
 
-<h4 align="center">Front de aplicación y proyecto Delanni 2005 C.A <a href="" target="_blank">Electron</a>.</h4>
+<h4 align="center">Front de aplicación y proyecto Delanni 2005 C.A <a href="https://www.linkedin.com/in/jesús-cedeño-b47b031b4/" target="_blank">Jesus Cedeño</a>.</h4>
 
 <p align="center">
   <a href="">
