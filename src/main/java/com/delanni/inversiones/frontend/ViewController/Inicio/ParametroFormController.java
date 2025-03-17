@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
@@ -59,6 +60,9 @@ public class ParametroFormController implements Initializable {
     @FXML
     private Spinner<Double> valor_spin;
 
+    @FXML
+    private Button save_btn;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tc_cod.setCellValueFactory(new PropertyValueFactory<>("tbcod"));
@@ -74,7 +78,17 @@ public class ParametroFormController implements Initializable {
                     && e.getButton() == MouseButton.PRIMARY
                     && table_main.getSelectionModel().getSelectedItem() != null) {
                 paramSelected = table_main.getSelectionModel().getSelectedItem();
+                if (paramSelected != null) {
+                    cod_spin.getValueFactory().setValue(paramSelected.getTbcod());
+                    tf_desc.setText(paramSelected.getDescripcion());
+                    valor_spin.getValueFactory().setValue(paramSelected.getValueNum());
+                    tf_ref.setText(paramSelected.getReference());
+                    tf_valor.setText(paramSelected.getValuetxt());
+                }
             }
+        });
+        save_btn.setOnAction((e) -> {
+            guardarParametro();
         });
 
         tf_ref.setOnKeyReleased((e) -> {
@@ -93,32 +107,43 @@ public class ParametroFormController implements Initializable {
     }
 
     private SystemParam crearParametro() {
-        SystemParam request = new SystemParam();
+        SystemParam request = null;
+        if (paramSelected != null) {
+            request = paramSelected;
+        } else {
+            request = new SystemParam();
+        }
         request.setValueNum(valor_spin.getValue());
         request.setValuetxt(tf_valor.getText());
         request.setTbcod(cod_spin.getValue());
         request.setDescripcion(tf_desc.getText());
         request.setReference(tf_ref.getText());
+        ConfigSystem system = new ConfigSystemImpl();
+        SystemParam param = system.guardarParametro(request);
+        if(param!=null){
+            Alert guardado = Alerta.getAlert(Alert.AlertType.INFORMATION, "Guardado Exitoso", "", null);
+            guardado.showAndWait();
+        }
         return request;
     }
 
     private void llenarTabla() {
         ConfigSystem sisback = new ConfigSystemImpl();
         List<SystemParam> listado = sisback.obtenerParametro(100);
-        if(listado!=null){
+        if (listado != null) {
             table_main.setItems(FXCollections.observableArrayList(listado));
         }
-        
+
     }
-    
-    private void guardarParametro(){
+
+    private void guardarParametro() {
         ConfigSystem sisback = new ConfigSystemImpl();
         SystemParam guardar = crearParametro();
-        if(paramSelected!=null){
+        if (paramSelected != null) {
             guardar.setId(paramSelected.getId());
         }
         SystemParam guardado = sisback.guardarParametro(guardar);
-        if(guardado!=null){
+        if (guardado != null) {
             Alert msg = Alerta.getAlert(Alert.AlertType.INFORMATION, "Completado", "Se ha guardado", null);
             msg.showAndWait();
         }

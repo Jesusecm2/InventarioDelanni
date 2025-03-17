@@ -3,13 +3,8 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -37,16 +32,13 @@
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints fillHeight="false" minHeight="5.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label fx:id="lg_titulo_lb" styleClass="h1" text="Formulario Moneda" GridPane.columnSpan="2" />
-                        <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Guardar" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                        <Label fx:id="lg_titulo_lb" styleClass="h1" text="Exportar Transacciones" GridPane.columnSpan="2" />
+                        <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Guardar" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                             <styleClass>
                                 <String fx:value="btn" />
                                 <String fx:value="btn-primary" />
@@ -55,55 +47,11 @@
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </GridPane.margin>
                         </Button>
-                        <Button id="lg_login_btn" fx:id="volver_btn" mnemonicParsing="false" styleClass="btn_icon" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+                        <Button id="lg_login_btn" fx:id="volver_btn" mnemonicParsing="false" styleClass="btn_icon" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                             <GridPane.margin>
                                 <Insets top="10.0" />
                             </GridPane.margin>
                         </Button>
-                  <GridPane GridPane.columnSpan="2" GridPane.rowIndex="2">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <CheckBox fx:id="fecha_chk" mnemonicParsing="false" text="Otra fecha" />
-                        <DatePicker fx:id="date_pick" disable="true" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
-                  <GridPane GridPane.rowIndex="4">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                              <Spinner fx:id="saldo_spin" editable="true" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
-                                  <valueFactory>
-                                      <SpinnerValueFactory.DoubleSpinnerValueFactory amountToStepBy="0.5" initialValue="0.0" max="999999.0" min="0.0" />
-                                  </valueFactory>
-                              </Spinner>
-                              <Label text="Valor Moneda:" />
-                     </children>
-                  </GridPane>
-                  <GridPane GridPane.columnSpan="2" GridPane.rowIndex="3">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                              <TextField fx:id="moneda_tf" editable="false" promptText="Moneda" styleClass="h3" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                        <Label text="Moneda:" />
-                     </children>
-                  </GridPane>
                   <GridPane GridPane.rowIndex="1">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -113,9 +61,25 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="Moneda" />
-                        <ComboBox fx:id="moneda_Combo" maxWidth="1.7976931348623157E308" promptText="Moneda" GridPane.rowIndex="1" />
+                        <Label text="Fecha Inicio:" />
+                        <DatePicker fx:id="start_date" GridPane.rowIndex="1" />
                      </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Fecha Fin:" />
+                        <DatePicker fx:id="end_date" GridPane.rowIndex="1" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </GridPane.margin>
                   </GridPane>
                     </children>
                     <GridPane.margin>

@@ -304,9 +304,10 @@ public class FacturaControllerImpl implements FacturaBackend {
 
     @Override
     public List<Factura> listadoFacturas(Date start) {
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
         try {
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar?date=").concat(start.toString())))
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar?date=").concat(formato.format(start))))
                     .GET()
                     .header("Content-Type", "application/json")
                     .header("system", system)

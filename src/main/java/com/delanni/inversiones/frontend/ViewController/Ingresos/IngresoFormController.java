@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Ingresos;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
@@ -13,10 +14,13 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
+import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
+import com.delanni.inversiones.frontend.ViewController.Inicio.CarruselController;
 import com.delanni.inversiones.frontend.ViewController.Inicio.CuerpoHomeController;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
@@ -25,7 +29,9 @@ import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormCont
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,6 +56,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -96,6 +103,9 @@ public class IngresoFormController implements Initializable {
     private File file;
 
     @FXML
+    private Label lbl_date;
+
+    @FXML
     private Spinner<Double> mto_pagado;
 
     @FXML
@@ -124,6 +134,20 @@ public class IngresoFormController implements Initializable {
     @FXML
     private CheckBox chk_fecha;
 
+    @FXML
+    private GridPane main_grid;
+
+    @FXML
+    private Button ver_comprobante;
+
+    private Transacciones trn;
+
+    @FXML
+    private ImageView imagen;
+    private Parent carrusel;
+
+    private CarruselController controlcarrusel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
@@ -145,21 +169,26 @@ public class IngresoFormController implements Initializable {
         if (egresos != null) {
             egreso_comb.setItems(FXCollections.observableArrayList(egresos));
         }
+        ver_comprobante.setOnAction((e) -> {
+            loadCarrusel();
+        });
 
         cargarTiposPago();
         moneda_Combo.setOnAction((e) -> {
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
+
                 PagoBackend bl = new PagoImpl();
-                valor = bl.obtenerValorMonedaHoy(mon);
-                if (valor == null) {
-                    ValorMonedaFormController control = App.cargarVentanaModal("Crear Valor", "fxml/ValorMonedaForm", false);
-                    control.setMoneda(mon);
+                if (trn == null) {
+                    valor = bl.obtenerValorMonedaHoy(mon);
+                }
+                if (this.valor == null && trn == null) {
+                    ValorMonedaFormController control = new ValorMonedaFormController(mon, fecha_ejec.getValue());
+                    App.cargarVentanaModal("fxml/ValorMonedaForm", control, true, "Registrar Tasa");
                     moneda_Combo.getSelectionModel().clearSelection();
 
                 } else {
-
-                    amnt_lbl.setText(String.format("%.2f", valor.getValor()));
+                    amnt_lbl.setText(String.format("%.2f", this.valor.getValor()));
                     lbl_monto.setText("Monto en".concat(mon.getCcy()));
                     calcularValorTotal();
                 }
@@ -270,4 +299,62 @@ public class IngresoFormController implements Initializable {
         mto_pagado.getValueFactory().setValue(temp);*/
     }
 
+    public Transacciones getPago() {
+        return trn;
+    }
+
+    public void setPago(Transacciones trn) {
+        this.trn = trn;
+        ver_comprobante.setVisible(true);
+        comprobante_btn.setVisible(false);
+        chk_fecha.setDisable(true);
+        egreso_comb.getSelectionModel().select(trn.getTpIngreso());
+        combo_pagos.getSelectionModel().select(trn.getPago().getTipo());
+        mto_pagado.getValueFactory().setValue(trn.getPago().getMonto());
+        narra_pag.setText(trn.getPago().getNarrativa());
+        narra_pag.setEditable(false);
+        ref_pag.setEditable(false);
+        egreso_comb.setDisable(true);
+        combo_pagos.setDisable(true);
+        this.valor = trn.getPago().getValor();
+
+        moneda_Combo.getSelectionModel().select(trn.getPago().getMoneda());
+        moneda_Combo.setDisable(true);
+        mto_pagado.setDisable(true);
+        ref_pag.setText(trn.getPago().getCod_ejecucion());
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+        lbl_date.setText(formato.format(trn.getFecha()));
+
+        if (trn.getPago().getComprobante() != null) {
+            ver_comprobante.setDisable(false);
+            ImagenController controller = new ImageControllerImpl();
+            String img = controller.imageString(trn.getPago().getComprobante().getImagen());
+            ImageConverter convertidor = new ImageConverter(img);
+            this.imagen = new ImageView(convertidor.getImage());
+            this.imagen.setFitHeight(600);
+            this.imagen.setFitWidth(400);
+            this.imagen.getStyleClass().add("img_pagin");
+        } else {
+            ver_comprobante.setDisable(true);
+        }
+        try {
+            this.carrusel = App.loadFXML("fxml/Carrusel");
+            this.controlcarrusel = App.loadctual.getController();
+            // this.pg_pagination = controlcarrusel.getPg_nation();
+            carrusel.setVisible(false);
+            main_grid.add(carrusel, 0, 0, GridPane.REMAINING, GridPane.REMAINING);
+        } catch (IOException ex) {
+
+        }
+
+    }
+
+    private void loadCarrusel() {
+        if (this.imagen != null) {
+            List<ImageView> listado = new ArrayList<>();
+            listado.add(imagen);
+            controlcarrusel.setImg_viewls(listado);
+            carrusel.setVisible(true);
+        }
+    }
 }

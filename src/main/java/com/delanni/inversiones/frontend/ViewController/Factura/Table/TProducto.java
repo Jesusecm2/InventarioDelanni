@@ -127,6 +127,7 @@ public class TProducto {
     }
 
     public void setPrecio_vent(Double precio_vent) {
+        this.Sprecio_vent = String.format("%.2f", precio_vent);
         this.precio_vent = precio_vent;
     }
 

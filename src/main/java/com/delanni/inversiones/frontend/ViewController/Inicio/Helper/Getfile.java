@@ -16,23 +16,24 @@ import javafx.scene.image.ImageView;
  * @author Jesusecm
  */
 public class Getfile {
-    private static String baseurl = "images/";
-    
+
+private static String baseurl = "images/";
+
     public static ImageView getIcono(String url) {
         FileInputStream strem = null;
-        try {
-            strem = new FileInputStream(App.class.getResource(baseurl+url).getFile());
-            ImageView view = new ImageView(new Image(strem));
-            return view;
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                strem.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        System.out.println();
+        //File sistem = App.class.getResource(baseurl+url).get
+        //strem = new FileInputStream(App.class.getResource(baseurl+url).getFile());
+
+        //strem = new FileInputStream(file);
+        //strem = new FileInputStream("/src/main/resources/com/arantxa/sistemas/icons/"+url);
+        //ImageView view = new ImageView(new Image(strem));
+        try{
+            ImageView view = new ImageView(new Image(App.class.getResourceAsStream(baseurl + url)));
+        return view;
+        }catch(Exception e){
+            return null;
         }
-        return null;
+        
     }
-}
+    }

@@ -21,11 +21,13 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -212,7 +214,7 @@ public class PagoImpl implements PagoBackend {
     public List<Transacciones> obtenerEgresos() {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/pago/obtener/Egresos")))
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/egresos/dia")))
                     .GET()
                     .header("system", system)
                     .header("provider", provider)
@@ -233,7 +235,7 @@ public class PagoImpl implements PagoBackend {
     public List<Transacciones> obtenerIngresos() {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/pago/obtener/Ingresos")))
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/ingresos/dia")))
                     .GET()
                     .header("system", system)
                     .header("provider", provider)
@@ -253,8 +255,9 @@ public class PagoImpl implements PagoBackend {
     @Override
     public ValorMoneda guardarValorMoneda(ValorMoneda param, Date date) {
         try {
+            
             HttpRequest requested = HttpRequest.newBuilder()
-                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(date.toString())))
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(new SimpleDateFormat("dd-MM-yyyy").format(date))))
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
                     .header("Content-Type", "application/json")
                     .header("system", system)
@@ -283,6 +286,153 @@ public class PagoImpl implements PagoBackend {
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Transacciones> obtenerPago(Factura factura) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/pagos/factura?id_factura=").concat(String.valueOf(factura.getId()))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Transacciones> obtenerTransacciones(Factura factura) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/pagos/factura?id_factura=").concat(String.valueOf(factura.getId()))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Transacciones> obtenerTransacciones(TpIngreso tp) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/pagos/tpPago?id=").concat(String.valueOf(tp.getId()))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Transacciones> obtenerTransacciones(Date inicio, Date fin, TpIngreso tp) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Transacciones> obtenerTransacciones(Date start, Date end) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Transacciones> obtenerVentas(Date start, Date end) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Transacciones> obtenerIngresosEgresos(Date start, Date end) {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/obtener/pagos/tpPago/date?dt1=").concat(format.format(start)
+                            .concat("&dt2=").concat(format.format(end)))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public ValorMoneda obtenerValorMoneda(Moneda mon, Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/fecha?date=").concat(format.format(date))))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(mon)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), ValorMoneda.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public InputStream reporteTransacciones(Date start, Date end) {
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/reporte/transacciones/reporte?start=").concat(fmt.format(start).concat("&end=").concat(fmt.format(end)))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<InputStream> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofInputStream());
+            return response.body();
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {
