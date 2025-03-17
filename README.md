@@ -32,7 +32,7 @@
   <a href="#license">License</a>-->
 </p>
 
-![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
+![screenshot](https://github.com/Jesusecm2/InventarioDelanni/blob/master/Inversiones%20Delanni%202005%20C.A%202025-03-16%2021-39-35%20(1).gif)
 
 ## Características
 
