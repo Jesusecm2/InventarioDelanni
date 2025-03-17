@@ -79,11 +79,11 @@ public class AuthenticationImpl implements IAuthentication {
             }
             
         } catch (URISyntaxException ex) {
-
+            ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
             /* peticion.addParameter("username", user.getUsername());
             peticion.addParameter("password", user.getPassword());
             peticion.addParameter("grant_type", "password");

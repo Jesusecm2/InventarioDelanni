@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Inicio;
 
 import com.delanni.inversiones.frontend.App;
+import static com.delanni.inversiones.frontend.App.cargarVentanaModal;
 import com.delanni.inversiones.frontend.Backend.Controllers.ConfigSystemImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.DiagramaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
@@ -19,6 +20,7 @@ import com.delanni.inversiones.frontend.ViewController.Ingresos.IngresoFormContr
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import com.delanni.inversiones.frontend.ViewController.Inicio.TCuerpoEntity.TIngreso;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
+import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
@@ -121,7 +124,7 @@ public class CuerpoHomeController implements Controladores {
     public void initialize(URL location, ResourceBundle resources) {
         //add_btn.setGraphic(Getfile.getIcono("normal/add64.png"));
         //rest_btn.setGraphic(Getfile.getIcono("normal/rest64.png"));
-
+        
         xAxis.setTickLabelGap(0.1);
 
         String[] tiposchart = new String[3];
@@ -334,7 +337,7 @@ public class CuerpoHomeController implements Controladores {
                     });
                     Thread.sleep(10000);
                 } while (true);
-                
+
             }
 
         };

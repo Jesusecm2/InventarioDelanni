@@ -18,6 +18,7 @@ import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Ingresos.Precarga.NormalImage;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Validadores;
 import com.delanni.inversiones.frontend.ViewController.Inicio.ProductoController;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import java.io.File;
@@ -32,6 +33,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -50,6 +53,8 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -157,14 +162,13 @@ public class ProductoFormController implements Controladores {
     @FXML
     private Spinner<Double> j_spim;
 
-    public ProductoFormController(Producto producto,boolean modal) {
+    public ProductoFormController(Producto producto, boolean modal) {
         this.producto = producto;
         this.closeform = modal;
     }
 
     public ProductoFormController() {
     }
-    
 
     public Producto getProducto() {
         return producto;
@@ -240,7 +244,9 @@ public class ProductoFormController implements Controladores {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //  throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
+        Validadores.tooltipAndValidadorShowing(nombre_area, 100);
+        Validadores.tooltipAndValidadorShowing(text_area, 150);
+        Validadores.tooltipAndValidadorShowingField(cod_tf, 30);
         j_spim.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 9999, 0));
         volver_btn.setVisible(false);
         cod_tf.setDisable(true);
@@ -376,8 +382,8 @@ public class ProductoFormController implements Controladores {
                 }
             }
         });
-        
-        if(producto!=null){
+
+        if (producto != null) {
             modificarProducto();
         }
 
@@ -415,7 +421,7 @@ public class ProductoFormController implements Controladores {
     }
 
     private void loadHomeForm() {
-        App.bodycenter.cargarBody("fxml/ProductoCuerpo",null);
+        App.bodycenter.cargarBody("fxml/ProductoCuerpo", null);
 
     }
 

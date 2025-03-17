@@ -365,7 +365,7 @@
                                        </GridPane.margin>
                                     </TextField>
                                     <ComboBox fx:id="combo_pagos" maxWidth="1.7976931348623157E308" promptText="Tipo de Pago" GridPane.rowIndex="2" />
-                                    <Button fx:id="fin_factura" mnemonicParsing="false" text="Finalizar Compra" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                                    <Button fx:id="fin_factura" mnemonicParsing="false" text="Finalizar Compra" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                     <GridPane GridPane.rowIndex="4">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -379,7 +379,7 @@
                                           <CheckBox fx:id="chk_parte" mnemonicParsing="false" text="Pago Total" />
                                        </children>
                                     </GridPane>
-                                    <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Pago" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                                    <Button fx:id="clc_pago" disable="true" mnemonicParsing="false" text="Cancelar Pago" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                     <Label fx:id="lb_img_nme" text="Imageicon.png" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                                     <DatePicker fx:id="fecha_ejec" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                     <CheckBox fx:id="chk_fecha" mnemonicParsing="false" text="Fecha ejecución" GridPane.columnIndex="2" GridPane.rowIndex="4" />
@@ -411,6 +411,7 @@
                                           <Label fx:id="pago_lbl_restante" text="Monto Total:" GridPane.columnSpan="2" />
                                        </children>
                                     </GridPane>
+                                    <Button fx:id="agregar_pago" disable="true" mnemonicParsing="false" text="Agregar Pago" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                  </children>
                                  <GridPane.margin>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

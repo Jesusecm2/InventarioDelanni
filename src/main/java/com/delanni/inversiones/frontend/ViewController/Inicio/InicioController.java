@@ -172,6 +172,8 @@ public class InicioController implements Controladores {
         });
         
         
+        
+        
         cerrar_sn.setOnAction((e)->{
             try {
                 cerrarHiloCentral();

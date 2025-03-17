@@ -42,7 +42,10 @@ public class AuthenticationInfo {
         this.correo  = authf.getMessage("correo");
         this.nombre = authf.getMessage("nombre");
         this.username  = authf.getMessage("username"); 
-        if(!"logout".equals(this.access_token))testDecodeJWT();
+        if(this.access_token!=null && this.access_token.isBlank()){
+         if(!"logout".equals(this.access_token))testDecodeJWT();
+    }
+       
         
     }
     

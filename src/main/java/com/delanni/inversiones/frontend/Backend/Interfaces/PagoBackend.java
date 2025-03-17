@@ -12,6 +12,7 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.TpIngreso;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -59,4 +60,6 @@ public interface PagoBackend {
     public List<Transacciones> obtenerVentas(Date start, Date end);
     
     public List<Transacciones> obtenerIngresosEgresos(Date start, Date end);
+    
+    public InputStream reporteTransacciones(Date start, Date end);
 }

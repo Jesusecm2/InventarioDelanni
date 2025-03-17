@@ -13,6 +13,7 @@ import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
 import com.delanni.inversiones.frontend.Backend.Entity.Usuario;
 import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Validadores;
 import com.delanni.inversiones.frontend.ViewController.Inicio.InicioController;
 import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Size.AltoSize;
@@ -76,7 +77,19 @@ public class InicioSesionController implements Controladores {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Validadores.tooltipAndValidadorShowingField(lg_username_tf, 100);
         map = new ObjectMapper();
+        String vl = App.propiedades.getKey("recordar");
+        
+        if(vl.equals("1")){
+            lg_recordar_ch.setSelected(true);
+            lg_username_tf.setText(App.propiedades.getKey("usuario"));
+            lg_password_tf.setText(App.propiedades.getKey("password"));
+        }else{
+            lg_recordar_ch.setSelected(false);
+            lg_username_tf.setText("");
+            lg_password_tf.setText("");
+        }
         lg_olvido_lb.setOnMouseClicked((event) -> {
             try {
                 App.setRoot("RecuperarContrasena1");
@@ -112,38 +125,59 @@ public class InicioSesionController implements Controladores {
     }
 
     private void IniciarSesion() {
-        Conexion conn = new Conexion();
-        AuthenticationImpl auth = new AuthenticationImpl();
-        Usuario user = new Usuario();
-        user.setUsername(lg_username_tf.getText());
-        user.setPassword(lg_password_tf.getText());
-        //System.out.println(Conexion.ultima.getCabecera().get("resp_cod"));
+        if (validar()) {
+            Conexion conn = new Conexion();
+            AuthenticationImpl auth = new AuthenticationImpl();
+            Usuario user = new Usuario();
+            user.setUsername(lg_username_tf.getText());
+            user.setPassword(lg_password_tf.getText());
+            //System.out.println(Conexion.ultima.getCabecera().get("resp_cod"));
 
-        AuthenticationInfo info = auth.getToken(user);
+            AuthenticationInfo info = auth.getToken(user);
 
-        //System.out.println(Conexion.ultima.getCuerpo().get("response"));
-        if (info == null) {
-            System.out.println(" no valido");
-            Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Usuario o contraseña incorrecto", "", null);
-            msg.showAndWait();
-            // msg_error_grid.setVisible(true);
+            //System.out.println(Conexion.ultima.getCuerpo().get("response"));
+            if (info == null) {
+                System.out.println(" no valido");
+                Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Usuario o contraseña incorrecto", "", null);
+                msg.showAndWait();
+                // msg_error_grid.setVisible(true);
 
-        } else {
-            try {
-                InicioController control = new InicioController();
-                Parent main = App.loadFXML("fxml/Inicio", control);
-                App.bodycenter = control;
-                App.setRoot(main);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } else {
+                try {
+                    if(lg_recordar_ch.isSelected()){
+                        App.propiedades.setKey("usuario", lg_username_tf.getText());
+                    App.propiedades.setKey("password", lg_password_tf.getText());
+                    }else{
+                        App.propiedades.setKey("usuario", "");
+                        App.propiedades.setKey("password", "");
+                    }
+                    
+                    InicioController control = new InicioController();
+                    Parent main = App.loadFXML("fxml/Inicio", control);
+                    App.bodycenter = control;
+                    App.setRoot(main);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
-        /*try {
+            /*try {
                 App.setRoot("Inicio");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }*/
+        }
+    }
 
+    private boolean validar() {
+        if (lg_username_tf.getText().isEmpty() || lg_password_tf.getText().isEmpty() ||
+                lg_username_tf.getText().length() < 5 || lg_username_tf.getText().length() > 30 ||
+                lg_password_tf.getText().length() < 5 || lg_password_tf.getText().length() > 30) {
+              Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Usuario no permitido", "", null);
+                msg.showAndWait();
+            return false;
+        }
+
+        return true;
     }
 
 }

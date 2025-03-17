@@ -104,7 +104,7 @@ public class Recuperar1Controller implements Controladores{
                     ex.printStackTrace();
                 } catch (Exception ex) {
                      ex.printStackTrace();
-                    Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Error", "No se pudo obtener el usuario", null);
+                    Alert msg = Alerta.getAlert(Alert.AlertType.ERROR, "Error", "Error de conexión", null);
                     msg.showAndWait();
             }
         });

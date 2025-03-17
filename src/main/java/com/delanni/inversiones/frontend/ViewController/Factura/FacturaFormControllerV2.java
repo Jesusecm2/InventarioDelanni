@@ -32,6 +32,7 @@ import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
+import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Validadores;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
 import com.delanni.inversiones.frontend.ViewController.Pagos.ValorMonedaFormController;
 import com.delanni.inversiones.frontend.ViewController.Producto.ProductoFormController;
@@ -204,6 +205,8 @@ public class FacturaFormControllerV2 implements Initializable {
     @FXML
     private Button bck_btn;
 
+    @FXML
+    private Button clc_pago;
 
     private File file;
     @FXML
@@ -230,6 +233,11 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Validadores.tooltipAndValidadorShowingField(ref_pag, 30);
+        Validadores.tooltipAndValidadorShowingField(narra_pag, 30);
+        
+        
+        
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         upd_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         iva_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
@@ -245,6 +253,9 @@ public class FacturaFormControllerV2 implements Initializable {
             iva_value.getValueFactory().setValue(iva_param.getValueNum());
         }
 
+        clc_pago.setOnAction((e)->{
+            clearPagoForm();
+        });
         cod_tf.setOnAction((e) -> {
             InventarioBackend bck = new InventarioControllerImpl();
             List<Producto> busqueda = bck.obtenerProducto(cod_tf.getText().trim());
@@ -520,7 +531,7 @@ public class FacturaFormControllerV2 implements Initializable {
     }
 
     private void registroPago() {
-        if (combo_pagos.getValue() != null) {
+        if (validarPago()) {
             if (listado_pagos == null) {
                 listado_pagos = new ArrayList<>();
             }
@@ -548,6 +559,7 @@ public class FacturaFormControllerV2 implements Initializable {
 
                 System.out.println("CalcularT:" + calcularTotal() + " / " + "MontoP" + montoPagado() + " / " + "Pago: " + pago.getMonto());
                 if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+                    System.out.println("Retorna 1");
                     return;
                 }
                 System.out.println("flg 2");
@@ -559,12 +571,14 @@ public class FacturaFormControllerV2 implements Initializable {
                     file = null;
                 }
                 System.out.println("flg 3");
+                System.out.println("Agregar pago parcial 1 ");
                 listado_pagos.add(pago);
                 list_pagos.setItems(FXCollections.observableArrayList(listado_pagos));
                 pago_lbl_restante.setText(String.format("%.2f / %.2f", montoPagado(), calcularTotal()));
                 clearPagoForm();
             } else {
                 if (calcularTotal() < (montoPagado() + pago.getMonto())) {
+                    System.out.println("Retorna 2");
                     return;
                 }
                 System.out.println("flg 2");
@@ -576,12 +590,36 @@ public class FacturaFormControllerV2 implements Initializable {
                     file = null;
                 }
                 System.out.println("flg 3");
+                System.out.println("Agregar pago parcial 2");
                 listado_pagos.add(pago);
                 list_pagos.setItems(FXCollections.observableArrayList(listado_pagos));
                 pago_lbl_restante.setText(String.format("%.2f / %.2f", montoPagado(), calcularTotal()));
                 clearPagoForm();
             }
         }
+    }
+    
+    private boolean validarPago(){
+        String msg = null;
+        if(combo_pagos.getValue()==null){
+            msg="Debe seleccionar un método de pago";
+        }
+        
+        if(moneda_Combo.getValue()==null){
+            msg="Debe seleccionar una moneda de pago";
+        }
+        
+        if(mto_pagado.getValue()<1){
+            msg = "El monto debe ser mayor a 0";
+        }
+        
+        if(msg!=null){
+            Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", msg, null);
+            alerta.showAndWait();
+            return false;
+        }
+        
+        return true;
     }
 
     private void clearPagoForm() {
@@ -674,7 +712,12 @@ public class FacturaFormControllerV2 implements Initializable {
     private void guardarFactura() {
         Factura guardar = crearFactura();
         if (listado_pagos == null && chk_parte.isSelected() && combo_pagos.getValue() != null) {
+            System.out.println("registros de pago");
             registroPago();
+        }
+        if(!chk_parte.isSelected() && combo_pagos.getValue()!=null){
+            Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Error", "Debe finalizar el pago parcial", null);
+            alert.showAndWait();
         }
         List<Pago> guardarPago = list_pagos.getItems();
         if (facturaEsValida(guardar, guardarPago)) {

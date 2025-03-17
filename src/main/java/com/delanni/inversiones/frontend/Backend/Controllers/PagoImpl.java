@@ -21,6 +21,7 @@ import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -409,6 +410,29 @@ public class PagoImpl implements PagoBackend {
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), ValorMoneda.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public InputStream reporteTransacciones(Date start, Date end) {
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/reporte/transacciones/reporte?start=").concat(fmt.format(start).concat("&end=").concat(fmt.format(end)))))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<InputStream> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofInputStream());
+            return response.body();
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {
