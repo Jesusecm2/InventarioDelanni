@@ -58,9 +58,9 @@ Proyecto realizado en NetBeansProject Versión 16
 
 Este software utiliza los siguientes paquetes de código abierto:
 
-- [JavaFX](https://openjfx.io)
-- [Scene Builder](https://gluonhq.com/products/scene-builder/)
-- [Netbeans](https://netbeans.apache.org/front/main/index.html)
+- [Spring](Spring.io)
+- [MySQL](https://dev.mysql.com)
+- [Jasper Report](https://www.jaspersoft.com)
 - [JacksonCore](https://github.com/FasterXML/jackson-core)
 
 ## Related
