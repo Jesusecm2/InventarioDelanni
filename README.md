@@ -62,15 +62,4 @@ Este software utiliza los siguientes paquetes de código abierto:
 - [Scene Builder](https://gluonhq.com/products/scene-builder/)
 - [Netbeans](https://netbeans.apache.org/front/main/index.html)
 - [JacksonCore](https://github.com/FasterXML/jackson-core)
-## Related
-
-[Try Web version of Markdownify](https://notepad.js.org/markdown-editor/)
-
-
-
----
-
-> [amitmerchant.com](https://www.amitmerchant.com) &nbsp;&middot;&nbsp;
-> GitHub [@amitmerchant1990](https://github.com/amitmerchant1990) &nbsp;&middot;&nbsp;
-> Twitter [@amit_merchant](https://twitter.com/amit_merchant)
 
