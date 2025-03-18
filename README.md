@@ -58,11 +58,10 @@ Proyecto realizado en NetBeansProject Versión 16
 
 Este software utiliza los siguientes paquetes de código abierto:
 
-- [Spring](Spring.io)
-- [MySQL](https://dev.mysql.com)
-- [Jasper Report](https://www.jaspersoft.com)
+- [JavaFX](https://openjfx.io)
+- [Scene Builder](https://gluonhq.com/products/scene-builder/)
+- [Netbeans](https://netbeans.apache.org/front/main/index.html)
 - [JacksonCore](https://github.com/FasterXML/jackson-core)
-
 ## Related
 
 [Try Web version of Markdownify](https://notepad.js.org/markdown-editor/)
