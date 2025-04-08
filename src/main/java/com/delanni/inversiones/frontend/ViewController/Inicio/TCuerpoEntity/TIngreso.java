@@ -13,32 +13,36 @@ import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
  * @author Jesusecm
  */
 public class TIngreso {
-    
-    
+
     private TpIngreso ingreso;
-    
+
     private Transacciones trans;
-     
+
     private String transref;
-    
+
     private Double monto;
-    
+
     private String fmonto;
 
     public TIngreso(Transacciones trans) {
         this.trans = trans;
         this.ingreso = trans.getTpIngreso();
-        if(trans.getPago()!=null){
+        if (trans.getPago() != null) {
             this.transref = trans.getPago().getNarrativa();
-            this.monto = trans.getPago().getMonto();
-            this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" $");
-        }else{
+
+            if (this.trans.getPago().getValor() != null && this.trans.getPago().getMoneda().getConverted().equals("1")) {
+                this.monto = trans.getPago().getMonto() * trans.getPago().getValor().getValor();
+                this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" ".concat(trans.getPago().getMoneda().getCcy()));
+            } else {
+                this.monto = trans.getPago().getMonto();
+                this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" ".concat(trans.getPago().getMoneda().getCcy()));
+            }
+
+        } else {
             this.transref = trans.getRef();
         }
-        
+
     }
-    
-    
 
     public TpIngreso getIngreso() {
         return ingreso;
@@ -80,8 +84,4 @@ public class TIngreso {
         this.fmonto = fmonto;
     }
 
-
-    
-    
-    
 }

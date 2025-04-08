@@ -189,7 +189,7 @@ public class IngresoFormController implements Initializable {
 
                 } else {
                     amnt_lbl.setText(String.format("%.2f", this.valor.getValor()));
-                    lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                    lbl_monto.setText("Monto en ".concat(mon.getCcy()));
                     calcularValorTotal();
                 }
             } else if (mon != null) {

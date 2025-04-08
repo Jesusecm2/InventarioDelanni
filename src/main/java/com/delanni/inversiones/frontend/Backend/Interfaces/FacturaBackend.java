@@ -28,6 +28,8 @@ public interface FacturaBackend {
 	public List<Proveedor> listadoProveedor();
 	
 	public List<Factura> listadoFacturas();
+        
+        public List<Factura> listadoFacturasProv(String estatus);
 
 	
 	public List<Factura> listadoFacturas(Proveedor prov);
@@ -41,6 +43,8 @@ public interface FacturaBackend {
 	public List<Factura> listadoFacturasNotNull();
 	
 	public List<Factura> listadoVentas();
+        
+        public List<Factura> listadoVentas(String sts);
 	
 	public List<Factura> listadoVentas(Cliente cl);
 	

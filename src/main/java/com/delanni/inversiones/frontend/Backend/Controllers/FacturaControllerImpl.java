@@ -8,18 +8,14 @@ import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Peticion;
 import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
-import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
 import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Cuenta;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
-import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -60,15 +56,21 @@ public class FacturaControllerImpl implements FacturaBackend {
     @Override
     public Proveedor guardarProveedor(Proveedor save) {
         try {
-            pet.addBody("request", mapeo.writeValueAsString(save));
-            trans.HttpPostObject("/api/inventario/inventario/factura/proveedor/guardar", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), Proveedor.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/proveedor/guardar")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(save)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Proveedor.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
 
@@ -94,17 +96,20 @@ public class FacturaControllerImpl implements FacturaBackend {
     @Override
     public List<Proveedor> listadoProveedor() {
         try {
-            //pet.addBody("request", mapeo.writeValueAsString(categoria));
-            trans.HttpGetObject("/api/inventario/inventario/factura/proveedor/listado", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/proveedor/listado")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Proveedor[].class)));
+        } catch (URISyntaxException ex) {
 
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Proveedor[].class)));
-                //return cat;
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -116,52 +121,65 @@ public class FacturaControllerImpl implements FacturaBackend {
         try {
             valores.put("factura", mapeo.writeValueAsString(factura));
             valores.put("pagos", mapeo.writeValueAsString(pago));
-            pet.addBody("request", mapeo.writeValueAsString(valores));
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/guardar")))
+                    .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(valores)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Factura.class);
+        } catch (URISyntaxException ex) {
 
-            trans.HttpPostObject("/api/inventario/inventario/factura/guardar", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return mapeo.readValue(pet.getCuerpo().get("response"), Factura.class);
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
 
     @Override
     public List<Factura> listadoFacturas(Proveedor id) {
+
         try {
-            //pet.addBody("request", mapeo.writeValueAsString(categoria));
-            pet.addParameter("id", String.valueOf(id.getId()));
-            trans.HttpGetObject("/api/inventario/inventario/factura/proveedor/buscar", pet);
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/proveedor/buscar").concat("?id=".concat(String.valueOf(id.getId())))))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
 
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
+        } catch (IOException ex) {
 
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Factura[].class)));
-                //return cat;
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
 
     @Override
     public List<Factura> listadoFacturas() {
-        try {
-            trans.HttpGetObject("/api/inventario/inventario/factura/listado", pet);
 
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                return (Arrays.asList(mapeo.readValue(pet.getCuerpo().get("response"), Factura[].class)));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/listado")))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
     }
@@ -329,7 +347,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     @Override
     public List<Factura> listadoVentas(Date date) {
         SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-         try {
+        try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/cliente?date=").concat(formato.format(date))))
                     .GET()
@@ -344,7 +362,7 @@ public class FacturaControllerImpl implements FacturaBackend {
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            ex.printStackTrace();
         }
         return null;
     }
@@ -352,7 +370,7 @@ public class FacturaControllerImpl implements FacturaBackend {
     @Override
     public List<Factura> listadoVentas(Cliente cl, Date start) {
         SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-         try {
+        try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/cliente?date=").concat(formato.format(start))
                             .concat("&id=").concat(String.valueOf(cl.getId()))))
@@ -385,6 +403,51 @@ public class FacturaControllerImpl implements FacturaBackend {
                     .build();
             HttpResponse<InputStream> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofInputStream());
             return response.body();
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> listadoFacturasProv(String estatus) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatusProveedor?status=").concat(estatus)))
+
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<Factura> listadoVentas(String sts) {
+      try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?sts=").concat(sts)))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (Arrays.asList(mapeo.readValue(response.body(), Factura[].class)));
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {

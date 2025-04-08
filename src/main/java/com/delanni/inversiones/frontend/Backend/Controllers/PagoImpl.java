@@ -69,11 +69,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), TipodePago[].class)));
         } catch (URISyntaxException ex) {
-
+            ex.printStackTrace();
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+            ex.printStackTrace();
         }
         return null;
     }
@@ -90,11 +90,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Moneda[].class)));
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -112,11 +112,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), ValorMoneda.class);
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -134,11 +134,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), ValorMoneda.class);
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -159,10 +159,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Pago.class);
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -179,11 +180,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), TpIngreso[].class)));
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -204,8 +205,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Pago.class);
         } catch (URISyntaxException ex) {
+            ex.printStackTrace();
         } catch (IOException ex) {
+            ex.printStackTrace();
         } catch (InterruptedException ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -222,11 +226,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -243,11 +247,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return (Arrays.asList(mapeo.readValue(response.body(), Transacciones[].class)));
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }
@@ -255,7 +259,7 @@ public class PagoImpl implements PagoBackend {
     @Override
     public ValorMoneda guardarValorMoneda(ValorMoneda param, Date date) {
         try {
-            
+
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/pago/valorMoneda/guardar?date=").concat(new SimpleDateFormat("dd-MM-yyyy").format(date))))
                     .POST(HttpRequest.BodyPublishers.ofString(mapeo.writeValueAsString(param)))
@@ -266,11 +270,11 @@ public class PagoImpl implements PagoBackend {
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), ValorMoneda.class);
         } catch (URISyntaxException ex) {
-
+ex.printStackTrace();
         } catch (IOException ex) {
-
+ex.printStackTrace();
         } catch (InterruptedException ex) {
-
+ex.printStackTrace();
         }
         return null;
     }

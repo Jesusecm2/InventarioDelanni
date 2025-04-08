@@ -7,26 +7,16 @@ package com.delanni.inversiones.frontend.ViewController.Inicio;
 import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Controllers.FacturaControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.InventarioControllerImpl;
-import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Cliente;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
-import com.delanni.inversiones.frontend.Backend.Entity.LineaFactura;
-import com.delanni.inversiones.frontend.Backend.Entity.Producto;
 import com.delanni.inversiones.frontend.Backend.Entity.Proveedor;
-import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
 import com.delanni.inversiones.frontend.Backend.Interfaces.FacturaBackend;
 import com.delanni.inversiones.frontend.Backend.Interfaces.InventarioBackend;
-import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
-import com.delanni.inversiones.frontend.Backend.Interfaces.Transaccion;
-import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormController;
 import com.delanni.inversiones.frontend.ViewController.Factura.FacturaFormControllerV2;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TFacturaInicio;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TLineaFactura;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
-import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
-import com.delanni.inversiones.frontend.ViewController.Interfaces.Controladores;
 import com.delanni.inversiones.frontend.ViewController.Pagos.PagoFacturaController;
-import com.delanni.inversiones.frontend.ViewController.Producto.CategoriaFormController;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,34 +28,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Callback;
-import javafx.util.Duration;
 
 /**
  *
@@ -138,6 +116,8 @@ public class FacturaController implements Initializable {
 
     @FXML
     private ComboBox<String> sts_box;
+    
+    private boolean limpiar;
 
     public Parent getLastRoot() {
         return lastRoot;
@@ -167,7 +147,7 @@ public class FacturaController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         String[] find_box = new String[]{"Proveedor", "Cliente"};
-
+        limpiar=false;
         String[] sts_item = new String[]{"Activo", "Cancelado"};
         cat_box.setItems(FXCollections.observableArrayList(find_box));
         sts_box.setItems(FXCollections.observableArrayList(sts_item));
@@ -256,16 +236,24 @@ public class FacturaController implements Initializable {
             }
         });*/
         clear_btn.setOnAction((e) -> {
+            limpiar=true;
             cat_box.getSelectionModel().clearSelection();
             cat_box1.getSelectionModel().clearSelection();
             cat_box2.getSelectionModel().clearSelection();
             sts_box.getSelectionModel().clearSelection();
             date_pick.setValue(null);
+            limpiar=false;
+            try{
+                buscarFacturas();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
         });
 
         pagar_btn.setOnMouseClicked((e) -> {
             loadPago();
         });
+
         cat_box1.setOnAction((e) -> {
             try {
 
@@ -299,6 +287,15 @@ public class FacturaController implements Initializable {
         });
 
         date_pick.setOnAction((e) -> {
+            if(date_pick.getValue()!=null){
+                cat_box.setDisable(true);
+                cat_box1.setDisable(true);
+                cat_box2.setDisable(true);
+            }else{
+                cat_box.setDisable(false);
+                cat_box1.setDisable(false);
+                cat_box2.setDisable(false);
+            }
             try {
                 buscarFacturas();
             } catch (Exception ex) {
@@ -309,6 +306,7 @@ public class FacturaController implements Initializable {
         });
 
         cat_box.setOnAction((e) -> {
+            if(!limpiar){
             String item = cat_box.getSelectionModel().getSelectedItem();
             if (item.equals("Cliente")) {
                 cat_box2.setVisible(true);
@@ -317,15 +315,27 @@ public class FacturaController implements Initializable {
             } else {
                 cat_box2.setVisible(false);
                 cat_box1.setVisible(true);
+            }    
+            }
+            
+            try {
+
+                buscarFacturas();
+
+            } catch (Exception ex) {
+                Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
+                a.showAndWait();
+                ex.printStackTrace();
             }
         });
         try {
             cargarDatos();
-
+            buscarFacturas();
         } catch (Exception ex) {
             Alert a = Alerta.getAlert(Alert.AlertType.ERROR, "Error de conexión", ex.getMessage(), null);
             a.showAndWait();
         }
+
     }
 
     private void loadPago() {
@@ -360,65 +370,93 @@ public class FacturaController implements Initializable {
     }
 
     private void buscarFacturas() throws Exception {
-
+        if(!limpiar){
+            
+        
         List<Factura> listado = null;
         FacturaBackend facturaService = new FacturaControllerImpl();
-
+        String ch = null;
+        if (sts_box.getValue() != null) {
+            ch = (sts_box.getValue().equals("Activo") ? "A" : "C");
+        }
         if (date_pick.getValue() != null) {
+            Date dt1 = Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
             if (cat_box.getSelectionModel().getSelectedItem() != null) {
                 if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
-                    listado = facturaService.listadoVentas(cat_box2.getValue(), Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    listado = facturaService.listadoVentas(dt1);
                 } else {
-                    listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    listado = facturaService.listadoFacturas(dt1);
                 }
+            } else {
+                listado = facturaService.listadoFacturas(dt1);
+            }
+            llenarTable(listado);
+            return;
+        }
 
+        if (cat_box.getSelectionModel().getSelectedItem() != null) {
+            if (cat_box1.getSelectionModel().getSelectedItem() != null && cat_box1.isVisible()) {
+                if (cat_box1.getValue() != null) {
+                    if (sts_box.getValue() != null) {
+                        listado = facturaService.listadoFacturas(cat_box1.getValue(), ch);
+                    } else {
+                        listado = facturaService.listadoFacturas(cat_box1.getValue());
+                    }
+                } else {
+                    if (sts_box.getValue() != null) {
+                        listado = facturaService.listadoFacturas(ch);
+                    } else {
+                        listado = facturaService.listadoFacturas();
+                    }
+                }
+            }
+
+            if (cat_box2.getSelectionModel().getSelectedItem() != null && cat_box2.isVisible()) {
+                if (cat_box2.getValue() != null) {
+                    if (sts_box.getValue() == null) {
+                        listado = facturaService.listadoVentas(cat_box2.getValue());
+                    } else {
+
+                        listado = facturaService.listadoVentas(cat_box2.getValue(), ch);
+                    }
+                } else {
+                    if (sts_box.getValue() != null) {
+
+                        listado = facturaService.listadoVentas(ch);
+                    } else {
+                        listado = facturaService.listadoVentas();
+                    }
+                }
+            }
+
+        }
+        if (cat_box.getSelectionModel().getSelectedItem() == null && date_pick.getValue() == null && sts_box.getValue() == null && listado == null) {
+            listado = facturaService.listadoFacturas();
+        }
+        if(cat_box.getSelectionModel().getSelectedItem()!=null && listado == null){
+            if(cat_box1.isVisible()){
+                listado = facturaService.listadoFacturasNotNull();
             }else{
-                 listado = facturaService.listadoFacturas(Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                listado = facturaService.listadoVentas();
             }
-            llenarTable(listado);
-            return;
         }
-        if (cat_box.getSelectionModel().getSelectedIndex() == -1) {
-            listado = facturaService.listadoFacturasNotNull();
-            llenarTable(listado);
-            return;
-        }
-
-        if (cat_box1.isVisible() && cat_box1.getSelectionModel().getSelectedItem() != null) {
-            String status = sts_box.getSelectionModel().getSelectedItem();
-            if (status != null) {
-                if (status.equals("Activo")) {
-                    listado = facturaService.listadoFacturas(cat_box1.getValue(), "A");
-                } else {
-                    listado = facturaService.listadoFacturas(cat_box1.getValue(), "C");
-                }
-            } else {
-                listado = facturaService.listadoFacturas(cat_box1.getValue());
-            }
-            llenarTable(listado);
-            return;
-        }
-
-        if (cat_box2.isVisible() && cat_box2.getSelectionModel().getSelectedItem() != null && date_pick.getValue() == null) {
-            String status = sts_box.getSelectionModel().getSelectedItem();
-            if (status != null) {
-                if (status.equals("Activo")) {
-                    listado = facturaService.listadoVentas(cat_box2.getValue(), "A");
-                } else {
-                    listado = facturaService.listadoVentas(cat_box2.getValue(), "C");
-                }
-            } else {
-                listado = facturaService.listadoVentas(cat_box2.getValue());
-            }
-            llenarTable(listado);
-            return;
+        llenarTable(listado);
+        return;
         }
 
     }
 
     private void llenarTable(List<Factura> facturas) throws Exception {
+        
         List<TFacturaInicio> inicio = getTFacturas(facturas);
-        tv_factura.setItems(FXCollections.observableArrayList(inicio));
+        if(facturas != null && !facturas.isEmpty()){
+            tv_factura.getItems().setAll(inicio);
+            
+        }else{
+            tv_factura.getItems().clear();
+        }
+        tv_detalle.getItems().clear();
         tv_factura.refresh();
     }
 

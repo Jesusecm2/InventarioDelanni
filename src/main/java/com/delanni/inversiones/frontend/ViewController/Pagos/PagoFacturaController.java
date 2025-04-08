@@ -163,6 +163,7 @@ public class PagoFacturaController implements Initializable {
         }
         cargarTiposPago();
         moneda_Combo.setOnAction((e) -> {
+            this.valor = null;
             Moneda mon = moneda_Combo.getValue();
             if (mon != null && mon.getConverted().equals("1")) {
                 PagoBackend bl = new PagoImpl();
@@ -190,6 +191,7 @@ public class PagoFacturaController implements Initializable {
             } else if (mon != null) {
                 amnt_lbl.setText("");
                 lbl_monto.setText("Monto en ".concat(mon.getCcy()));
+                calcularValorTotal();
             }
         });
         save_btn11.setOnAction((e) -> {
@@ -275,7 +277,7 @@ public class PagoFacturaController implements Initializable {
             if (pago.getMoneda().getConverted().equals("1")) {
                 pago.setMonto(mto_pagado.getValue() / valor.getValor());
             } else {
-                pago.setMonto(montoRestante());
+                pago.setMonto(mto_pagado.getValue());
             }
             if (calcularTotal() < montoPagado() + pago.getMonto()) {
                 Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Este monto no es aceptado", "", null);
@@ -351,11 +353,13 @@ public class PagoFacturaController implements Initializable {
 
     private void calcularValorTotal() {
         if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
-            if (valor.getMoneda().getConverted().equals("1")) {
+            if (valor!=null && valor.getMoneda().getConverted().equals("1")) {
                 Double temp = valor.getValor() * (calcularTotal() - montoPagado());
                 mto_pagado.getValueFactory().setValue(temp);
                 return;
-            }
+            }    
+            
+            
         }
         Double temp = (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);

@@ -24,7 +24,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  *
@@ -70,6 +72,9 @@ public class ValorMonedaFormController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Tooltip tp = new Tooltip("Marcar para seleccionar un día diferente");
+        tp.setShowDelay(Duration.millis(10));
+        fecha_chk.setTooltip(tp);
         fecha_chk.setOnAction((e) -> {
             if (fecha_chk.isSelected()) {
                 date_pick.setDisable(false);

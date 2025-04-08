@@ -39,6 +39,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -96,6 +97,16 @@ public class InicioSesionController implements Controladores {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        });
+        lg_username_tf.setOnKeyPressed((e)->{
+            if(e.getCode() == (KeyCode.ENTER)){
+               IniciarSesion();
+           }
+        });
+        lg_password_tf.setOnKeyPressed((e)->{
+           if(e.getCode() == (KeyCode.ENTER)){
+               IniciarSesion();
+           }
         });
         lg_login_btn.setOnMouseClicked((e) -> {
             IniciarSesion();
