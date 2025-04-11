@@ -56,6 +56,10 @@ public class PagoFacturaController implements Initializable {
     @FXML
     private Label pago_lbl_restante;
     @FXML
+    private Label pago_lbl_pagado;
+    @FXML
+    private Label pago_lbl_total;
+    @FXML
     private Button save_btn11;
 
     
@@ -343,7 +347,9 @@ public class PagoFacturaController implements Initializable {
     public void setFactura() {
 
       
-        pago_lbl_restante.setText(String.format("P: %.2f / T: %.2f", montoPagado(), calcularTotal()));
+        pago_lbl_restante.setText(String.format("Pagado: %.2f$",montoRestante()));
+        pago_lbl_restante.setText(String.format("Restante: %,2f$", montoPagado()));
+        pago_lbl_total.setText(String.format("Total: ", factura.getSaldo()));
         calcularValorTotal();
     }
 

@@ -103,16 +103,12 @@ public class App extends Application {
                 if (e.getCode() == KeyCode.F2) {
                     ExportarTransacciones control = new ExportarTransacciones();
                     cargarVentanaModal("fxml/ReporteTrans", control, true, "ExportarTransaccion");
-// cargarVentanaModal("Transacciones", "fxml/ReporteTrans", true);
                 }
 
                 if (e.getCode() == KeyCode.F1) {
                     cargarVentanaModal("fxml/LogsForm", new LogExportController(), true, "Logs del sistema");
                 }
-
                 if (e.getCode() == KeyCode.F11) {
-
-                    //cargarVentanaModal("Parametros", "fxml/ParametroForm", true);
                     cargarVentanaModal("fxml/ValorMonedaForm", new ValorMonedaFormController(), true, "Mantenimiento");
                 }
             }

@@ -165,6 +165,11 @@ public class FacturaController implements Initializable {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
                 total_lb.setText("Total: ".concat(String.format("%.2f", tf.getMonto()).concat("$")));
                 rest_lbl.setText("Restante:".concat(String.format("%.2f", tf.getMonto() - tf.getPagado()).concat("$")));
+                if(tf.getFactura().getStatus().equals("C")){
+                    pagar_btn.setDisable(true);
+                }else{
+                    pagar_btn.setDisable(false);
+                }
             }
             if (e.getClickCount() > 1 && e.getButton().PRIMARY == MouseButton.PRIMARY) {
                 Factura f = tv_factura.getSelectionModel().getSelectedItem().getFactura();
@@ -251,7 +256,10 @@ public class FacturaController implements Initializable {
         });
 
         pagar_btn.setOnMouseClicked((e) -> {
+            if(tv_factura.getSelectionModel().getSelectedItem().getFactura()!=null)
             loadPago();
+            else;
+            Alerta.getAlert(Alert.AlertType.ERROR, "No se ha seleccionado una factura válida", "", img_src).showAndWait();
         });
 
         cat_box1.setOnAction((e) -> {
