@@ -4,6 +4,7 @@
  */
 package com.delanni.inversiones.frontend.Backend.Controllers;
 
+import com.delanni.inversiones.frontend.App;
 import com.delanni.inversiones.frontend.Backend.Conection.Conexion;
 import com.delanni.inversiones.frontend.Backend.Conection.Peticion;
 import com.delanni.inversiones.frontend.Backend.Conection.Transaccional;
@@ -11,6 +12,12 @@ import com.delanni.inversiones.frontend.Backend.Entity.Categoria;
 import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Map;
 
 /**
@@ -24,6 +31,11 @@ public class ImageControllerImpl implements ImagenController {
     private Conexion conn;
     private Peticion pet;
 
+    private final String server = App.AppIP;
+
+    private final String provider = "Inversiones Delanni App 1.0";
+    private final String system = System.getProperty("os.name");
+
     public ImageControllerImpl() {
         this.mapeo = new ObjectMapper();
         this.trans = new Transaccional(new Conexion());
@@ -34,19 +46,27 @@ public class ImageControllerImpl implements ImagenController {
 
     @Override
     public String imageString(String url) {
+
         try {
-            pet.addParameter("path", url);
-            trans.HttpGetObject("/api/archivo/archivos/consultar/imagen", pet);
-            if (pet.getCabecera().get("resp_cod").equals("200")) {
-                Map<String,Object> respuesta = mapeo.readValue(pet.getCuerpo().get("response"), Map.class);
-                return String.valueOf(respuesta.get("imagen"));
-            } else {
-                return null;
-            }
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/archivo/archivos/consultar/imagen?path=").concat(url)))
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            Map<String,String> valores =  mapeo.readValue(response.body(), Map.class);
+            return valores.get("imagen");
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
         }
         return null;
+
     }
 
 }

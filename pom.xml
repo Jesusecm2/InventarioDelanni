@@ -124,7 +124,12 @@
                         <configuration>
                             <options>
                                 <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:8000</option>
+                                <option>--add-exports</option>
+                                <option>javafx.base/com.sun.javafx.event=org.controlsfx.controls</option>
                             </options>
+                            
+                            
+                            
                         </configuration>
                     </execution>
                     <execution>

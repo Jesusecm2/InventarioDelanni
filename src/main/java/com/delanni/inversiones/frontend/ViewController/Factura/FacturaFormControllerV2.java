@@ -70,6 +70,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
+import org.controlsfx.dialog.LoginDialog;
 
 /**
  *
@@ -172,6 +173,10 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TextField ref_pag;
+    
+    @FXML
+    private TextField fnd_factura;
+    
 
     @FXML
     private Button fin_factura;
@@ -236,7 +241,7 @@ public class FacturaFormControllerV2 implements Initializable {
         Validadores.tooltipAndValidadorShowingField(ref_pag, 30);
         Validadores.tooltipAndValidadorShowingField(narra_pag, 30);
         
-        
+       
         
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         upd_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
@@ -450,6 +455,7 @@ public class FacturaFormControllerV2 implements Initializable {
             ingresarTable(null, p, 1.0);
             combo_box.getEditor().setText("");
             combo_box.hide();
+            
         });
 
         PagoBackend bck = new PagoImpl();

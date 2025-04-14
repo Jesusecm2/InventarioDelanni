@@ -5,6 +5,7 @@
 package com.delanni.inversiones.frontend.ViewController.Pagos;
 
 import com.delanni.inversiones.frontend.App;
+import com.delanni.inversiones.frontend.Backend.Controllers.ImageControllerImpl;
 import com.delanni.inversiones.frontend.Backend.Controllers.PagoImpl;
 import com.delanni.inversiones.frontend.Backend.Entity.Factura;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ComprobantePago;
@@ -13,13 +14,16 @@ import com.delanni.inversiones.frontend.Backend.Entity.Pagos.Pago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.TipodePago;
 import com.delanni.inversiones.frontend.Backend.Entity.Pagos.ValorMoneda;
 import com.delanni.inversiones.frontend.Backend.Entity.Transacciones;
+import com.delanni.inversiones.frontend.Backend.Interfaces.ImagenController;
 import com.delanni.inversiones.frontend.Backend.Interfaces.PagoBackend;
 import com.delanni.inversiones.frontend.Backend.util.ImageConverter;
 import com.delanni.inversiones.frontend.Backend.util.SelecionArchivos;
 import com.delanni.inversiones.frontend.ViewController.Factura.Table.TProducto;
+import com.delanni.inversiones.frontend.ViewController.Inicio.CarruselController;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Alerta;
 import com.delanni.inversiones.frontend.ViewController.Inicio.Helper.Getfile;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -30,6 +34,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -37,10 +42,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -62,7 +69,6 @@ public class PagoFacturaController implements Initializable {
     @FXML
     private Button save_btn11;
 
-    
     @FXML
     private Button agregar_pago;
 
@@ -113,6 +119,14 @@ public class PagoFacturaController implements Initializable {
     private CheckBox chk_parte;
 
     @FXML
+    private GridPane main_grid;
+
+    private Pagination pg_pagination;
+    private Parent carrusel;
+
+    private CarruselController controlcarrusel;
+
+    @FXML
     private CheckBox chk_fecha;
 
     public PagoFacturaController(Factura factura) {
@@ -123,23 +137,34 @@ public class PagoFacturaController implements Initializable {
         this.pagosave = pagosave;
         this.factura = factura;
     }
-    
-    
 
     public PagoFacturaController() {
     }
-    
-    
-    
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
+        //       img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         agregar_pago.setDisable(false);
         agregar_pago.setOnAction((e) -> {
-            registroPago();
+
+                carrusel.setVisible(true);
+        
+            registroPago();    
+            
+            
         });
+
+        try {
+            this.carrusel = App.loadFXML("fxml/Carrusel");
+            this.controlcarrusel = App.loadctual.getController();
+            this.pg_pagination = controlcarrusel.getPg_nation();
+            carrusel.setVisible(false);
+            main_grid.add(carrusel, 0, 0, GridPane.REMAINING, GridPane.REMAINING);
+        } catch (IOException ex) {
+
+        }
+
         chk_parte.setSelected(true);
         chk_fecha.setOnAction((e) -> {
             if (chk_fecha.isSelected()) {
@@ -199,13 +224,18 @@ public class PagoFacturaController implements Initializable {
             }
         });
         save_btn11.setOnAction((e) -> {
-            AgregarImagen();
+            if(pagosave.getComprobante().getId()!=null){
+                carrusel.setVisible(true);
+            }else{
+                AgregarImagen();
+            }
+            
         });
-        
-        if(this.pagosave!=null){
+
+        if (this.pagosave != null) {
             setPago();
         }
-        if(this.factura!=null){
+        if (this.factura != null) {
             setFactura();
         }
     }
@@ -304,7 +334,7 @@ public class PagoFacturaController implements Initializable {
                 save.showAndWait();
                 Stage stg = (Stage) this.chk_fecha.getParent().getScene().getWindow();
                 stg.close();
-            }else{
+            } else {
                 Alert save = Alerta.getAlert(Alert.AlertType.ERROR, "No se ha guardado", "", null);
                 save.showAndWait();
             }
@@ -346,9 +376,8 @@ public class PagoFacturaController implements Initializable {
 
     public void setFactura() {
 
-      
-        pago_lbl_restante.setText(String.format("Pagado: %.2f$",montoRestante()));
-        pago_lbl_restante.setText(String.format("Restante: %,2f$", montoPagado()));
+        pago_lbl_pagado.setText(String.format("Pagado: %.2f$", montoRestante()));
+        pago_lbl_restante.setText(String.format("Restante: %.2f$", montoPagado()));
         pago_lbl_total.setText(String.format("Total: ", factura.getSaldo()));
         calcularValorTotal();
     }
@@ -359,13 +388,12 @@ public class PagoFacturaController implements Initializable {
 
     private void calcularValorTotal() {
         if (moneda_Combo.getSelectionModel().getSelectedItem() != null) {
-            if (valor!=null && valor.getMoneda().getConverted().equals("1")) {
+            if (valor != null && valor.getMoneda().getConverted().equals("1")) {
                 Double temp = valor.getValor() * (calcularTotal() - montoPagado());
                 mto_pagado.getValueFactory().setValue(temp);
                 return;
-            }    
-            
-            
+            }
+
         }
         Double temp = (calcularTotal() - montoPagado());
         mto_pagado.getValueFactory().setValue(temp);
@@ -397,6 +425,27 @@ public class PagoFacturaController implements Initializable {
 
         if (pagosave.getComprobante() == null) {
             // ver_comprobante.setDisable(true);
+        } else {
+            String path = pagosave.getComprobante().getImagen();
+            System.out.println("Entra aca");
+            ImagenController srvImg = new ImageControllerImpl();
+            String resource = srvImg.imageString(path);
+            System.out.println(resource);
+            if (resource != null && !resource.isBlank()) {
+                
+                ImageConverter img = new ImageConverter(resource);
+                List<ImageView> img_viewls = new ArrayList<>();
+                ImageView imgv = new ImageView(img.getImage());
+                imgv.setFitHeight(200);
+                        imgv.setFitWidth(200);
+                        imgv.getStyleClass().add("img_pagin");
+                img_viewls.add(imgv);
+                controlcarrusel.setImg_viewls(img_viewls);
+                
+                save_btn11.setText("Ver Pago");
+                carrusel.setVisible(false);
+            }
+
         }
 
     }

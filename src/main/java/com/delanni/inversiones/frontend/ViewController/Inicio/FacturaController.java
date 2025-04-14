@@ -39,6 +39,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -95,6 +96,9 @@ public class FacturaController implements Initializable {
 
     @FXML
     private Button clear_btn;
+    
+    @FXML
+    private TextField fnd_factura;
 
     @FXML
     private DatePicker date_pick;
@@ -116,7 +120,7 @@ public class FacturaController implements Initializable {
 
     @FXML
     private ComboBox<String> sts_box;
-    
+
     private boolean limpiar;
 
     public Parent getLastRoot() {
@@ -147,7 +151,7 @@ public class FacturaController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         String[] find_box = new String[]{"Proveedor", "Cliente"};
-        limpiar=false;
+        limpiar = false;
         String[] sts_item = new String[]{"Activo", "Cancelado"};
         cat_box.setItems(FXCollections.observableArrayList(find_box));
         sts_box.setItems(FXCollections.observableArrayList(sts_item));
@@ -159,15 +163,18 @@ public class FacturaController implements Initializable {
         tc_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
         tc_pagado.setCellValueFactory(new PropertyValueFactory<>("pagado"));
 
+        pagar_btn.setDisable(true);
+        
+        
         tv_factura.setOnMouseClicked((e) -> {
             TFacturaInicio tf = tv_factura.getSelectionModel().getSelectedItem();
             if (tf != null) {
                 tv_detalle.setItems(FXCollections.observableArrayList(tf.getLineas()));
                 total_lb.setText("Total: ".concat(String.format("%.2f", tf.getMonto()).concat("$")));
                 rest_lbl.setText("Restante:".concat(String.format("%.2f", tf.getMonto() - tf.getPagado()).concat("$")));
-                if(tf.getFactura().getStatus().equals("C")){
+                if (tf.getFactura().getStatus().equals("C")) {
                     pagar_btn.setDisable(true);
-                }else{
+                } else {
                     pagar_btn.setDisable(false);
                 }
             }
@@ -241,25 +248,27 @@ public class FacturaController implements Initializable {
             }
         });*/
         clear_btn.setOnAction((e) -> {
-            limpiar=true;
+            limpiar = true;
             cat_box.getSelectionModel().clearSelection();
             cat_box1.getSelectionModel().clearSelection();
             cat_box2.getSelectionModel().clearSelection();
             sts_box.getSelectionModel().clearSelection();
             date_pick.setValue(null);
-            limpiar=false;
-            try{
+            limpiar = false;
+            try {
                 buscarFacturas();
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
         pagar_btn.setOnMouseClicked((e) -> {
-            if(tv_factura.getSelectionModel().getSelectedItem().getFactura()!=null)
-            loadPago();
-            else;
-            Alerta.getAlert(Alert.AlertType.ERROR, "No se ha seleccionado una factura válida", "", img_src).showAndWait();
+            if (tv_factura.getSelectionModel().getSelectedItem() != null && tv_factura.getSelectionModel().getSelectedItem().getFactura() != null) {
+                loadPago();
+            } else {
+                Alerta.getAlert(Alert.AlertType.ERROR, "No se ha seleccionado una factura válida", "", img_src).showAndWait();
+            }
+
         });
 
         cat_box1.setOnAction((e) -> {
@@ -295,11 +304,11 @@ public class FacturaController implements Initializable {
         });
 
         date_pick.setOnAction((e) -> {
-            if(date_pick.getValue()!=null){
+            if (date_pick.getValue() != null) {
                 cat_box.setDisable(true);
                 cat_box1.setDisable(true);
                 cat_box2.setDisable(true);
-            }else{
+            } else {
                 cat_box.setDisable(false);
                 cat_box1.setDisable(false);
                 cat_box2.setDisable(false);
@@ -314,18 +323,18 @@ public class FacturaController implements Initializable {
         });
 
         cat_box.setOnAction((e) -> {
-            if(!limpiar){
-            String item = cat_box.getSelectionModel().getSelectedItem();
-            if (item.equals("Cliente")) {
-                cat_box2.setVisible(true);
-                cat_box1.setVisible(false);
+            if (!limpiar) {
+                String item = cat_box.getSelectionModel().getSelectedItem();
+                if (item.equals("Cliente")) {
+                    cat_box2.setVisible(true);
+                    cat_box1.setVisible(false);
 
-            } else {
-                cat_box2.setVisible(false);
-                cat_box1.setVisible(true);
-            }    
+                } else {
+                    cat_box2.setVisible(false);
+                    cat_box1.setVisible(true);
+                }
             }
-            
+
             try {
 
                 buscarFacturas();
@@ -378,90 +387,100 @@ public class FacturaController implements Initializable {
     }
 
     private void buscarFacturas() throws Exception {
-        if(!limpiar){
-            
-        
-        List<Factura> listado = null;
-        FacturaBackend facturaService = new FacturaControllerImpl();
-        String ch = null;
-        if (sts_box.getValue() != null) {
-            ch = (sts_box.getValue().equals("Activo") ? "A" : "C");
-        }
-        if (date_pick.getValue() != null) {
-            Date dt1 = Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if (!limpiar) {
 
-            if (cat_box.getSelectionModel().getSelectedItem() != null) {
-                if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
-                    listado = facturaService.listadoVentas(dt1);
+            List<Factura> listado = null;
+            FacturaBackend facturaService = new FacturaControllerImpl();
+            String ch = null;
+            if (sts_box.getValue() != null) {
+                ch = (sts_box.getValue().equals("Activo") ? "A" : "C");
+            }
+            if (date_pick.getValue() != null) {
+                Date dt1 = Date.from(date_pick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+                if (cat_box.getSelectionModel().getSelectedItem() != null) {
+                    if (cat_box.getSelectionModel().getSelectedItem().equals("Cliente")) {
+                        listado = facturaService.listadoVentas(dt1);
+                    } else {
+                        listado = facturaService.listadoFacturas(dt1);
+                    }
                 } else {
                     listado = facturaService.listadoFacturas(dt1);
                 }
-            } else {
-                listado = facturaService.listadoFacturas(dt1);
+                llenarTable(listado);
+                return;
+            }
+
+            if (cat_box.getSelectionModel().getSelectedItem() != null) {
+                if (cat_box1.getSelectionModel().getSelectedItem() != null && cat_box1.isVisible()) {
+                    if (cat_box1.getValue() != null) {
+                        if (sts_box.getValue() != null) {
+                            listado = facturaService.listadoFacturas(cat_box1.getValue(), ch);
+                        } else {
+                            listado = facturaService.listadoFacturas(cat_box1.getValue());
+                        }
+                    } else {
+                        if (sts_box.getValue() != null) {
+                            listado = facturaService.listadoFacturas(ch);
+                        } else {
+                            listado = facturaService.listadoFacturas();
+                        }
+                    }
+                }
+
+                if (cat_box2.getSelectionModel().getSelectedItem() != null && cat_box2.isVisible()) {
+                    if (cat_box2.getValue() != null) {
+                        if (sts_box.getValue() == null) {
+                            listado = facturaService.listadoVentas(cat_box2.getValue());
+                        } else {
+
+                            listado = facturaService.listadoVentas(cat_box2.getValue(), ch);
+                        }
+                    } else {
+                        if (sts_box.getValue() != null) {
+
+                            listado = facturaService.listadoVentas(ch);
+                        } else {
+                            listado = facturaService.listadoVentas();
+                        }
+                    }
+                }
+
+            }
+            if (cat_box.getSelectionModel().getSelectedItem() == null && date_pick.getValue() == null && sts_box.getValue() == null && listado == null) {
+                listado = facturaService.listadoFacturas();
+            }
+            if (cat_box.getSelectionModel().getSelectedItem() != null && listado == null) {
+                
+                if (cat_box1.isVisible()) {
+                    if(ch!=null){
+                        listado = facturaService.listadoFacturas(ch);
+                    }else{
+                        listado = facturaService.listadoFacturasNotNull();
+                    }
+                    
+                } else {
+                    if(ch!=null){
+                        listado = facturaService.listadoVentas(ch);
+                    }else{
+                        listado = facturaService.listadoVentas();
+                    }
+                    
+                }
             }
             llenarTable(listado);
             return;
         }
 
-        if (cat_box.getSelectionModel().getSelectedItem() != null) {
-            if (cat_box1.getSelectionModel().getSelectedItem() != null && cat_box1.isVisible()) {
-                if (cat_box1.getValue() != null) {
-                    if (sts_box.getValue() != null) {
-                        listado = facturaService.listadoFacturas(cat_box1.getValue(), ch);
-                    } else {
-                        listado = facturaService.listadoFacturas(cat_box1.getValue());
-                    }
-                } else {
-                    if (sts_box.getValue() != null) {
-                        listado = facturaService.listadoFacturas(ch);
-                    } else {
-                        listado = facturaService.listadoFacturas();
-                    }
-                }
-            }
-
-            if (cat_box2.getSelectionModel().getSelectedItem() != null && cat_box2.isVisible()) {
-                if (cat_box2.getValue() != null) {
-                    if (sts_box.getValue() == null) {
-                        listado = facturaService.listadoVentas(cat_box2.getValue());
-                    } else {
-
-                        listado = facturaService.listadoVentas(cat_box2.getValue(), ch);
-                    }
-                } else {
-                    if (sts_box.getValue() != null) {
-
-                        listado = facturaService.listadoVentas(ch);
-                    } else {
-                        listado = facturaService.listadoVentas();
-                    }
-                }
-            }
-
-        }
-        if (cat_box.getSelectionModel().getSelectedItem() == null && date_pick.getValue() == null && sts_box.getValue() == null && listado == null) {
-            listado = facturaService.listadoFacturas();
-        }
-        if(cat_box.getSelectionModel().getSelectedItem()!=null && listado == null){
-            if(cat_box1.isVisible()){
-                listado = facturaService.listadoFacturasNotNull();
-            }else{
-                listado = facturaService.listadoVentas();
-            }
-        }
-        llenarTable(listado);
-        return;
-        }
-
     }
 
     private void llenarTable(List<Factura> facturas) throws Exception {
-        
+
         List<TFacturaInicio> inicio = getTFacturas(facturas);
-        if(facturas != null && !facturas.isEmpty()){
+        if (facturas != null && !facturas.isEmpty()) {
             tv_factura.getItems().setAll(inicio);
-            
-        }else{
+
+        } else {
             tv_factura.getItems().clear();
         }
         tv_detalle.getItems().clear();
