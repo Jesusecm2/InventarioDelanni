@@ -250,6 +250,17 @@ public class ProductoFormController implements Controladores {
         j_spim.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 9999, 0));
         volver_btn.setVisible(false);
         cod_tf.setDisable(true);
+        
+        
+        cod_tf.setOnAction((e)->{
+            InventarioBackend back = new InventarioControllerImpl();
+            List<Producto> valid = back.obtenerProducto(cod_tf.getText());
+            if(valid!=null && !valid.isEmpty()){
+                Alerta.getAlert(Alert.AlertType.ERROR, "Producto existe", "El producto con este codigo ya existe", null).showAndWait();
+            cod_tf.setText("");
+            }
+        });
+        
         chk_tf.setSelected(false);
         pg_pagination.setPageCount(3);
         cantidad = 0.0;
@@ -509,37 +520,14 @@ public class ProductoFormController implements Controladores {
     }
 
     private void cargarFormulario() {
-        try {
-            Parent parent = App.loadFXML("fxml/CategoriaForm");
-            Stage stage = new Stage();
-            Scene scene = new Scene(parent);
-            CategoriaFormController categoria = App.loadctual.getController();
-            stage.setTitle("Agregar Producto");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.setScene(scene);
-            stage.centerOnScreen();
-            scene.getStylesheets().add(App.class.getResource("css/styles.css").toExternalForm());
-            categoria.setWindow(stage);
-            if (categoria.isLoaded()) {
-                stage.showAndWait();
-                if (this.cat == null) {
-                    this.cat = categoria.getCategoria();
-                } else {
-                    if (categoria.getCategoria() != null) {
-                        this.cat = categoria.getCategoria();
-                    }
-                }
-                if (cat != null) {
-                    categoria_lb.setText(cat.getNombre());
-                }
-            }
 
-            //  System.out.println(cat.getNombre());
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        CategoriaFormController categoriacnt = new CategoriaFormController();
+        App.cargarVentanaModal("fxml/CategoriaForm", categoriacnt, true, "Seleccione una categoría");
+        this.cat = categoriacnt.getCategoria();
+        if(this.cat!=null){
+            categoria_lb.setText(this.cat.getNombre());
         }
+        //  System.out.println(cat.getNombre());
     }
 
     private void limpiarCampos() {

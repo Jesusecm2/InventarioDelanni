@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane minHeight="600.0" minWidth="400.0" prefHeight="800.0" prefWidth="600.0" styleClass="panel" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Login.InicioSesionController">
+<GridPane minHeight="600.0" minWidth="300.0" styleClass="panel" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.delanni.inversiones.frontend.ViewController.Login.InicioSesionController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -27,35 +27,38 @@
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fx:id="lg_logo_imgv" fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <ImageView fx:id="lg_logo_imgv" fitHeight="400.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                <image>
                   <Image url="@../images/LOGO%20NUEVO.png" />
                </image>
                <viewport>
                   <Rectangle2D />
                </viewport>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
             </ImageView>
-            <GridPane maxWidth="500.0" GridPane.rowIndex="1">
+            <GridPane hgap="10.0" maxWidth="500.0" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints fillHeight="false" minHeight="5.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" percentHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <TextField fx:id="lg_username_tf" promptText="Usuario" GridPane.rowIndex="1" />
                   <PasswordField fx:id="lg_password_tf" promptText="Contraseña" GridPane.rowIndex="2" />
                   <CheckBox fx:id="lg_recordar_ch" mnemonicParsing="false" text="Recordarme" GridPane.rowIndex="3" />
-                  <Button id="lg_login_btn" fx:id="lg_login_btn" mnemonicParsing="false" styleClass="btn-size" text="Ingresar" GridPane.rowIndex="4" />
+                  <Button id="lg_login_btn" fx:id="lg_login_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-size" text="Ingresar" GridPane.rowIndex="4" />
                   <Label fx:id="lg_titulo_lb" styleClass="title" text="Inicio de Sesión" />
                   <Label fx:id="lg_olvido_lb" styleClass="formlblaction" text="¿Olvido Su Contraseña?" GridPane.rowIndex="5" />
                   <GridPane fx:id="msg_error_grid" visible="false" GridPane.halignment="LEFT" GridPane.rowIndex="5">
@@ -104,7 +107,7 @@
             </GridPane>
          </children>
          <GridPane.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="20.0" left="20.0" right="20.0" />
          </GridPane.margin>
          <styleClass>
             <String fx:value="radiusnormal" />

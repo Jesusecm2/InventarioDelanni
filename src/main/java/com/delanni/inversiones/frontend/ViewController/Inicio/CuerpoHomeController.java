@@ -245,7 +245,7 @@ public class CuerpoHomeController implements Controladores {
     private XYChart.Series<String, Number> cargarDiagrama(int tipo) {
         System.out.println("Ejecutar:" + tipo);
         XYChart.Series<String, Number> series = new XYChart.Series();
-        series.setName("No of schools in an year");
+        series.setName("Estadísticas de dinero");
         DiagramaController diagraam = new DiagramaControllerImpl();
         LinkedHashMap<String, String> link = diagraam.obtenerDetalle(tipo);
         for (Map.Entry<String, String> entry : link.entrySet()) {

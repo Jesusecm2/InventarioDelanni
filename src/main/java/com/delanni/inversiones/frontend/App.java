@@ -159,8 +159,8 @@ public class App extends Application {
         //control.responsive1600();
 
         if (!sizehigh) {
-            scene.getStylesheets().clear();
-            scene.getStylesheets().add(App.class.getResource("css/stylesG.css").toExternalForm());
+            //scene.getStylesheets().clear();
+            //scene.getStylesheets().add(App.class.getResource("css/stylesG.css").toExternalForm());
             // scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         }

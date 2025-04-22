@@ -187,6 +187,7 @@ public class ProductoController implements Controladores {
             cat_box.getSelectionModel().clearSelection();
             exportar_btn.setDisable(true);
             tc_busqueda.setText("");
+            cargarProductos();
             
         });
         

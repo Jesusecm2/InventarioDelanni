@@ -38,7 +38,7 @@
                     </rowConstraints>
                     <children>
                         <Label fx:id="lg_titulo_lb" styleClass="h1" text="Exportar Transacciones" GridPane.columnSpan="2" />
-                        <Button id="lg_login_btn" fx:id="save_btn" mnemonicParsing="false" text="Guardar" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                        <Button id="lg_login_btn" fx:id="save_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Guardar" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                             <styleClass>
                                 <String fx:value="btn" />
                                 <String fx:value="btn-primary" />

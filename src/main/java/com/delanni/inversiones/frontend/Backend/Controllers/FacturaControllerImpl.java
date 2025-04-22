@@ -458,4 +458,26 @@ public class FacturaControllerImpl implements FacturaBackend {
         return null;
     }
 
+    @Override
+    public Factura FacturaById(Long id) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/id?id=").concat(String.valueOf(id))))
+                    .header("Content-Type", "application/json")
+                    .header("system", system)
+                    .header("provider", provider)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return mapeo.readValue(response.body(), Factura.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
 }

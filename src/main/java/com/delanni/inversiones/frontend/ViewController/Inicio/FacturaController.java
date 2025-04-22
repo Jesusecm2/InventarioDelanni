@@ -165,6 +165,21 @@ public class FacturaController implements Initializable {
 
         pagar_btn.setDisable(true);
         
+        fnd_factura.setOnAction(event -> {
+            String textoBuscado = fnd_factura.getText();
+            
+            FacturaBackend backend = new FacturaControllerImpl();
+            // Aquí puedes implementar la lógica de búsqueda
+            try{
+                List<Factura> l = new ArrayList<>();
+                l.add(backend.FacturaById(Long.parseLong(textoBuscado)));
+                llenarTable(l);
+            }catch(Exception e){
+                Alerta.getAlert(Alert.AlertType.ERROR, "Error de texto", "El texto debe ser númerico", img_src).showAndWait();
+            }
+            
+        });
+
         
         tv_factura.setOnMouseClicked((e) -> {
             TFacturaInicio tf = tv_factura.getSelectionModel().getSelectedItem();
@@ -254,6 +269,7 @@ public class FacturaController implements Initializable {
             cat_box2.getSelectionModel().clearSelection();
             sts_box.getSelectionModel().clearSelection();
             date_pick.setValue(null);
+            fnd_factura.setText("");
             limpiar = false;
             try {
                 buscarFacturas();

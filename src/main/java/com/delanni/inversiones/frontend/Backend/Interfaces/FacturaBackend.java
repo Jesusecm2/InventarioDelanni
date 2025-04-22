@@ -31,7 +31,8 @@ public interface FacturaBackend {
         
         public List<Factura> listadoFacturasProv(String estatus);
 
-	
+	public Factura FacturaById(Long id);
+        
 	public List<Factura> listadoFacturas(Proveedor prov);
 	
 	public List<Factura> listadoFacturas(Proveedor prov,String parametro);

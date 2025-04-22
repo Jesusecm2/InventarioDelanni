@@ -123,8 +123,8 @@ public class InicioController implements Controladores {
         fact_btn.setGraphic(Getfile.getIcono("normal/factura-64.png"));
         ventas_btn.setGraphic(Getfile.getIcono("normal/dinero-64.png"));
         img_icon.setImage(Getfile.getIcono("minilogo.png").getImage());
-        img_icon.setFitHeight(64);
-        img_icon.setFitWidth(64);
+        img_icon.setFitHeight(48);
+        img_icon.setFitWidth(48);
        // Button btns[] = new Button[]{home_btn, product_btn, inventory_btn, mant_btn
         //};
         Parent root;
@@ -136,6 +136,7 @@ public class InicioController implements Controladores {
             control.setLastRoot(root);
             setLastRoot(root);
             setNewRoot(root);
+            stack_pane.getChildren().clear();
             stack_pane.getChildren().add(root);
         } catch (IOException ex) {
             ex.printStackTrace();

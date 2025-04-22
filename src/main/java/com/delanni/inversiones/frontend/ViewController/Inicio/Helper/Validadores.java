@@ -36,7 +36,7 @@ public class Validadores {
         });
         param.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 
-            if (newValue.length() > 20) {
+            if (newValue.length() >= value) {
                 param.setText(oldValue);
                 if (!tp.isShowing()) {
                     tp.show(param.getScene().getWindow());
@@ -66,7 +66,7 @@ public class Validadores {
         });
         param.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 
-            if (newValue.length() > 20) {
+            if (newValue.length() >= value) {
                 param.setText(oldValue);
                 if (!tp.isShowing()) {
                     tp.show(param.getScene().getWindow());

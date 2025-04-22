@@ -117,16 +117,22 @@ public class CategoriaFormController implements Controladores {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loaded = false;
-        volver_btn.setGraphic(NormalImage.left_btn);
+        //volver_btn.setGraphic(NormalImage.left_btn);
 
-        volver_btn.setOnMouseClicked((e) -> {
+       /* volver_btn.setOnMouseClicked((e) -> {
             cerrar();
-        });
+        });*/
         save_btn.setOnMouseClicked((e) -> {
             crearCategoria();
         });
         subir_btn.setOnMouseClicked((e) -> {
             SubirImagen();
+        });
+        
+        
+        cat_name_tf.setOnKeyPressed((e)->{
+            this.lg_logo_imgv.setImage(null);
+            this.convertidor=null;
         });
 
         list_cat.setOnMouseClicked((e) -> {
