@@ -51,6 +51,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -99,7 +100,7 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TextField cod_tf;
-    
+
     @FXML
     private TextField rif_ci;
 
@@ -134,6 +135,9 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private Label amnt_lbl;
+
+    @FXML
+    private Label mto_lbl_act;
 
     @FXML
     private Label lbl_monto;
@@ -173,10 +177,9 @@ public class FacturaFormControllerV2 implements Initializable {
 
     @FXML
     private TextField ref_pag;
-    
+
     @FXML
     private TextField fnd_factura;
-    
 
     @FXML
     private Button fin_factura;
@@ -202,7 +205,6 @@ public class FacturaFormControllerV2 implements Initializable {
     private Proveedor proveedor;
 
     private Cliente cliente;
-
 
     @FXML
     private Button nxt_btn;
@@ -240,9 +242,43 @@ public class FacturaFormControllerV2 implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Validadores.tooltipAndValidadorShowingField(ref_pag, 30);
         Validadores.tooltipAndValidadorShowingField(narra_pag, 30);
-        
-       
-        
+
+        rif_ci.setOnAction((e -> {
+            if (venta) {
+
+                InventarioBackend bck = new InventarioControllerImpl();
+                Cliente cliente = bck.BuscarCedulaCliente(rif_ci.getText());
+                if (cliente == null) {
+
+                    Alert excet = Alerta.getAlert(Alert.AlertType.CONFIRMATION, "Cliente no existe", "Desea agregar el cliente", null);
+                    excet.showAndWait();
+                    if (excet.getResult().equals(ButtonType.OK)) {
+                        prov_create_btn.fire();
+                    }
+
+                } else {
+                    this.cliente = cliente;
+                    System.out.println("cliente si encontrado");
+                    //cliente = control.getCliente();
+                    prov_lb.setText(cliente.getNombre());
+                    nxt_btn.fire();
+                }
+            } else {
+
+                FacturaBackend backend = new FacturaControllerImpl();
+                this.proveedor = backend.ProveedorbyRif(rif_ci.getText());
+                if (this.proveedor == null) {
+                    Alert excet = Alerta.getAlert(Alert.AlertType.CONFIRMATION, "Proveedor no existe", "Desea agregar el proveedor", null);
+                    excet.showAndWait();
+                    if (excet.getResult().equals(ButtonType.OK)) {
+                        prov_create_btn.fire();
+                    }
+                }else{
+                    nxt_btn.fire();
+                    prov_lb.setText(this.proveedor.getNombre());
+                }
+            }
+        }));
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         upd_spin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         iva_value.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
@@ -258,7 +294,7 @@ public class FacturaFormControllerV2 implements Initializable {
             iva_value.getValueFactory().setValue(iva_param.getValueNum());
         }
 
-        clc_pago.setOnAction((e)->{
+        clc_pago.setOnAction((e) -> {
             clearPagoForm();
         });
         cod_tf.setOnAction((e) -> {
@@ -386,12 +422,12 @@ public class FacturaFormControllerV2 implements Initializable {
 
                 } else {
                     amnt_lbl.setText(String.format("%.2f", valor.getValor()));
-                    lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                    lbl_monto.setText("Monto en ".concat(mon.getCcy()));
                     calcularValorTotal();
                 }
             } else if (mon != null) {
                 amnt_lbl.setText("");
-                lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                lbl_monto.setText("Monto en ".concat(mon.getCcy()));
             }
         });
 
@@ -409,6 +445,9 @@ public class FacturaFormControllerV2 implements Initializable {
             prov_create_btn.setText("Buscar Cliente");
             lb_cliente.setText("Cliente");
             ci_cliente.setText("Cédula:");
+            mto_lbl_act.setVisible(false);
+            mto_spin.setVisible(false);
+
         } else {
             prov_create_btn.setText("Buscar Proveedor");
             lb_cliente.setText("Proveedor");
@@ -416,10 +455,17 @@ public class FacturaFormControllerV2 implements Initializable {
         }
 
         prov_create_btn.setOnAction((e) -> {
-            if (venta) {
-                ClienteFormController control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
-                if (control != null) {
 
+            if (venta) {
+                ClienteFormController control = null;
+                if (!rif_ci.getText().isEmpty() && !rif_ci.getText().isBlank()) {
+                    control = App.cargarVentanaModal("Crear Cliente", "fxml/ClientesForm", true);
+                } else {
+                    control = new ClienteFormController(rif_ci.getText());
+                    App.cargarVentanaModal("fxml/ClientesForm", control, true, "Crear Cliente");
+
+                }
+                if (control != null && control.getCliente() != null) {
                     cliente = control.getCliente();
                     prov_lb.setText(cliente.getNombre());
                     nxt_btn.fire();
@@ -455,7 +501,7 @@ public class FacturaFormControllerV2 implements Initializable {
             ingresarTable(null, p, 1.0);
             combo_box.getEditor().setText("");
             combo_box.hide();
-            
+
         });
 
         PagoBackend bck = new PagoImpl();
@@ -604,27 +650,27 @@ public class FacturaFormControllerV2 implements Initializable {
             }
         }
     }
-    
-    private boolean validarPago(){
+
+    private boolean validarPago() {
         String msg = null;
-        if(combo_pagos.getValue()==null){
-            msg="Debe seleccionar un método de pago";
+        if (combo_pagos.getValue() == null) {
+            msg = "Debe seleccionar un método de pago";
         }
-        
-        if(moneda_Combo.getValue()==null){
-            msg="Debe seleccionar una moneda de pago";
+
+        if (moneda_Combo.getValue() == null) {
+            msg = "Debe seleccionar una moneda de pago";
         }
-        
-        if(mto_pagado.getValue()<1){
+
+        if (mto_pagado.getValue() < 1) {
             msg = "El monto debe ser mayor a 0";
         }
-        
-        if(msg!=null){
+
+        if (msg != null) {
             Alert alerta = Alerta.getAlert(Alert.AlertType.ERROR, "Error", msg, null);
             alerta.showAndWait();
             return false;
         }
-        
+
         return true;
     }
 
@@ -721,7 +767,7 @@ public class FacturaFormControllerV2 implements Initializable {
             System.out.println("registros de pago");
             registroPago();
         }
-        if(!chk_parte.isSelected() && combo_pagos.getValue()!=null){
+        if (!chk_parte.isSelected() && combo_pagos.getValue() != null) {
             Alert alert = Alerta.getAlert(Alert.AlertType.INFORMATION, "Error", "Debe finalizar el pago parcial", null);
             alert.showAndWait();
         }

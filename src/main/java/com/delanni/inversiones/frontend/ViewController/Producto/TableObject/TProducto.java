@@ -29,9 +29,9 @@ public class TProducto {
     public TProducto(Producto producto) {
         this.producto = producto;
         this.nombre = producto.getNombre();
-        this.cantidad = String.valueOf(producto.getCant_actual());
-        this.pu = String.valueOf(producto.getPrecio_unit());
-        this.pv = String.valueOf(producto.getPrecio_vent());
+        this.cantidad = String.format("%.2f Unidades", producto.getCant_actual());
+        this.pu = String.format("%.2f$", producto.getPrecio_unit());//String.valueOf(producto.getPrecio_unit());
+        this.pv = String.format("%.2f$", producto.getPrecio_vent());//String.valueOf(producto.getPrecio_vent());
         this.btn_modify = new Button("Modificar");
     }
 

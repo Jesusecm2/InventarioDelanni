@@ -137,6 +137,9 @@ public class ProductoController implements Controladores {
     private Parent carrusel;
 
     private CarruselController controlcarrusel;
+    
+    @FXML
+    private TextField tc_busqueda_cod;
 
     @FXML
     private ComboBox<Categoria> cat_box;
@@ -187,9 +190,21 @@ public class ProductoController implements Controladores {
             cat_box.getSelectionModel().clearSelection();
             exportar_btn.setDisable(true);
             tc_busqueda.setText("");
+            tc_busqueda_cod.setText("");
             cargarProductos();
             
         });
+        
+        tc_busqueda_cod.setOnAction((e)->{
+            InventarioBackend back = new InventarioControllerImpl();
+            List<Producto> productos = back.obtenerProducto(tc_busqueda_cod.getText());
+            if(productos!=null){
+                table_producto.getItems().clear();
+                table_producto.getItems().addAll(convertir(productos));
+            }
+            
+        });
+        
         
         /*table_producto.setOnMouseClicked((e) -> {
             Producto seleccion = table_producto.getSelectionModel().getSelectedItem().getProducto();

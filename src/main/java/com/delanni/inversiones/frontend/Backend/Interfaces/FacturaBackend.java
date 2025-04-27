@@ -22,6 +22,9 @@ import java.util.List;
 public interface FacturaBackend {
 
 	public Proveedor guardarProveedor(Proveedor save);
+        
+        
+        public Proveedor ProveedorbyRif(String rif);
 	
 	public Cuenta guardarCuenta(Cuenta save);
 	

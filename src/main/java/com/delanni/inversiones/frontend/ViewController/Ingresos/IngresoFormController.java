@@ -310,13 +310,19 @@ public class IngresoFormController implements Initializable {
         chk_fecha.setDisable(true);
         egreso_comb.getSelectionModel().select(trn.getTpIngreso());
         combo_pagos.getSelectionModel().select(trn.getPago().getTipo());
-        mto_pagado.getValueFactory().setValue(trn.getPago().getMonto());
+        
         narra_pag.setText(trn.getPago().getNarrativa());
         narra_pag.setEditable(false);
         ref_pag.setEditable(false);
         egreso_comb.setDisable(true);
         combo_pagos.setDisable(true);
         this.valor = trn.getPago().getValor();
+        
+        if(trn.getPago().getMoneda().getConverted().equals("1")){
+            mto_pagado.getValueFactory().setValue(trn.getPago().getMonto()*this.valor.getValor());
+        }else{
+            mto_pagado.getValueFactory().setValue(trn.getPago().getMonto());
+        }
 
         moneda_Combo.getSelectionModel().select(trn.getPago().getMoneda());
         moneda_Combo.setDisable(true);

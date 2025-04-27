@@ -126,6 +126,13 @@
     -fx-border-color: -fx-nodesbg ;
     -fx-cursor:hand;
 }
+
+.date-picker .arrow-button {
+    -fx-background-color: -fx-nodesbg; /* Cambia el color de fondo */
+    -fx-text-fill: white; /* Cambia el color del texto */
+    -fx-border-radius: 5px; /* Redondea los bordes */
+}
+
 /*.combo-box .list-cell{
     -fx-font-size:15;
 }*/

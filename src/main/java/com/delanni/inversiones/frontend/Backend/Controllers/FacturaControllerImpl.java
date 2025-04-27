@@ -418,7 +418,6 @@ public class FacturaControllerImpl implements FacturaBackend {
         try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/buscar/estatusProveedor?status=").concat(estatus)))
-
                     .header("Content-Type", "application/json")
                     .header("system", system)
                     .header("provider", provider)
@@ -438,7 +437,7 @@ public class FacturaControllerImpl implements FacturaBackend {
 
     @Override
     public List<Factura> listadoVentas(String sts) {
-      try {
+        try {
             HttpRequest requested = HttpRequest.newBuilder()
                     .uri(new URI(server.concat("/api/inventario/inventario/factura/cliente?sts=").concat(sts)))
                     .header("Content-Type", "application/json")
@@ -470,6 +469,27 @@ public class FacturaControllerImpl implements FacturaBackend {
                     .build();
             HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
             return mapeo.readValue(response.body(), Factura.class);
+        } catch (URISyntaxException ex) {
+
+        } catch (IOException ex) {
+
+        } catch (InterruptedException ex) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public Proveedor ProveedorbyRif(String rif) {
+        try {
+            HttpRequest requested = HttpRequest.newBuilder()
+                    .uri(new URI(server.concat("/api/inventario/inventario/factura/proveedor/listado/rif?rif=").concat(rif)))
+                    .GET()
+                    .header("system", system)
+                    .header("provider", provider)
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(requested, HttpResponse.BodyHandlers.ofString());
+            return (mapeo.readValue(response.body(), Proveedor.class));
         } catch (URISyntaxException ex) {
 
         } catch (IOException ex) {

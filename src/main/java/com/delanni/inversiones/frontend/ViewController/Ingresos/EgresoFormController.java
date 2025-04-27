@@ -139,7 +139,7 @@ public class EgresoFormController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
+       // img_src.setImage(Getfile.getIcono("normal/addimg64.png").getImage());
         mto_pagado.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 999999999, 0));
         mto_pagado.setDisable(false);
         agregar_pago.setDisable(false);
@@ -202,9 +202,9 @@ public class EgresoFormController implements Initializable {
                 lbl_monto.setText("Monto en ".concat(mon.getCcy()));
             }
         });
-        save_btn11.setOnAction((e) -> {
+       /* save_btn11.setOnAction((e) -> {
             AgregarImagen();
-        });
+        });*/
     }
 
     public Stage getWindow() {

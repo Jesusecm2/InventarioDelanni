@@ -32,7 +32,7 @@ public class TIngreso {
 
             if (this.trans.getPago().getValor() != null && this.trans.getPago().getMoneda().getConverted().equals("1")) {
                 this.monto = trans.getPago().getMonto() * trans.getPago().getValor().getValor();
-                this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" ".concat(trans.getPago().getMoneda().getCcy()));
+                this.fmonto = String.format("%.2f", trans.getPago().getMonto()* trans.getPago().getValor().getValor()).concat(" ".concat(trans.getPago().getMoneda().getCcy()));
             } else {
                 this.monto = trans.getPago().getMonto();
                 this.fmonto = String.format("%.2f", trans.getPago().getMonto()).concat(" ".concat(trans.getPago().getMoneda().getCcy()));

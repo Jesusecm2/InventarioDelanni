@@ -68,10 +68,10 @@ public class FacturaController implements Initializable {
     private TableColumn<TFacturaInicio, String> tc_nombre;
 
     @FXML
-    private TableColumn<TFacturaInicio, Double> tc_monto;
+    private TableColumn<TFacturaInicio, String> tc_monto;
 
     @FXML
-    private TableColumn<TFacturaInicio, Double> tc_pagado;
+    private TableColumn<TFacturaInicio, String> tc_pagado;
 
     @FXML
     private TableView<TLineaFactura> tv_detalle;
@@ -160,8 +160,8 @@ public class FacturaController implements Initializable {
             loadForm();
         });
         tc_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        tc_monto.setCellValueFactory(new PropertyValueFactory<>("monto"));
-        tc_pagado.setCellValueFactory(new PropertyValueFactory<>("pagado"));
+        tc_monto.setCellValueFactory(new PropertyValueFactory<>("fmonto"));
+        tc_pagado.setCellValueFactory(new PropertyValueFactory<>("fpagado"));
 
         pagar_btn.setDisable(true);
         

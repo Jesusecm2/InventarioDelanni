@@ -20,6 +20,10 @@ public class TFacturaInicio {
 
     private Double pagado;
 
+    private String fmonto;
+
+    private String fpagado;
+
     private Factura factura;
 
     private List<TLineaFactura> lineas;
@@ -32,8 +36,10 @@ public class TFacturaInicio {
             this.nombre = factura.getIdCliente().getNombre();
         }
         this.monto = factura.getSaldo();
+        this.fmonto = String.format("%.2f$", this.monto);
         this.factura = factura;
         this.pagado = factura.getSaldo_pagado();
+        this.fpagado = String.format("%.2f$", this.pagado);
         this.lineas = new ArrayList<>();
         factura.getLineas().forEach((l) -> {
             TLineaFactura fc = new TLineaFactura(l);
@@ -81,4 +87,21 @@ public class TFacturaInicio {
         this.lineas = lineas;
     }
 
+    public String getFmonto() {
+        return fmonto;
+    }
+
+    public void setFmonto(String fmonto) {
+        this.fmonto = fmonto;
+    }
+
+    public String getFpagado() {
+        return fpagado;
+    }
+
+    public void setFpagado(String fpagado) {
+        this.fpagado = fpagado;
+    }
+
+    
 }

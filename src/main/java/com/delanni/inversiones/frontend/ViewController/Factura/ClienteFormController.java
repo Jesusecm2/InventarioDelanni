@@ -65,6 +65,8 @@ public class ClienteFormController implements Initializable{
     private ListView<Cliente> list_cat;
 
     private boolean loaded;
+    
+    private String ci_inicial;
 
     public boolean isLoaded() {
         return loaded;
@@ -77,6 +79,18 @@ public class ClienteFormController implements Initializable{
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+    public ClienteFormController() {
+    }
+
+    public ClienteFormController(String ci_inicial) {
+        this.ci_inicial = ci_inicial;
+    }
+    
+    
+    
+    
+    
     
     
 
@@ -95,6 +109,9 @@ public class ClienteFormController implements Initializable{
             cargarFormulario();
         });
 
+        if(ci_inicial!=null){
+            rif_tf.setText(ci_inicial);
+        }
         list_cat.setOnMouseClicked((e) -> {
             Cliente seleccion = list_cat.getSelectionModel().getSelectedItem();
             if (seleccion != null) {

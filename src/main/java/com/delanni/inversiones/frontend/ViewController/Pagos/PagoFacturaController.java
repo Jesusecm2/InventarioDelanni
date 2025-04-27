@@ -214,7 +214,7 @@ public class PagoFacturaController implements Initializable {
                 } else {
 
                     amnt_lbl.setText(String.format("%.2f", valor.getValor()));
-                    lbl_monto.setText("Monto en".concat(mon.getCcy()));
+                    lbl_monto.setText("Monto en ".concat(mon.getCcy()));
                     calcularValorTotal();
                 }
             } else if (mon != null) {
@@ -376,9 +376,9 @@ public class PagoFacturaController implements Initializable {
 
     public void setFactura() {
 
-        pago_lbl_pagado.setText(String.format("Pagado: %.2f$", montoRestante()));
-        pago_lbl_restante.setText(String.format("Restante: %.2f$", montoPagado()));
-        pago_lbl_total.setText(String.format("Total: ", factura.getSaldo()));
+        pago_lbl_pagado.setText(String.format("Pagado: %.2f$", this.factura.getSaldo_pagado()));
+        pago_lbl_restante.setText(String.format("Restante: %.2f$", montoRestante()));
+        pago_lbl_total.setText(String.format("Total: %.2f", this.factura.getSaldo()));
         calcularValorTotal();
     }
 
